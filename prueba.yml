@@ -3,10 +3,9 @@
   gather_facts: no
   tasks:
 
-    - name: Prueba de ping al host seleccionado
+    - name: Realizar ping al host
       ping:
-      register: ping_result
 
-    - name: Mostrar resultado del ping
+    - name: Mostrar el resultado del ping
       debug:
-        msg: "Resultado del ping: {{ ping_result }}"
+        var: ansible_facts.ping
