@@ -1,0 +1,14 @@
+---
+- name: Aplicar el rol CIS Security
+  hosts: all
+  become: true
+  gather_facts: yes
+
+  roles:
+    - role: cis_security
+
+
+
+
+
+

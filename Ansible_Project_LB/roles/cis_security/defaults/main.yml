@@ -1,0 +1,351 @@
+---
+# system_is_ec2 toggle will disable tasks that fail on Amazon EC2 instances. Set true to skip and false to run tasks
+## IMPORTANTE - Variable para Tarea 5.2.4 
+system_is_ec2: false   
+
+## Switching on/off specific baseline sections
+# These variables govern whether the tasks of a particular section are to be executed when running the role.
+# E.g: If you want to execute the tasks of Section 1 you should set the "_section1" variable to true.
+# If you do not want the tasks from that section to get executed you simply set the variable to "false".
+rhel8cis_section1: true
+rhel8cis_section2: true
+rhel8cis_section3: true
+rhel8cis_section4: true
+rhel8cis_section5: true
+rhel8cis_section6: true
+
+# These variables correspond with the CIS rule IDs or paragraph numbers defined in
+# the CIS benchmark documents.
+# PLEASE NOTE: These work in coordination with the section # group variables and tags.
+# You must enable an entire section in order for the variables below to take effect.
+
+# Section 1 rules
+## Disable Filesystems
+rhel8_cis_rule_1_1_1: true
+rhel8_cis_rule_1_1_2: true
+rhel8_cis_rule_1_1_3: true
+rhel8_cis_rule_1_1_4: true
+
+## Partition Security Options
+rhel8_cis_rule_1_1_5: true
+rhel8_cis_rule_1_1_6: true
+rhel8_cis_rule_1_1_7: true
+rhel8_cis_rule_1_1_8: true
+rhel8_cis_rule_1_1_9: true
+rhel8_cis_rule_1_1_10: true
+rhel8_cis_rule_1_1_11: true
+rhel8_cis_rule_1_1_12: true
+rhel8_cis_rule_1_1_13: true
+rhel8_cis_rule_1_1_14: true
+rhel8_cis_rule_1_1_15: true
+rhel8_cis_rule_1_1_16: true
+rhel8_cis_rule_1_1_17: true
+rhel8_cis_rule_1_1_18: true
+rhel8_cis_rule_1_1_19: true
+rhel8_cis_rule_1_1_20: true
+rhel8_cis_rule_1_1_21: true
+rhel8_cis_rule_1_1_22: true
+rhel8_cis_rule_1_1_23: true
+rhel8_cis_rule_1_1_24: true
+rhel8_cis_rule_1_1_25: true
+rhel8_cis_rule_1_1_26: true
+rhel8_cis_rule_1_1_27: true
+rhel8_cis_rule_1_1_28: true
+rhel8_cis_rule_1_1_29: true
+rhel8_cis_rule_1_1_30: true
+rhel8_cis_rule_1_1_31: true
+rhel8_cis_rule_1_1_32: true
+rhel8_cis_rule_1_1_33: true
+rhel8_cis_rule_1_1_34: true
+rhel8_cis_rule_1_1_35: true
+rhel8_cis_rule_1_1_36: true
+rhel8_cis_rule_1_1_37: true
+rhel8_cis_rule_1_1_38: true
+rhel8_cis_rule_1_1_39: true
+
+## Banner
+rhel8_cis_rule_1_7_1: true
+rhel8_cis_rule_1_7_2: true
+rhel8_cis_rule_1_7_3: true
+rhel8_cis_rule_1_7_4: true
+rhel8_cis_rule_1_7_5: true
+rhel8_cis_rule_1_7_6: true
+
+
+## Configure NTP
+rhel8_cis_rule_2_1_1: true
+rhel8_cis_rule_2_1_2: true
+rhel8_cis_rule_2_1_3: true
+
+## Uninstall Packages - special proposal services
+rhel8_cis_rule_2_1_4: true
+rhel8_cis_rule_2_1_5: false # ## DESHABILITADO - se utiliza para login a perfil web de internet
+rhel8_cis_rule_2_1_6: true
+rhel8_cis_rule_2_1_7: true
+rhel8_cis_rule_2_1_8: true
+rhel8_cis_rule_2_1_9: true
+rhel8_cis_rule_2_1_10: true
+rhel8_cis_rule_2_1_11: true
+rhel8_cis_rule_2_1_12: true
+rhel8_cis_rule_2_1_13: true
+rhel8_cis_rule_2_1_14: true
+rhel8_cis_rule_2_1_15: true
+rhel8_cis_rule_2_1_16: true
+rhel8_cis_rule_2_1_17: true
+rhel8_cis_rule_2_1_18: true
+rhel8_cis_rule_2_1_19: true
+rhel8_cis_rule_2_1_20: true
+rhel8_cis_rule_2_1_21: true
+rhel8_cis_rule_2_1_22: true
+rhel8_cis_rule_2_1_23: true
+
+## Uninstall Packages - service clients
+rhel8_cis_rule_2_2_1: true
+rhel8_cis_rule_2_2_2: true
+rhel8_cis_rule_2_2_3: true
+rhel8_cis_rule_2_2_4: true
+rhel8_cis_rule_2_2_5: true
+rhel8_cis_rule_2_2_6: true
+
+# Disable unused network protocols and devices
+rhel8_cis_rule_3_1_1: true
+rhel8_cis_rule_3_1_2: true
+
+# Network Parameter configuration
+rhel8_cis_rule_3_2_1: true 
+rhel8_cis_rule_3_2_2: true 
+
+# Network Parameter configuration
+rhel8_cis_rule_3_3_1: true 
+rhel8_cis_rule_3_3_2: true 
+rhel8_cis_rule_3_3_3: true 
+rhel8_cis_rule_3_3_4: true 
+rhel8_cis_rule_3_3_5: true 
+rhel8_cis_rule_3_3_6: true 
+rhel8_cis_rule_3_3_7: true 
+rhel8_cis_rule_3_3_8: true 
+rhel8_cis_rule_3_3_9: true 
+
+# Network Protocols configuration
+rhel8_cis_rule_3_4_1: true 
+rhel8_cis_rule_3_4_2: true 
+rhel8_cis_rule_3_4_3: true 
+rhel8_cis_rule_3_4_4: true 
+
+
+
+#Set up time-based scheduled jobs
+rhel8_cis_rule_5_1_1: true
+rhel8_cis_rule_5_1_2: true
+rhel8_cis_rule_5_1_3: true
+rhel8_cis_rule_5_1_4: true
+rhel8_cis_rule_5_1_5: true
+rhel8_cis_rule_5_1_6: true
+rhel8_cis_rule_5_1_7: true
+rhel8_cis_rule_5_1_8: true
+rhel8_cis_rule_5_1_9: true
+
+# Configure SUDO
+rhel8_cis_rule_5_2_1: true
+rhel8_cis_rule_5_2_2: false ## DESHABILITADO - Validar afectacion con ansible
+rhel8_cis_rule_5_2_3: true
+rhel8_cis_rule_5_2_4: true
+rhel8_cis_rule_5_2_5: true
+rhel8_cis_rule_5_2_6: true
+rhel8_cis_rule_5_2_7: false ## DESHABILITADO - esta restriccion de SU es bastante restrictiva y afectaria el acceso a root
+
+
+# SSH Server
+rhel8_cis_rule_5_3_1: true
+rhel8_cis_rule_5_3_2: true
+rhel8_cis_rule_5_3_3: true
+rhel8_cis_rule_5_3_4: false ## DESHABILITADO -  pendiente definir usuarios y grupos con permisos
+rhel8_cis_rule_5_3_5: true
+rhel8_cis_rule_5_3_6: false ## DESHABILITADO - se utiliza para login a perfil web de internet
+rhel8_cis_rule_5_3_7: true
+rhel8_cis_rule_5_3_8: true
+rhel8_cis_rule_5_3_9: true
+rhel8_cis_rule_5_3_10: false ## DESHABILITADO - muchos servidores utilizan root para login a SSH 
+rhel8_cis_rule_5_3_11: true
+rhel8_cis_rule_5_3_12: true
+rhel8_cis_rule_5_3_13: true
+rhel8_cis_rule_5_3_14: true
+rhel8_cis_rule_5_3_15: true
+rhel8_cis_rule_5_3_16: true
+rhel8_cis_rule_5_3_17: true
+rhel8_cis_rule_5_3_18: true
+rhel8_cis_rule_5_3_19: true
+
+
+
+#Configure PAM
+rhel8_cis_rule_5_4_1: true
+rhel8_cis_rule_5_4_2: true
+rhel8_cis_rule_5_4_3: true
+rhel8_cis_rule_5_4_4: true
+
+#Configure Account Policies
+rhel8_cis_rule_5_5_1: true
+rhel8_cis_rule_5_5_2: true
+rhel8_cis_rule_5_5_3: true
+rhel8_cis_rule_5_5_4: true
+rhel8_cis_rule_5_5_5: true
+rhel8_cis_rule_5_5_6: false ## DESHABILITADO - Impide el inicio de session a varias cuentas
+rhel8_cis_rule_5_5_7: true
+rhel8_cis_rule_5_5_8: false  ## DESHABILITADO - Tiene muchas opciones restrictivas que pueden afectar el sistema 
+rhel8_cis_rule_5_5_9: true
+rhel8_cis_rule_5_5_10: true
+
+# Options Server SSH
+## Controls:
+## - 5.3.4  - Ensure SSH access is limited
+## - 5.3.13 - Ensure SSH Idle Timeout Interval is configured
+## - 5.3.14 - Ensure SSH LoginGraceTime is set to one minute or less
+rhel8_cis_sshd:
+  # This variable sets the maximum number of unresponsive "keep-alive" messages
+  # that can be sent from the server to the client before the connection is considered
+  # inactive and thus, closed.
+  clientalivecountmax: 3
+  # This variable sets the time interval in seconds between sending "keep-alive"
+  # messages from the server to the client. These types of messages are intended to
+  # keep the connection alive and prevent it being terminated due to inactivity.
+  clientaliveinterval: 300
+  # This variable specifies the amount of seconds allowed for successful authentication to
+  # the SSH server.
+  logingracetime: 60
+  #The MaxStartups option in the SSH configuration controls the number of simultaneous unauthenticated SSH 
+  #connections that the server will allow before it starts rejecting new connections.
+  maxstartups: 10:30:60
+  # This variable, if specified, configures a list of USER name patterns, separated by spaces, to allow SSH
+  # access for users whose user name matches one of the patterns. This is done
+  # by setting the value of `AllowUsers` option in `/etc/ssh/sshd_config` file.
+  # If an USER@HOST format will be used, the specified user will be allowed only on that particular host.
+  #allowusers: user1 user2    # Aquí defines los usuarios específicos que pueden conectarse por SSH
+
+  # (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
+  # for users whose primary group or supplementary group list matches one of the patterns. This is done
+  # by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
+  #allowgroups: systems dba   # Aquí defines los grupos permitidos a conectarse por SSH
+
+  # This variable, if specified, configures a list of USER name patterns, separated by spaces, to prevent SSH access
+  # for users whose user name matches one of the patterns. This is done
+  # by setting the value of `DenyUsers` option in `/etc/ssh/sshd_config` file.
+  # If an USER@HOST format will be used, the specified user will be restricted only on that particular host.
+  denyusers: "nobody"   # Aquí defines los usuarios que tienen el acceso denegado por SSH
+
+  # This variable, if specified, configures a list of GROUP name patterns, separated by spaces,
+  # to prevent SSH access for users whose primary group or supplementary group list matches one of the patterns. This is done
+  # by setting the value of `DenyGroups` option in `/etc/ssh/sshd_config` file.
+  denygroups: ""      # Aquí defines los grupos que tienen el acceso denegado por SSH
+
+
+# Mounting options
+rhel8_cis_tmp:
+  source: /tmp
+  fstype: none
+  opts: defaults, nodev, nosuid, noexec
+  enabled: yes
+
+rhel8_cis_var:
+  source: /var
+  fstype: none
+  opts: defaults, nodev, nosuid  # No recomendaría 'noexec' en todo /var
+  enabled: yes
+
+rhel8_cis_var_tmp:
+  source: /var/tmp
+  fstype: none
+  opts: defaults, nodev, nosuid, noexec
+  enabled: yes
+
+rhel8_cis_var_log:
+  source: /var/log
+  fstype: none
+  opts: defaults, nodev, nosuid, noexec
+  enabled: yes
+
+rhel8_cis_var_log_audit:
+  source: /var/log/audit
+  fstype: none
+  opts: defaults, nodev, nosuid, noexec
+  enabled: yes
+
+rhel8_cis_home:
+  source: /home  
+  fstype: none   
+  opts: defaults,nodev,nosuid,usrquota,grpquota  
+  enabled: yes
+
+rhel8_cis_shm:
+  source: /dev/shm  
+  fstype: tmpfs   
+  opts: defaults, nodev, nosuid, noexec  
+  enabled: yes
+
+
+# Configuracion Ruta Banner local y Remoto
+#Messages more relevant for daily use (e.g. ads). After login.
+motd_file: "Message_Day"             # Linux: File location by default in 'files' directory
+#Informational or warning messages for access (e.g. access policies). Before you log in.
+# file for issue and issue.net
+issue_file: "login_banner"             # Linux: File location by default in 'files' directory
+
+# IPv6 required
+rhel8_cis_ipv6_required: false
+
+## Control 5.2.3 - Ensure sudo log file exists
+# By default, sudo logs through syslog(3). However, to specify a custom log file, the
+# 'logfile' parameter will be used, setting it with current variable's value.
+# This variable defines the path and file name of the sudo log file.
+rhel8_cis_sudolog_location: "/var/log/sudo.log"
+
+## Control 5.2.6 -Ensure sudo authentication timeout is configured correctly
+# This variable sets the duration (in minutes) during which a user's authentication credentials
+# are cached after successfully authenticating using "sudo". This allows the user to execute
+# multiple commands with elevated privileges without needing to re-enter their password for each
+# command within the specified time period. CIS requires a value of at most 15 minutes.
+rhel8_cis_sudo_timestamp_timeout: 15
+
+## Control 5.2.7 - Ensure access to the 'su' command is restricted
+# This variable determines the name of the group of users that are allowed to use the su command.
+# CIS requires that such a group be CREATED(named according to site policy) and be kept EMPTY.
+rhel9cis_sugroup: nosugroup
+
+# Time Synchronization
+rhel8_cis_time_synchronization: chrony
+
+
+# NTP Central Server Configuration
+rhel8_cis_time_synchronization_servers:
+  - 10.181.0.155 
+
+# Authorized cron users
+### IMPORTANTE UNICAMENTE LOS USUARIOS QUE ESTAN EN /etc/cron.allow TIENEN PERMISOS PARA PROGRAMAR CRON
+authorized_cron_users:
+        - root
+        - admin
+        - tux
+        - oracle
+
+### IMPORTANTE UNICAMENTE LOS USUARIOS QUE ESTAN EN /etc/at.allow TIENEN PERMISOS PARA PROGRAMAR AT
+authorized_at_users:
+        - root
+        - admin
+        - tux
+        - oracle
+
+
+# UID settings for interactive users
+# These are discovered via logins.def if set true
+discover_int_uid: false
+### Controls:
+# - 5.5.6 -  Ensure system accounts are secured
+# This variable sets the minimum number from which to search for UID
+# Note that the value will be dynamically overwritten if variable `dicover_int_uid` has
+# been set to `true`.
+min_int_uid: 1000
+
+
+# 5.5.9
+#The Ansible task you provided is responsible for ensuring that the default users' shell session timeout is 900 seconds or less
+rhel8_cis_shell_timeout: 900

@@ -1,0 +1,88 @@
+---
+# Tarea 5.4.1 - Asegurar que los requerimientos de creación de contraseñas están configurados
+- name: SCORED | 5.4.1 | PATCH | Ensure password creation requirements are configured
+  lineinfile:
+    state: present
+    dest: /etc/security/pwquality.conf
+    regexp: ^{{ item.key }}
+    line: '{{ item.key }} = {{ item.value }}'
+  loop:
+    - {key: minlen, value: '8'}        # Longitud mínima de 8 caracteres
+    - {key: minclass, value: '4'}      # Mínimo de 4 tipos de caracteres (dígitos, mayúsculas, minúsculas, otros)
+    - {key: dcredit, value: '-1'}      # Al menos 1 dígito
+    - {key: ucredit, value: '-1'}      # Al menos 1 letra mayúscula
+    - {key: ocredit, value: '-1'}      # Al menos 1 carácter especial
+    - {key: lcredit, value: '-1'}      # Al menos 1 letra minúscula
+  notify: Reiniciar servicios PAM
+  when:
+    - rhel8_cis_rule_5_4_1
+  tags:
+    - level1
+    - level2
+    - patch
+    - pam
+    - rule_5.4.1
+
+# Tarea 5.4.2 - Asegurar que el bloqueo de contraseñas está configurado para 5 intentos (Automático)
+- name: SCORED | 5.4.2 | PATCH | Ensure password lock is set to 5 attempts (Automatic)
+  ansible.builtin.lineinfile:
+    path: /etc/security/faillock.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    create: yes
+    backup: yes
+    state: present
+  loop:
+    - { regexp: '^deny=', line: 'deny=5' }
+    - { regexp: '^unlock_time=', line: 'unlock_time=900' }
+  notify: Reiniciar servicios PAM
+  when: rhel8_cis_rule_5_4_2
+  tags:
+    - level1
+    - level2
+    - patch
+    - pam
+    - rule_5.4.2
+
+# Tarea 5.4.3 - Asegurar que pam_pwhistory.so esté configurado en system-auth para limitar la reutilización de contraseñas
+- name: SCORED | 5.4.3 | PATCH | Ensure pam_pwhistory.so is configured in system-auth
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/system-auth
+    regexp: '^password\s+required\s+pam_pwhistory.so'
+    line: 'password required pam_pwhistory.so use_authtok remember=12'
+    create: yes
+    backup: yes
+    state: present
+  when:
+    - authselect_edit.changed
+    - rhel8_cis_rule_5_4_3
+  tags:
+    - level1
+    - level2
+    - patch
+    - pam
+    - rule_5.4.3
+
+- name: Aplicar cambios de authselect
+  ansible.builtin.command:
+    cmd: authselect apply-changes
+  when: authselect_edit.changed
+  notify: Reiniciar servicios PAM
+
+# Tarea 5.4.4 - Asegurar que el algoritmo de hash de contraseñas es SHA-512 (Automático)
+- name: SCORED | 5.4.4 | PATCH | Make sure the hashing algorithm is SHA-512
+  ansible.builtin.lineinfile:
+    path: /etc/login.defs
+    state: present
+    regexp: '^ENCRYPT_METHOD'
+    line: 'ENCRYPT_METHOD SHA512'
+    create: yes
+    backrefs: yes
+  when:
+    - rhel8_cis_rule_5_4_4
+  tags:
+    - level1
+    - level2
+    - patch
+    - pam
+    - rule_5.4.4

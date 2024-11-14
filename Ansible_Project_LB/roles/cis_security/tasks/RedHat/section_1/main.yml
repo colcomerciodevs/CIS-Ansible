@@ -1,0 +1,38 @@
+---
+
+# TAREA PRELIMINAR: Ejecuta las tareas preliminares necesarias
+- name: "PRELIM | Run preliminary tasks"
+  ansible.builtin.import_tasks:
+    file: prelim.yml
+  become: yes
+  tags:
+    - prelim_tasks
+    - always
+    - rhel8cis_section1
+
+# SECCIÓN 1.1.1-4: Deshabilitar sistemas de archivos no utilizados
+- name: "SECTION | 1.1.1-4 | Disable unused filesystems"
+  ansible.builtin.import_tasks:
+    file: cis1.1-Disable_Filesystems.yml
+  tags:
+    - rhel8cis_section1
+    - Disable_Filesystems
+
+# SECCIÓN 1.1.5-36: Configurar opciones de seguridad de particiones (/tmp - /var - /var/tmp - /var/log - /var/log/audit)
+- name: "SECTION | 1.1.5-36 | Configure partition security options (/tmp - /var - /var/tmp - /var/log - /var/log/audit)"
+  ansible.builtin.import_tasks:
+    file: cis1.1-Partition_Security_Options.yml     
+  tags:
+    - rhel8cis_section1
+    - Partition_Security_Options
+
+# SECCIÓN 1.7.2-3: Configurar Banner local y remoto
+- name: "SECTION | 1.7.2-3 | Configure Banner local y remote"
+  ansible.builtin.import_tasks:
+    file: cis1.7-Banner.yml    
+  tags:
+    - rhel8cis_section1
+    - Configure_Banner
+
+
+

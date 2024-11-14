@@ -1,0 +1,72 @@
+---
+
+# Prelim general requerido | Verificar perfil actual con authselect
+- name: PRELIM | Verificar el perfil actual de authselect
+  command: authselect current
+  register: current_authselect_profile
+  changed_when: false
+  check_mode: no  # Desactiva check mode solo para esta tarea
+
+# Prelim requerido para la tarea 2.2.4 y 5.2.5 | Encuentra todos los archivos sudoers
+- name: "PRELIM | 5.3.4 | Find all sudoers files."
+  ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  register:  rhel8_cis_sudoers_files
+
+# Prelim requerido para la tarea 5.3.2 | Buscar archivos de claves privadas del host SSH
+- name: PRELIM | Ensure permissions on SSH private host key files are configured - find
+  find:
+    paths: /etc/ssh
+    patterns: ssh_host_*_key
+  register: ssh_host_keys
+
+# Prelim requerido para la tarea 5.3.3 | Buscar archivos de claves públicas del host SSH
+- name: PRELIM | Ensure permissions on SSH public host key files are configured - find
+  find:
+    paths: /etc/ssh
+    patterns: ssh_host_*_key.pub
+  register: ssh_host_keys
+  
+
+# Prelim requerido para la tarea 5.4.2 y 5.4.4 | Asegúrese de que faillock y SHA-512 esten configurados en el perfil SSSD
+- name: PRELIM | Ensure faillock and SHA-512 are enabled in authselect profile
+  ansible.builtin.command:
+    cmd: "authselect select sssd with-sha512 with-faillock --force"
+  when:
+    - current_authselect_profile.stdout is defined
+    - "'with-sha512' not in current_authselect_profile.stdout or 'with-faillock' not in current_authselect_profile.stdout"
+  notify: Reiniciar servicios PAM
+  register: authselect_with_sha512_faillock
+
+# Prelim requerido para la tarea 5.4.3 | Asegúrese de que pam_pwhistory.so está configurado en system-auth
+- name:  PRELIM |  Ensure password reuse is limited to 12 using authselect
+  ansible.builtin.command:
+    cmd: authselect edit
+  register: authselect_edit
+
+  # Prelim requerido para la tarea 5.5.5 | Obtener lista de usuarios del sistema 
+- name:  PRELIM | Get list of system users
+  shell: |
+    getent passwd | awk -F: '$3 >= 1000 {print $1}' | grep -vE '^(root|tux|proactiva|admin|oracle)$'
+  register: usuarios_filtrados
+  check_mode: no  # Desactiva check mode solo para esta tarea
+  ignore_errors: yes
+
+- name: Check filtered users
+  debug:
+    var: usuarios_filtrados.stdout_lines
+
+# Prelim requerido para la tarea 5.5.7 | Verificar GID del usuario root 
+- name: PRELIM | Verify GID of root user
+  ansible.builtin.command:
+    cmd: "id -g root"
+  register: root_gid_check
+  check_mode: no  # Desactiva check mode solo para esta tarea
+  become: yes
+
+
+
+
+

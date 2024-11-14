@@ -1,0 +1,6 @@
+---
+
+# Prelim general requerido | Recolecta los hechos (facts) sobre los paquetes instalados en el sistema
+- name: PRELIM | Gather the rpm package facts
+  package_facts:
+    manager: auto

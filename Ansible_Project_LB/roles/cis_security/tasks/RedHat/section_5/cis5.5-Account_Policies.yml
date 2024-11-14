@@ -1,0 +1,212 @@
+---
+# Tarea 5.5.1 - Asegurar que la expiración de contraseñas esté en 42 días o menos (Automático)
+# Tarea 5.5.2 - Asegurarse de que el mínimo de días entre cambios de contraseñas esté establecido en 3 (Automático)
+# Tarea 5.5.3 - Asegurar que la advertencia de expiración de contraseñas esté en 5 días o más (Automático)
+- name: "SCORED | 5.5.1 | Ensure password expiration is 42 days or less (Automatic)\n\
+    \ SCORED | 5.5.2  | PATCH | Ensure that the minimum days between changing passwords is set to 3 (Automatic)\n SCORED\
+    \ | 5.5.3  | PATCH | Ensure password expiration warning is 5 or higher (Automatic)"
+  ansible.builtin.lineinfile:
+    path: /etc/login.defs
+    state: present
+    regexp: '^{{ item.key }}'
+    line: '{{ item.key }} {{ item.value }}'
+    create: yes
+    backrefs: yes
+  loop:
+    - { key: 'PASS_MAX_DAYS', value: '42' }
+    - { key: 'PASS_MIN_DAYS', value: '3' }
+    - { key: 'PASS_WARN_AGE', value: '7' }
+  when:
+    - rhel8_cis_rule_5_5_1
+    - rhel8_cis_rule_5_5_2
+    - rhel8_cis_rule_5_5_3
+  tags:
+    - level1
+    - level2
+    - patch
+    - account
+    - rule_5.5.1
+    - rule_5.5.2
+    - rule_5.5.3
+
+# Tarea 5.5.4 - Asegurar que el bloqueo de contraseñas por inactividad esté en 30 días o menos (Automático)
+- name: SCORED | 5.5.4 |  Asegurar que el bloqueo de contraseñas por inactividad esté en 30 días o menos
+  lineinfile:
+    path: /etc/default/useradd
+    state: present
+    regexp: '^INACTIVE'
+    line: 'INACTIVE=30'
+    create: yes
+    backrefs: yes
+  when:
+   - rhel8_cis_rule_5_5_4
+  tags:
+    - level1
+    - level2
+    - patch
+    - account
+    - inactivity
+    - rule_5.5.4
+
+# Tarea 5.5.5 - Asegurar que todos los usuarios deben tener una fecha de cambio de contraseña en el pasado (Automático)
+- name: SCORED | 5.5.5 | Ensure that all users must have a password change date in the past. (Automatic)
+  shell: |
+    if [[ $(chage -l {{ item }} | grep 'Last password change' | awk -F': ' '{print $2}') == "never" ]]; then
+      chage -d 0 {{ item }}
+    fi
+  loop: "{{ usuarios_filtrados.stdout_lines }}"
+  when:
+   - rhel8_cis_rule_5_5_5
+  tags:
+    - level1
+    - level2
+    - patch
+    - account
+    - password_change
+    - rule_5.5.5
+
+# Tarea 5.5.6 - Asegurar que las cuentas de sistema estén aseguradas (Automático)
+## DESHABILITADO - Impide el inicio de session a varias cuentas
+- name: "5.5.6 | PATCH | Ensure system accounts are secured"
+  block:
+      - name: "5.5.6 | PATCH | Ensure system accounts are secured | Set nologin"
+        ansible.builtin.user:
+            name: "{{ item.id }}"
+            shell: /usr/sbin/nologin
+        loop: "{{ rhel9cis_passwd }}"
+        when:
+            - item.id != "root"
+            - item.id != "tux"
+            - item.id != "admin"
+            - item.id != "oracle"
+            - item.id != "sync"
+            - item.id != "shutdown"
+            - item.id != "halt"
+            - item.id != "nfsnobody"
+            - item.uid < min_int_uid | int
+            - item.shell != "/bin/false"
+            - item.shell != "/usr/sbin/nologin"
+            - item.shell != "/sbin/nologin"
+            - item.shell != "/dev/null"
+        loop_control:
+            label: "{{ item.id }}"
+
+      - name: "5.5.6 | PATCH | Ensure system accounts are secured | Lock accounts"
+        ansible.builtin.user:
+            name: "{{ item.id }}"
+            password_lock: true
+        loop: "{{ rhel9cis_passwd }}"
+        when:
+            - item.id != "root"
+            - item.id != "tux"
+            - item.id != "admin"
+            - item.id != "oracle"
+            - item.id != "sync"
+            - item.id != "shutdown"
+            - item.id != "halt"
+            - item.id != "nfsnobody"
+            - item.uid < min_int_uid | int
+            - item.shell != "/bin/false"
+            - item.shell != "/usr/sbin/nologin"
+            - item.shell != "/sbin/nologin"
+            - item.shell != "/dev/null"
+        loop_control:
+            label: "{{ item.id }}"
+  when:
+      - rhel8_cis_rule_5_5_6
+  tags:
+      - level1
+      - patch
+      - accounts
+      - rule_5.5.6
+
+# Tarea 5.5.7 - Asegurar que el grupo por defecto para la cuenta ROOT esté en GID 0 (Automático)
+- name: SCORED | 5.5.7 |  Ensure the default group for the ROOT account is at GID 0 (Automatic)
+  ansible.builtin.user:
+    name: root
+    group: 0
+  become: yes
+  when: 
+  - root_gid_check.stdout != '0'
+  - rhel8_cis_rule_5_5_7
+  tags:
+    - level1
+    - patch
+    - root_gid
+    - rule_5.5.7
+
+# Tarea 5.5.8 - Asegurar que el umask para el usuario por defecto sea 027 o mas restrictivo (Automático)
+## DESHABILITADO - Tiene muchas opciones restrictivas que pueden afectar el sistema 
+- name: "5.5.8 | PATCH | Ensure default user umask is 027 or more restrictive"
+  block:
+      - name: "5.5.8 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/login.defs pam_umask settings"
+        ansible.builtin.replace:
+            path: "{{ item.path }}"
+            regexp: (?i)(umask\s+\d\d\d)
+            replace: '{{ item.line }} 027'
+        with_items:
+            - { path: '/etc/bashrc', line: 'umask' }
+            - { path: '/etc/profile', line: 'umask' }
+            - { path: '/etc/login.defs', line: 'UMASK' }
+
+      - name: "5.5.8 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/bashrc"
+        ansible.builtin.lineinfile:
+            path: /etc/login.defs
+            regexp: '^USERGROUPS_ENAB'
+            line: USERGROUPS_ENAB no
+
+      - name: "5.5.8 | PATCH | Ensure default user umask is 027 or more restrictive | Add umask sessions for pamd"
+        community.general.pamd:
+            name: "{{ item }}"
+            type: session
+            control: required
+            module_path: pam_limits.so
+            new_type: session
+            new_module_path: pam_umask.so
+            new_control: optional
+            state: before
+        register: rhel8_cis_pamd_umask_added
+        loop:
+            - system-auth
+            - password-auth
+
+      - name: "5.5.8 | AUDIT | Ensure default user umask is 027 or more restrictive | update umask settings if required"
+        ansible.builtin.replace:
+            path: "/etc/pam.d/{{ item }}"
+            regexp: ^(session\s+)(requisite|required)(\s+pam_umask.so)$
+            replace: \1optional\3
+        loop:
+            - system-auth
+            - password-auth
+
+  when:
+      - rhel8_cis_rule_5_5_8
+  tags:
+      - level1
+      - patch
+      - accounts
+      - rule_5.5.8
+
+
+# Tarea 5.5.9 - Asegurar default user shell timeout is 900 seconds or less (Automático)
+- name: SCORED| 5.5.9 | PATCH | Ensure default user shell timeout is 900 seconds or less
+  lineinfile:
+    state: present
+    dest: "{{ item }}"
+    create: true
+    regexp: '^TMOUT='
+    line: "TMOUT={{ rhel8_cis_shell_timeout }} ; export TMOUT"
+    mode: 0644
+  when:
+    - rhel8_cis_rule_5_5_9
+  loop:
+    - /etc/bashrc
+    - /etc/profile
+  tags:
+    - level1
+    - level2
+    - patch
+    - rule_5.5.9
+
+#
+
