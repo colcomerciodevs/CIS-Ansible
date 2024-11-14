@@ -5,7 +5,8 @@
 
     - name: Realizar ping al host
       ping:
+      register: ping_result  # Captura el resultado del ping
 
     - name: Mostrar el resultado del ping
       debug:
-        var: ansible_facts.ping
+        var: ping_result  # Muestra el contenido de la variable ping_result
