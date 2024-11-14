@@ -1,5 +1,5 @@
 - name: Tarea que utiliza el entorno seleccionado
-  hosts: 10.181.6.38
+  hosts: "{{ target_ip }}"
   gather_facts: no
   tasks:
 
