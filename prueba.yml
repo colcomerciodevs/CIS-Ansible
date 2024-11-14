@@ -1,10 +1,7 @@
 - name: Tarea que utiliza el entorno seleccionado
-  hosts: "{{ target_environment }}"
+  hosts: localhost
   gather_facts: no
   tasks:
-    - name: Imprimir mensaje de entorno
-      debug:
-        msg: "Ejecutando en el entorno: {{ target_environment }}"
 
     - name: Prueba de ping al host seleccionado
       ping:
