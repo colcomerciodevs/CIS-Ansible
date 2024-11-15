@@ -2,6 +2,7 @@
 - name: Aplicar el rol CIS Security
   hosts: "{{ target_ip | default('localhost') }}"  # Proporciona 'localhost' como valor por defecto
   become: true
+  become_method: su  # Usar 'su' en lugar de 'sudo'
   gather_facts: yes
 
   roles:
