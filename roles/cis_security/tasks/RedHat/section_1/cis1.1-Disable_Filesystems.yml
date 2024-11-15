@@ -18,7 +18,7 @@
 
 # Tarea 1.1.1 - Asegurar que se elimine el módulo cramfs
 - name: SCORED | 1.1.1 | PATCH | Remove cramfs module
-  modprobe:
+  ansible.builtin.modprobe:
     name: cramfs
     state: absent
   when:
@@ -50,7 +50,7 @@
 
 # Tarea 1.1.2 - Asegurar que se elimine el módulo squashfs
 - name: SCORED | 1.1.2 | PATCH | Remove squashfs module
-  modprobe:
+  ansible.builtin.modprobe:
     name: squashfs
     state: absent
   when:
@@ -82,7 +82,7 @@
 
 # Tarea 1.1.3 - Asegurar que se elimine el módulo udf
 - name: SCORED | 1.1.3 | PATCH | Remove udf module
-  modprobe:
+  ansible.builtin.modprobe:
     name: udf
     state: absent
   when:
@@ -114,7 +114,7 @@
 
 # Tarea 1.1.4 - Asegurar que se elimine el módulo vfat
 - name: SCORED | 1.1.4 | PATCH | Remove vFAT module
-  modprobe:
+  ansible.builtin.modprobe:
     name: vfat
     state: absent
   when:
