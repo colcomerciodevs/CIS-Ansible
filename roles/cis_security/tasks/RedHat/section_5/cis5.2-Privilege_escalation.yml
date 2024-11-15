@@ -1,15 +1,11 @@
 ---
 # Tarea 5.2.1 - Asegurar sudo está instalado (Automático)
-- name: Check if sudo is installed
-  ansible.builtin.command: rpm -q sudo
-  register: sudo_installed
-  ignore_errors: yes
-
 - name: "5.2.1 | PATCH | Ensure sudo is installed"
   ansible.builtin.package:
     name: sudo
     state: present
-  when: rhel8_cis_rule_5_2_1 and sudo_installed.rc != 0
+  when: rhel8_cis_rule_5_2_1 and ansible_facts.packages['sudo'] is not defined
+  changed_when: false
   tags:
     - level1
     - patch

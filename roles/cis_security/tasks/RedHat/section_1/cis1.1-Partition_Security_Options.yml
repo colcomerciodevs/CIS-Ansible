@@ -287,8 +287,10 @@
 
 # Tarea 1.1.37 - Asegurar que el sticky bit esté establecido sobre todos los directorios que son de escritura mundial (Automático)
 - name: SCORED | 1.1.37 | PATCH | Ensure sticky bit is set on all world-writable directories
-  shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev \
-    -type d -perm -0002 2>/dev/null | xargs chmod a+t
+  shell: |
+    set -o pipefail
+    df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev \
+      -type d -perm -0002 2>/dev/null | xargs chmod a+t
   changed_when: no
   failed_when: no
   when:
@@ -300,22 +302,23 @@
     - sticky_bit
     - rule_1.1.37
 
+
 # Tarea 1.1.38 - Deshabilitar el Automounting
-- name: Disable autofs if no NFS is using it and CIS rules allow it
+- name: Deshabilitar autofs si no hay NFS usándolo y las reglas de CIS lo permiten
   service:
     name: autofs
     enabled: no
     state: stopped
   when:
     - "'autofs' in ansible_facts.packages"
-    - not autofs_config.stat.exists or autofs_nfs_check.stdout == ""
-    - rhel8_cis_rule_1_1_38  
+    - not autofs_config.stat.exists or autofs_nfs_check.stdout | length == 0
+    - rhel8_cis_rule_1_1_38
   tags:
     - level1
     - level2
     - patch
     - autofs
-    - rule_1.1.38  
+    - rule_1.1.38
 
 # Tarea 1.1.23 - Deshabilitar almacenamiento USB
 - name: SCORED | 1.1.39 | PATCH | Disable USB Storage

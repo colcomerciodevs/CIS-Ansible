@@ -1,7 +1,8 @@
 ---
-# tasks file for cis-security
+# Archivo de tareas para cis-security
 
-- ansible.builtin.include_tasks: "CIS-{{ ansible_distribution }}-{{ ansible_distribution_major_version | replace('Evaluation', '') }}.yml"
+- name: Incluir tareas específicas de CIS según la distribución
+  ansible.builtin.include_tasks: "CIS-{{ ansible_distribution }}-{{ ansible_distribution_major_version | replace('Evaluation', '') }}.yml"
   tags:
     - rhel8cis_section1
     - rhel8cis_section2

@@ -24,9 +24,10 @@
 - name: Check if wireless interfaces are enabled
   command: nmcli radio wifi
   register: wifi_status
+  changed_when: false
 
 - name: SCORED | 3.1.2 | PATCH | Ensure wireless interfaces are disabled
-  shell: nmcli radio all off
+  command: nmcli radio all off
   when:
     - rhel8_cis_rule_3_1_2
     - wifi_status.stdout == 'enabled'
@@ -36,6 +37,7 @@
     - wireless
     - patch
     - rule_3_1_2
+  
 
 
 

@@ -1,53 +1,48 @@
 galaxy_info:
-  author: your name
-  description: your role description
-  company: your company (optional)
-
-  # If the issue tracker for your role is not on github, uncomment the
-  # next line and provide a value
-  # issue_tracker_url: http://example.com/issue/tracker
-
-  # Choose a valid license ID from https://spdx.org - some suggested licenses:
-  # - BSD-3-Clause (default)
-  # - MIT
-  # - GPL-2.0-or-later
-  # - GPL-3.0-only
-  # - Apache-2.0
-  # - CC-BY-4.0
-  license: license (GPL-2.0-or-later, MIT, etc)
-
-  min_ansible_version: 2.9
-
-  # If this a Container Enabled role, provide the minimum Ansible Container version.
-  # min_ansible_container_version:
-
-  #
-  # Provide a list of supported platforms, and for each platform a list of versions.
-  # If you don't wish to enumerate all versions for a particular platform, use 'all'.
-  # To view available platforms and versions (or releases), visit:
-  # https://galaxy.ansible.com/api/v1/platforms/
-  #
-  # platforms:
-  # - name: Fedora
-  #   versions:
-  #   - all
-  #   - 25
-  # - name: SomePlatform
-  #   versions:
-  #   - all
-  #   - 1.0
-  #   - 7
-  #   - 99.99
-
-  galaxy_tags: []
-    # List tags for your role here, one per line. A tag is a keyword that describes
-    # and categorizes the role. Users find roles by searching for tags. Be sure to
-    # remove the '[]' above, if you add tags to this list.
-    #
-    # NOTE: A tag is limited to a single word comprised of alphanumeric characters.
-    #       Maximum 20 tags per role.
-
-dependencies: []
-  # List your role dependencies here, one per line. Be sure to remove the '[]' above,
-  # if you add dependencies to this list.
+  # El autor del rol. Cambia esto por el nombre de la persona o equipo que desarrolla el rol.
+  author: "Infraestructura Linux Corbeta"
   
+  # Una breve descripción de lo que hace el rol. Especifica las plataformas soportadas y el propósito general.
+  description: "Rol para configuraciones específicas en Oracle Linux, Red Hat y SUSE"
+  
+  # El nombre de la compañía o entidad que mantiene el rol. Si es una empresa, pon el nombre de la empresa.
+  company: "Colombiana de Comercio SA"
+  
+  # Licencia bajo la cual se distribuye el rol. Aquí se ha utilizado una licencia común (GPL-2.0-or-later), 
+  # pero puedes cambiarla según las necesidades del rol. Más licencias válidas pueden encontrarse en:
+  # https://spdx.org/licenses/
+  license: "GPL-2.0-or-later"  # Cambia si necesitas otra licencia válida.
+  
+  # Versión mínima de Ansible requerida para ejecutar este rol. Este valor debería ser al menos 2.9, 
+  # aunque se recomienda usar una versión más reciente si es posible.
+  min_ansible_version: "2.9"
+
+  # Aquí puedes agregar las plataformas soportadas por el rol. Esto permite a los usuarios saber qué sistemas operativos y versiones son compatibles.
+  # Si tu rol soporta muchas versiones de una plataforma, puedes usar "all" en lugar de enumerar todas las versiones.
+  platforms:
+    - name: RedHat  # Plataforma RedHat
+      versions:
+        - 8      # Soporta la versión 8 de RedHat
+        - 9      # Soporta la versión 9 de RedHat
+    - name: OracleLinux  # Plataforma Oracle Linux
+      versions:
+        - 8      # Soporta la versión 8 de Oracle Linux
+        - 9      # Soporta la versión 9 de Oracle Linux
+    - name: SLES  # Plataforma SUSE Linux Enterprise
+      versions:
+        - "15"   # Soporta la versión 15 de SUSE Linux Enterprise
+
+  # Aquí puedes agregar etiquetas que describen tu rol. 
+  # Las etiquetas son útiles para que los usuarios busquen tu rol en Ansible Galaxy.
+  # Asegúrate de que las etiquetas sean breves y relevantes para la funcionalidad del rol.
+  galaxy_tags:
+    - linux            # Etiqueta general para roles en Linux
+    - oraclelinux      # Etiqueta para Oracle Linux
+    - rhel             # Etiqueta para Red Hat Enterprise Linux
+    - suse             # Etiqueta para SUSE Linux
+    - configuracion    # Etiqueta relacionada con la configuración de sistemas
+    - seguridad        # Etiqueta si el rol incluye tareas relacionadas con la seguridad
+
+# Dependencias de otros roles, si existen. Si tu rol depende de otros roles para funcionar, enuméralos aquí.
+# En este caso no se agregan dependencias, pero puedes incluirlas si las tienes.
+dependencies: []

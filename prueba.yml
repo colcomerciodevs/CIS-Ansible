@@ -1,12 +1,15 @@
+---
 - name: Tarea que utiliza el entorno seleccionado
-  hosts: "{{ target_ip }}"
+  hosts: "{{ target_ip | default('localhost') }}"  # Proporciona 'localhost' como valor por defecto
   gather_facts: no
   tasks:
 
     - name: Obtener la fecha del host remoto
       command: date
       register: date_result  # Captura el resultado del comando date
+      changed_when: no  # Indica que esta tarea nunca realiza cambios
 
     - name: Mostrar la fecha obtenida
       debug:
         var: date_result.stdout  # Muestra solo la salida estándar (fecha)
+

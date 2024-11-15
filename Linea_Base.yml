@@ -1,6 +1,6 @@
 ---
 - name: Aplicar el rol CIS Security
-  hosts: all
+  hosts: "{{ target_ip | default('localhost') }}"  # Proporciona 'localhost' como valor por defecto
   become: true
   gather_facts: yes
 

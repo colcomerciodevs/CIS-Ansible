@@ -24,65 +24,106 @@
     - rule_5.4.1
 
 # Tarea 5.4.2 - Asegurar que el bloqueo de contraseñas está configurado para 5 intentos (Automático)
-- name: SCORED | 5.4.2 | PATCH | Ensure password lock is set to 5 attempts (Automatic)
-  ansible.builtin.lineinfile:
-    path: /etc/security/faillock.conf
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    create: yes
-    backup: yes
-    state: present
-  loop:
-    - { regexp: '^deny=', line: 'deny=5' }
-    - { regexp: '^unlock_time=', line: 'unlock_time=900' }
-  notify: Reiniciar servicios PAM
-  when: rhel8_cis_rule_5_4_2
-  tags:
-    - level1
-    - level2
-    - patch
-    - pam
-    - rule_5.4.2
+- name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured"
+  block:
+      - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set faillock.conf configs"
+        ansible.builtin.lineinfile:
+            path: /etc/security/faillock.conf
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
+        loop:
+            - { regexp: '^\s*deny\s*=\s*[1-5]\b', line: 'deny = {{ rhel8_cis_pam_faillock.deny }}' }
+            - { regexp: '^\s*unlock_time\s*=\s*(0|9[0-9][0-9]|[1-9][0-9][0-9][0-9]+)\b', line: 'unlock_time = {{ rhel8_cis_pam_faillock.unlock_time }}' }
 
-# Tarea 5.4.3 - Asegurar que pam_pwhistory.so esté configurado en system-auth para limitar la reutilización de contraseñas
-- name: SCORED | 5.4.3 | PATCH | Ensure pam_pwhistory.so is configured in system-auth
-  ansible.builtin.lineinfile:
-    path: /etc/pam.d/system-auth
-    regexp: '^password\s+required\s+pam_pwhistory.so'
-    line: 'password required pam_pwhistory.so use_authtok remember=12'
-    create: yes
-    backup: yes
-    state: present
+      - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set preauth"
+        ansible.builtin.lineinfile:
+            path: "{{ item }}"
+            regexp: '^auth\s*(sufficient|required)\s*pam_faillock.so\s*preauth(.*)'
+            line: "auth    required     pam_faillock.so preauth silent audit deny={{ rhel8_cis_pam_faillock.deny }} unlock_time={{ rhel8_cis_pam_faillock.unlock_time }}"
+            insertafter: 'auth\s*(sufficient|required)\s*pam_env.so$'
+        loop:
+            - "/etc/pam.d/system-auth"
+            - "/etc/pam.d/password-auth"
+
+      - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set authfail"
+        ansible.builtin.lineinfile:
+            path: "{{ item }}"
+            regexp: '^auth\s*(sufficient|required)\s*pam_faillock.so\s*authfail(.*)'
+            line: "auth    required     pam_faillock.so authfail audit deny={{ rhel8_cis_pam_faillock.deny }} unlock_time={{ rhel8_cis_pam_faillock.unlock_time }}"
+            insertbefore: 'auth\s*(sufficient|required)\s*pam_deny.so$'
+        loop:
+            - "/etc/pam.d/system-auth"
+            - "/etc/pam.d/password-auth"
+
+      - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Load account faillock.so"
+        ansible.builtin.lineinfile:
+            path: "{{ item }}"
+            regexp: '^account\s*(sufficient|required)\s*pam_faillock.so$'
+            line: "account    required     pam_faillock.so"
+            insertbefore: '^account\s*(sufficient|required)\s*pam_unix.so$'
+        loop:
+            - "/etc/pam.d/system-auth"
+            - "/etc/pam.d/password-auth"
   when:
-    - authselect_edit.changed
-    - rhel8_cis_rule_5_4_3
+      - rhel8_cis_rule_5_4_2
   tags:
-    - level1
-    - level2
-    - patch
-    - pam
-    - rule_5.4.3
+      - level1
+      - patch
+      - pam
+      - rule_5.4.2
 
-- name: Aplicar cambios de authselect
-  ansible.builtin.command:
-    cmd: authselect apply-changes
-  when: authselect_edit.changed
-  notify: Reiniciar servicios PAM
+# Tarea 5.4.3 -  Asegurar que el bloqueo  de contraseñas está configurado para 5 intentos (Automático)
+- name: "5.4.3 | PATCH | Ensure password reuse is limited | pwquality"
+  block:
+      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set system-auth remember Settings"
+        ansible.builtin.lineinfile:
+            path: /etc/pam.d/system-auth
+            line: "password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=3 remember={{ rhel8_cis_pam_faillock.remember }}"
+            insertafter: '^password\s*requisite\s*pam_pwquality.so'
+
+      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set password-auth remember Settings"
+        ansible.builtin.lineinfile:
+            path: /etc/pam.d/password-auth
+            line: "password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=3 remember={{ rhel8_cis_pam_faillock.remember }}"
+            insertafter: '^password\s*requisite\s*pam_pwquality.so'
+  when:
+      - rhel8_cis_rule_5_4_3
+  tags:
+      - level1
+      - pam
+      - patch
+      - rule_5.4.3
 
 # Tarea 5.4.4 - Asegurar que el algoritmo de hash de contraseñas es SHA-512 (Automático)
-- name: SCORED | 5.4.4 | PATCH | Make sure the hashing algorithm is SHA-512
-  ansible.builtin.lineinfile:
-    path: /etc/login.defs
-    state: present
-    regexp: '^ENCRYPT_METHOD'
-    line: 'ENCRYPT_METHOD SHA512'
-    create: yes
-    backrefs: yes
+- name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 or yescrypt"
+  block:
+      - name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 | libuser.conf"
+        ansible.builtin.replace:
+            path: /etc/libuser.conf
+            regexp: '^crypt_style\s*=\s*.*$'
+            replace: 'crypt_style = sha512'
+
+      - name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 | login.defs"
+        ansible.builtin.replace:
+            path: /etc/login.defs
+            regexp: '^ENCRYPT_METHOD.*'
+            replace: 'ENCRYPT_METHOD SHA512'
+
+      - name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 | password-auth"
+        ansible.builtin.replace:
+            path: /etc/pam.d/password-auth
+            regexp: '^password\s*sufficient\s*pam_unix.so.*$'
+            replace: 'password    sufficient    pam_unix.so sha512 shadow try_first_pass use_authtok remember={{ rhel8_cis_pam_faillock.remember }}'
+
+      - name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 | system-auth"
+        ansible.builtin.replace:
+            path: /etc/pam.d/system-auth
+            regexp: '^password\s*sufficient\s*pam_unix.so.*$'
+            replace: 'password    sufficient     pam_unix.so sha512 shadow try_first_pass use_authtok remember={{ rhel8_cis_pam_faillock.remember }}'
   when:
-    - rhel8_cis_rule_5_4_4
+      - rhel8_cis_rule_5_4_4
   tags:
-    - level1
-    - level2
-    - patch
-    - pam
-    - rule_5.4.4
+      - level1
+      - patch
+      - pam
+      - rule_5.4.4
