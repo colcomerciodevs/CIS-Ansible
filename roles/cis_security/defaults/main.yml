@@ -19,7 +19,7 @@ rhel8cis_section6: true
 # PLEASE NOTE: These work in coordination with the section # group variables and tags.
 # You must enable an entire section in order for the variables below to take effect.
 
-# Section 1 rules
+### Section 1 rules
 ## Disable Filesystems
 rhel8_cis_rule_1_1_1: true
 rhel8_cis_rule_1_1_2: true
@@ -196,6 +196,53 @@ rhel8_cis_rule_5_5_8: false  ## DESHABILITADO - Tiene muchas opciones restrictiv
 rhel8_cis_rule_5_5_9: true
 rhel8_cis_rule_5_5_10: true
 
+## Section 1.1: Partition Security options
+# Mounting options
+rhel8_cis_tmp:
+  source: /tmp
+  fstype: none
+  opts: defaults, nodev, nosuid, noexec
+  enabled: yes
+
+rhel8_cis_shm:
+  source: /dev/shm  
+  fstype: tmpfs   
+  opts: defaults, nodev, nosuid, noexec  
+  enabled: yes
+  
+rhel8_cis_var:
+  source: /var
+  fstype: none
+  opts: defaults, nodev, nosuid  # No recomendaría 'noexec' en todo /var
+  enabled: yes
+
+rhel8_cis_var_tmp:
+  source: /var/tmp
+  fstype: none
+  opts: defaults, nodev, nosuid, noexec
+  enabled: yes
+
+rhel8_cis_var_log:
+  source: /var/log
+  fstype: none
+  opts: defaults, nodev, nosuid, noexec
+  enabled: yes
+
+rhel8_cis_var_log_audit:
+  source: /var/log/audit
+  fstype: none
+  opts: defaults, nodev, nosuid, noexec
+  enabled: yes
+
+rhel8_cis_home:
+  source: /home  
+  fstype: none   
+  opts: defaults,nodev,nosuid,usrquota,grpquota  
+  enabled: yes
+
+
+
+
 # Options Server SSH
 ## Controls:
 ## - 5.3.4  - Ensure SSH access is limited
@@ -238,49 +285,6 @@ rhel8_cis_sshd:
   # by setting the value of `DenyGroups` option in `/etc/ssh/sshd_config` file.
   denygroups: ""      # Aquí defines los grupos que tienen el acceso denegado por SSH
 
-
-# Mounting options
-rhel8_cis_tmp:
-  source: /tmp
-  fstype: none
-  opts: defaults, nodev, nosuid, noexec
-  enabled: yes
-
-rhel8_cis_var:
-  source: /var
-  fstype: none
-  opts: defaults, nodev, nosuid  # No recomendaría 'noexec' en todo /var
-  enabled: yes
-
-rhel8_cis_var_tmp:
-  source: /var/tmp
-  fstype: none
-  opts: defaults, nodev, nosuid, noexec
-  enabled: yes
-
-rhel8_cis_var_log:
-  source: /var/log
-  fstype: none
-  opts: defaults, nodev, nosuid, noexec
-  enabled: yes
-
-rhel8_cis_var_log_audit:
-  source: /var/log/audit
-  fstype: none
-  opts: defaults, nodev, nosuid, noexec
-  enabled: yes
-
-rhel8_cis_home:
-  source: /home  
-  fstype: none   
-  opts: defaults,nodev,nosuid,usrquota,grpquota  
-  enabled: yes
-
-rhel8_cis_shm:
-  source: /dev/shm  
-  fstype: tmpfs   
-  opts: defaults, nodev, nosuid, noexec  
-  enabled: yes
 
 
 # Configuracion Ruta Banner local y Remoto

@@ -21,10 +21,11 @@
 
 # Prelim requerido para la tarea 1.1.38 | Busca montajes NFS gestionados por autofs si existe el archivo de configuración
 - name: Check for NFS mounts managed by autofs if config file exists
-  shell: "grep -i nfs /etc/auto.master || true"
+  shell: "grep -i nfs /etc/auto.master || echo ''"
   register: autofs_nfs_check
   when: autofs_config.stat.exists
   changed_when: false
+
 
 
 
