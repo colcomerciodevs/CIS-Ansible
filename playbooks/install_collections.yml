@@ -1,26 +1,13 @@
 ---
-- name: Install Ansible collections directly from playbook
+- name: Install Ansible collections
   hosts: localhost
   tasks:
-    - name: Install collections
-      ansible.builtin.shell:
-        cmd: ansible-galaxy collection install {{ item.source }} --type {{ item.type }}
-      with_items:
-        - name: community.general
-          source: https://github.com/ansible-collections/community.general
-          type: git
+    - name: Install collections from requirements.yml
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection install -r /runner/project/roles/cis_security/collections/requirements.yml
+      register: galaxy_output
+      changed_when: "'Skipping' not in galaxy_output.stdout"
 
-        - name: community.crypto
-          source: https://github.com/ansible-collections/community.crypto
-          type: git
 
-        - name: ansible.posix
-          source: https://github.com/ansible-collections/ansible.posix
-          type: git
-      register: collection_install_results
-      changed_when: "'already installed' not in item.stdout"
 
-    - name: Display results
-      debug:
-        var: collection_install_results.results
 
