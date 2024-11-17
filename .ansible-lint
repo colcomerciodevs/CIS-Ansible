@@ -1,0 +1,8 @@
+skip_list:
+  - "schema"
+  - "role-name"
+  - "risky-shell-pipe"
+  - "experimental"
+
+exclude_paths:
+  - roles/cis_security/files/

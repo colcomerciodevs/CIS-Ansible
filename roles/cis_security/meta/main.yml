@@ -1,4 +1,8 @@
 galaxy_info:
+
+  # nombre del rol
+  role_name: cis_security
+  
   # El autor del rol. Cambia esto por el nombre de la persona o equipo que desarrolla el rol.
   author: "Infraestructura Linux Corbeta"
   
