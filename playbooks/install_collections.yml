@@ -12,6 +12,15 @@
       ansible.builtin.debug:
         var: galaxy_output.stdout
 
+    - name: List installed collections
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection list
+      register: installed_collections
+      changed_when: false
+
+    - name: Show installed collections
+      ansible.builtin.debug:
+        var: installed_collections.stdout
 
 
 
