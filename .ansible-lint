@@ -6,3 +6,4 @@ skip_list:
 
 exclude_paths:
   - roles/cis_security/files/
+  - dynamic_inventory/
