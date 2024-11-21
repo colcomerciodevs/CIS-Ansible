@@ -2,10 +2,12 @@
 
 import sys
 import json
+import os
 from openpyxl import load_workbook
 
-# Ruta del archivo Excel
-excel_file = 'inventory_data.xlsx'
+# Ruta dinámica del archivo Excel basada en la ubicación del script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+excel_file = os.path.join(script_dir, 'inventory_data.xlsx')
 
 def parse_excel(file):
     try:
@@ -13,7 +15,7 @@ def parse_excel(file):
         wb = load_workbook(file)
         sheet = wb.active  # Seleccionar la hoja activa
     except FileNotFoundError:
-        print(f"Error: No se encontró el archivo '{file}'")
+        print(f"Error: No se encontró el archivo '{file}'. Verifica que esté en la ruta correcta.")
         sys.exit(1)
     except Exception as e:
         print(f"Error al leer el archivo Excel: {e}")
@@ -25,9 +27,12 @@ def parse_excel(file):
     try:
         # Iterar por las filas del archivo Excel (omitiendo la cabecera)
         for row in sheet.iter_rows(min_row=2, values_only=True):
-            host, group, ip, user = row  # Extraer columnas según el orden
+            # Extraer columnas según el orden: host, grupo, IP, usuario
+            host, group, ip, user = row
+
+            # Validar que todas las columnas tengan datos
             if not host or not group or not ip or not user:
-                print("Error: Una de las filas tiene valores vacíos. Verifica el archivo Excel.")
+                print(f"Error: La fila con valores {row} tiene datos faltantes. Verifica el archivo Excel.")
                 sys.exit(1)
 
             # Agregar host al grupo correspondiente
@@ -48,14 +53,25 @@ def parse_excel(file):
     return inventory
 
 def main():
+    # Revisar argumentos pasados al script
     if len(sys.argv) == 2 and sys.argv[1] == '--list':
-        # Generar inventario dinámico
-        inventory = parse_excel(excel_file)
-        print(json.dumps(inventory, indent=2))
+        try:
+            # Generar inventario dinámico
+            inventory = parse_excel(excel_file)
+            print(json.dumps(inventory, indent=2))
+        except Exception as e:
+            print(f"Error al generar el inventario dinámico: {e}")
+            sys.exit(1)
     elif len(sys.argv) == 3 and sys.argv[1] == '--host':
         # Devuelve las variables específicas de un host (opcional)
         host = sys.argv[2]
-        print(json.dumps({}))
+        try:
+            inventory = parse_excel(excel_file)
+            host_vars = inventory["_meta"]["hostvars"].get(host, {})
+            print(json.dumps(host_vars, indent=2))
+        except Exception as e:
+            print(f"Error al obtener variables del host: {e}")
+            sys.exit(1)
     else:
         print("Uso: --list | --host <nombre_host>")
         sys.exit(1)
