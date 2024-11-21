@@ -27,10 +27,10 @@ def parse_excel(file):
     try:
         # Iterar por las filas del archivo Excel (omitiendo la cabecera)
         for row in sheet.iter_rows(min_row=2, values_only=True):
-            # Extraer columnas según el orden: host, grupo, IP, usuario
-            host, group, ip, user = row
+            # Extraer columnas según el orden: host, grupo, IP, usuario, descripción
+            host, group, ip, user, description = row
 
-            # Validar que todas las columnas tengan datos
+            # Validar que las columnas obligatorias tengan datos
             if not host or not group or not ip or not user:
                 print(f"Error: La fila con valores {row} tiene datos faltantes. Verifica el archivo Excel.")
                 sys.exit(1)
@@ -40,10 +40,11 @@ def parse_excel(file):
                 inventory[group] = {"hosts": [], "vars": {}}
             inventory[group]["hosts"].append(host)
 
-            # Agregar variables del host
+            # Agregar variables del host, incluida la descripción
             inventory["_meta"]["hostvars"][host] = {
                 "ansible_host": ip,
-                "ansible_user": user
+                "ansible_user": user,
+                "description": description or "No description provided"
             }
 
     except Exception as e:
