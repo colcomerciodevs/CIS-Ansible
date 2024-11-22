@@ -1,11 +1,5 @@
 ---
-## Verificación Paquete NIS Client
-# Tarea 2.2.1 - Solicitar al usuario si el sistema utiliza NIS Client
-- name: Solicitar al usuario si el sistema utiliza NIS Client
-  pause:
-    prompt: "¿El paquete ypbind está instalado? NIS Client permite la gestión centralizada de cuentas de usuario y grupos en una red. ¿Este sistema utiliza NIS Client? (yes/no)"
-  register: nis_client_needed
-  when: "'ypbind' in ansible_facts.packages"
+
 # Tarea 2.2.1 - Asegurar que el paquete NIS Client no está instalado
 - name: SCORED | 2.2.1 | PATCH | Ensure NIS Client package is not installed
   package:
@@ -13,7 +7,7 @@
     state: absent
   when:
     - "'ypbind' in ansible_facts.packages"
-    - nis_client_needed == "no"
+    - is_new_installation == "yes"
     - rhel8_cis_rule_2_2_1
   tags:
     - level1
@@ -22,13 +16,7 @@
     - patch
     - rule_2_2_1
 
-## Verificación Paquete RSH Client (Remote Shell)
-# Tarea 2.2.2 - Solicitar al usuario si el sistema utiliza RSH Client
-- name: Solicitar al usuario si el sistema utiliza RSH Client
-  pause:
-    prompt: "¿El paquete rsh está instalado? RSH Client permite ejecutar comandos en otro sistema remoto sin autenticación de clave. ¿Este sistema utiliza RSH Client? (yes/no)"
-  register: rsh_client_needed
-  when: "'rsh' in ansible_facts.packages"
+
 # Tarea 2.2.2 - Asegurar que el paquete RSH Client no está instalado
 - name: SCORED | 2.2.2 | PATCH | Ensure RSH Client package is not installed
   package:
@@ -36,7 +24,7 @@
     state: absent
   when:
     - "'rsh' in ansible_facts.packages"
-    - rsh_client_needed == "no"
+    - is_new_installation == "yes"
     - rhel8_cis_rule_2_2_2
   tags:
     - level1
@@ -45,13 +33,7 @@
     - patch
     - rule_2_2_2
 
-## Verificación Paquete Talk Client
-# Tarea 2.2.3 - Solicitar al usuario si el sistema utiliza Talk Client
-- name: Solicitar al usuario si el sistema utiliza Talk Client
-  pause:
-    prompt: "¿El paquete talk está instalado? Talk Client permite la comunicación entre usuarios en diferentes terminales. ¿Este sistema utiliza Talk Client? (yes/no)"
-  register: talk_client_needed
-  when: "'talk' in ansible_facts.packages"
+
 # Tarea 2.2.3 - Asegurar que el paquete Talk Client no está instalado
 - name: SCORED | 2.2_3 | PATCH | Ensure Talk Client package is not installed
   package:
@@ -59,7 +41,7 @@
     state: absent
   when:
     - "'talk' in ansible_facts.packages"
-    - talk_client_needed == "no"
+    - is_new_installation == "yes"
     - rhel8_cis_rule_2_2_3
   tags:
     - level1
@@ -68,13 +50,7 @@
     - patch
     - rule_2_2_3
 
-## Verificación Paquete Telnet Client
-# Tarea 2.2.4 - Solicitar al usuario si el sistema utiliza Telnet Client
-- name: Solicitar al usuario si el sistema utiliza Telnet Client
-  pause:
-    prompt: "¿El paquete telnet está instalado? Telnet Client permite la conexión remota a otros sistemas a través de texto. ¿Este sistema utiliza Telnet Client? (yes/no)"
-  register: telnet_client_needed
-  when: "'telnet' in ansible_facts.packages"
+
 # Tarea 2.2.4 - Asegurar que el paquete Telnet Client no está instalado
 - name: SCORED | 2.2.4 | PATCH | Ensure Telnet Client package is not installed
   package:
@@ -82,7 +58,7 @@
     state: absent
   when:
     - "'telnet' in ansible_facts.packages"
-    - telnet_client_needed == "no"
+    - is_new_installation == "yes"
     - rhel8_cis_rule_2_2_4
   tags:
     - level1
@@ -91,13 +67,7 @@
     - patch
     - rule_2_2_4
 
-## Verificación Paquete LDAP CLIENT
-# Tarea 2.2.5 - Solicitar al usuario si el sistema utiliza LDAP Client
-- name: Solicitar al usuario si el sistema utiliza LDAP
-  pause:
-    prompt: "¿El paquete openldap-clients está instalado? LDAP Client permite la autenticación y búsqueda de información en un servidor LDAP. ¿Este sistema utiliza LDAP? (yes/no)"
-  register: ldap_client_needed
-  when: "'openldap-clients' in ansible_facts.packages"
+
 # Tarea 2.2.5 - Asegurar que el paquete LDAP Client no está instalado
 - name: SCORED | 2.2.5 | PATCH | Ensure LDAP client is not installed
   package:
@@ -105,7 +75,7 @@
     state: absent
   when:
     - "'openldap-clients' in ansible_facts.packages"
-    - ldap_client_needed == "no"
+    - is_new_installation == "yes"
     - rhel8_cis_rule_2_2.5
   tags:
     - level1
@@ -114,13 +84,6 @@
     - patch
     - rule_2.2.5
 
-## Verificación Paquete TFTP CLIENT
-# Tarea 2.2.6 - Solicitar al usuario si el sistema utiliza TFTP Client
-- name: Solicitar al usuario si el sistema utiliza TFTP
-  pause:
-    prompt: "¿El paquete tftp está instalado? TFTP Client permite la transferencia de archivos de manera simple y sin autenticación. ¿Este sistema utiliza TFTP? (yes/no)"
-  register: tftp_client_needed
-  when: "'tftp' in ansible_facts.packages"
 # Tarea 2.2.6 - Asegurar que el paquete TFTP Client no está instalado
 - name: SCORED | 2.2.6 | PATCH | Ensure TFTP client is not installed
   package:
@@ -128,7 +91,7 @@
     state: absent
   when:
     - "'tftp' in ansible_facts.packages"
-    - tftp_client_needed == "no"
+    - is_new_installation == "yes"
     - rhel8_cis_rule_2_2.6
   tags:
     - level1

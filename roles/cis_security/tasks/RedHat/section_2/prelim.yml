@@ -4,3 +4,27 @@
 - name: PRELIM | Gather the rpm package facts
   package_facts:
     manager: auto
+
+# AUDIT | Inicializar lista de paquetes auditados
+- name: Inicializar lista de paquetes auditados
+  set_fact:
+    audited_packages: []
+
+# AUDIT | Registrar paquetes instalados
+- name: Registrar paquetes instalados (Auditoría)
+  set_fact:
+    audited_packages: "{{ audited_packages + [item] }}"
+  with_items: "{{ packages_to_check }}"
+  when:
+    - "'{{ item }}' in ansible_facts.packages"
+    - is_new_installation == "no"
+
+# AUDIT | Guardar auditoría en un archivo 
+- name: Guardar auditoría en un archivo
+  copy:
+    content: |
+      Los siguientes paquetes están instalados en el sistema y requieren gestión manual:
+      {{ audited_packages | join('\n') }}
+    dest: /var/log/auditoria_paquetes.log
+  when:
+    - is_new_installation == "no"

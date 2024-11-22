@@ -241,6 +241,29 @@ rhel8_cis_home:
   enabled: yes
 
 
+#Section 2.1: Uninstall packages
+packages_to_check:
+  - xinetd
+  - xorg-x11-server-*
+  - avahi
+  - avahi-autoipd
+  - cups
+  - dhcpd
+  - openldap-servers
+  - nfs-utils
+  - nfs-kernel-server
+  - bind
+  - bind-chroot
+  - vsftpd
+  - tftp-server
+  - httpd
+  - dovecot
+  - samba
+  - squid
+  - net-snmp
+  - telnet-server
+  - rsync
+  - ypserv
 
 
 # Options Server SSH
