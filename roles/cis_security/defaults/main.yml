@@ -106,6 +106,7 @@ rhel8_cis_rule_2_2_3: true
 rhel8_cis_rule_2_2_4: true
 rhel8_cis_rule_2_2_5: true
 rhel8_cis_rule_2_2_6: true
+rhel8_cis_rule_2_2_7: true
 
 # Disable unused network protocols and devices
 rhel8_cis_rule_3_1_1: true
