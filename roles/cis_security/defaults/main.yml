@@ -3,7 +3,8 @@
 ## IMPORTANTE - Variable para Tarea 5.2.4 
 system_is_ec2: false   
 
-## Switching on/off specific baseline sections
+#######  Switching on/off specific baseline sections #######
+
 # These variables govern whether the tasks of a particular section are to be executed when running the role.
 # E.g: If you want to execute the tasks of Section 1 you should set the "_section1" variable to true.
 # If you do not want the tasks from that section to get executed you simply set the variable to "false".
@@ -14,10 +15,7 @@ rhel8cis_section4: true
 rhel8cis_section5: true
 rhel8cis_section6: true
 
-# These variables correspond with the CIS rule IDs or paragraph numbers defined in
-# the CIS benchmark documents.
-# PLEASE NOTE: These work in coordination with the section # group variables and tags.
-# You must enable an entire section in order for the variables below to take effect.
+##########   Switching on/off specific Task ############
 
 ### Section 1 rules
 ## Disable Filesystems
@@ -72,6 +70,7 @@ rhel8_cis_rule_1_7_5: true
 rhel8_cis_rule_1_7_6: true
 
 
+### Section 2 rules
 ## Configure NTP
 rhel8_cis_rule_2_1_1: true
 rhel8_cis_rule_2_1_2: true
@@ -108,6 +107,8 @@ rhel8_cis_rule_2_2_5: true
 rhel8_cis_rule_2_2_6: true
 rhel8_cis_rule_2_2_7: true
 
+
+### Section 3 rules
 # Disable unused network protocols and devices
 rhel8_cis_rule_3_1_1: true
 rhel8_cis_rule_3_1_2: true
@@ -134,7 +135,7 @@ rhel8_cis_rule_3_4_3: true
 rhel8_cis_rule_3_4_4: true 
 
 
-
+### Section 5 rules
 #Set up time-based scheduled jobs
 rhel8_cis_rule_5_1_1: true
 rhel8_cis_rule_5_1_2: true
@@ -154,7 +155,8 @@ rhel8_cis_rule_5_2_4: true
 rhel8_cis_rule_5_2_5: true
 rhel8_cis_rule_5_2_6: true
 rhel8_cis_rule_5_2_7: false ## DESHABILITADO - esta restriccion de SU es bastante restrictiva y afectaria el acceso a root
-
+rhel8_cis_rule_5_2_8: true
+rhel8_cis_rule_5_2_9: true
 
 # SSH Server
 rhel8_cis_rule_5_3_1: true
@@ -196,6 +198,9 @@ rhel8_cis_rule_5_5_7: true
 rhel8_cis_rule_5_5_8: false  ## DESHABILITADO - Tiene muchas opciones restrictivas que pueden afectar el sistema 
 rhel8_cis_rule_5_5_9: true
 rhel8_cis_rule_5_5_10: true
+
+
+##########   variables required in tasks ############
 
 ## Section 1.1: Partition Security options
 # Mounting options
@@ -241,8 +246,21 @@ rhel8_cis_home:
   opts: defaults,nodev,nosuid,usrquota,grpquota  
   enabled: yes
 
+# Section 1.7: Banner
+## Messages more relevant for daily use (e.g. ads). After login.
+motd_file: "Message_Day"             # Linux: File location by default in 'files' directory
+## Informational or warning messages for access (e.g. access policies). Before you log in.
+## file for issue and issue.net
+issue_file: "login_banner"             # Linux: File location by default in 'files' directory
 
-#Section 2.1: Uninstall packages
+# Section 2.1: Configure NTP
+## Time Synchronization
+rhel8_cis_time_synchronization: chrony
+## NTP Central Server Configuration
+rhel8_cis_time_synchronization_servers:
+  - 10.181.0.155 
+
+# Section 2.1: Uninstall packages
 packages_to_check:
   - xinetd
   - xorg-x11-server-*
@@ -265,6 +283,65 @@ packages_to_check:
   - telnet-server
   - rsync
   - ypserv
+
+#Section 3.1: Disable Net Proto
+## IPv6 required
+rhel8_cis_ipv6_required: false
+
+# Section 5.1: Scheduled Jobs
+# Authorized cron users
+## IMPORTANTE UNICAMENTE LOS USUARIOS QUE ESTAN EN /etc/cron.allow TIENEN PERMISOS PARA PROGRAMAR CRON
+authorized_cron_users:
+        - root
+        - admin
+        - tux
+        - oracle
+
+## IMPORTANTE UNICAMENTE LOS USUARIOS QUE ESTAN EN /etc/at.allow TIENEN PERMISOS PARA PROGRAMAR AT
+authorized_at_users:
+        - root
+        - admin
+        - tux
+        - oracle
+
+
+## Section 5.2 - Configure authselect: Custom authselect profile settings(name, profile to customize, options)
+## Controls:
+#  - 5.2.8 - Ensure custom authselect profile is used('custom_profile_name', 'default_file_to_copy' subsettings)
+#  - 5.2.9 - Ensure authselect includes with-faillock | with auth select profile('custom_profile_name')
+# Settings in place now will fail, they are placeholders from the control example. Due to the way many multiple
+# options and ways to configure this control needs to be enabled and settings adjusted to minimise risk.
+rhel8_cis_authselect:
+    # This variable configures the name of the custom profile to be created and selected.
+    custom_profile_name: custom-profile
+    # This variable configures the ID of the existing profile that should be used as a base for the new profile.
+    default_file_to_copy: "sssd --symlink-meta"
+    options: with-sudo with-faillock without-nullok
+
+
+## Control 5.2.8 - Ensure custom authselect profile is used
+# This variable governs if an authselect custom profile should be automatically created, by copying and
+# customizing one of the default profiles. The default profiles include: sssd, winbind, or the nis. This profile can then be
+# customized to follow site specific requirements.
+rhel8_cis_authselect_custom_profile_create: true
+
+## Control 5.2.9 - Ensure authselect includes with-faillock | Create custom profiles
+# This variable governs if the existing custom profile should be selected(Note: please keep in mind that all future updates
+# to the PAM templates and meta files in the original profile will be reflected in your custom profile, too.)
+rhel8_cis_authselect_custom_profile_select: false
+
+## Control 5.2.9 - authselect and faillock
+## This option is used at your own risk it will enable faillock for users
+## Only to be used on a new clean system if not using authselect
+## THIS CAN BREAK ACCESS EVEN FOR ROOT - PLEASE UNDERSTAND RISKS !
+rhel8cis_add_faillock_without_authselect: false
+# This needs to be set to 'ACCEPT'(as string), besides setting 'rhel9cis_add_faillock_without_authselect'
+# to 'true', in order to include the 'with-failock' option to the current authselect profile.
+rhel8cis_5_2_9_risks: NEVER
+
+
+
+
 
 
 # Options Server SSH
@@ -311,16 +388,6 @@ rhel8_cis_sshd:
 
 
 
-# Configuracion Ruta Banner local y Remoto
-#Messages more relevant for daily use (e.g. ads). After login.
-motd_file: "Message_Day"             # Linux: File location by default in 'files' directory
-#Informational or warning messages for access (e.g. access policies). Before you log in.
-# file for issue and issue.net
-issue_file: "login_banner"             # Linux: File location by default in 'files' directory
-
-# IPv6 required
-rhel8_cis_ipv6_required: false
-
 ## Control 5.2.3 - Ensure sudo log file exists
 # By default, sudo logs through syslog(3). However, to specify a custom log file, the
 # 'logfile' parameter will be used, setting it with current variable's value.
@@ -339,28 +406,6 @@ rhel8_cis_sudo_timestamp_timeout: 15
 # CIS requires that such a group be CREATED(named according to site policy) and be kept EMPTY.
 rhel9cis_sugroup: nosugroup
 
-# Time Synchronization
-rhel8_cis_time_synchronization: chrony
-
-
-# NTP Central Server Configuration
-rhel8_cis_time_synchronization_servers:
-  - 10.181.0.155 
-
-# Authorized cron users
-### IMPORTANTE UNICAMENTE LOS USUARIOS QUE ESTAN EN /etc/cron.allow TIENEN PERMISOS PARA PROGRAMAR CRON
-authorized_cron_users:
-        - root
-        - admin
-        - tux
-        - oracle
-
-### IMPORTANTE UNICAMENTE LOS USUARIOS QUE ESTAN EN /etc/at.allow TIENEN PERMISOS PARA PROGRAMAR AT
-authorized_at_users:
-        - root
-        - admin
-        - tux
-        - oracle
 
 
 # UID settings for interactive users
@@ -374,7 +419,7 @@ discover_int_uid: false
 min_int_uid: 1000
 
 
-# 5.5.9
+# 5.5.9 - Account policies
 #The Ansible task you provided is responsible for ensuring that the default users' shell session timeout is 900 seconds or less
 rhel8_cis_shell_timeout: 900
 
