@@ -16,10 +16,10 @@
     audited_packages: "{{ audited_packages + [item] }}"
   with_items: "{{ packages_to_check }}"
   when:
-    - "'{{ item }}' in ansible_facts.packages"
+    - item in ansible_facts.packages
     - is_new_installation == "no"
 
-# AUDIT | Guardar auditoría en un archivo 
+# AUDIT | Guardar auditoría en un archivo
 - name: Guardar auditoría en un archivo
   copy:
     content: |
