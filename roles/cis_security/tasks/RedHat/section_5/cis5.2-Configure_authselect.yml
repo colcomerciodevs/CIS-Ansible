@@ -3,87 +3,96 @@
 # Tarea 5.2.8 - Asegurar que es usado el perfil personalizado de authselect (Manual)
 - name: "5.2.8 | PATCH | Ensure custom authselect profile is used"
   block:
-      - name: "5.2.8 | AUDIT | Ensure custom authselect profile is used | Gather profiles"
-        ansible.builtin.shell: 'authselect list | grep custom'
-        failed_when: false
-        changed_when: false
-        check_mode: false
-        register: rhel8_cis_5_2_8_current_profile
+    - name: "5.2.8 | AUDIT | Ensure custom authselect profile is used | Gather profiles"
+      ansible.builtin.command: authselect list
+      register: rhel8_cis_5_2_8_current_profile
+      failed_when: false
+      changed_when: false
+      check_mode: false
 
-      - name: "5.2.8 | PATCH | Ensure custom authselect profile is used | Create custom profiles"
-        ansible.builtin.shell: authselect create-profile {{ rhel8_cis_authselect['custom_profile_name'] }} -b {{ rhel8_cis_authselect['default_file_to_copy'] }}
-        when:
-            - rhel8_cis_authselect_custom_profile_create
-            - "rhel8_cis_authselect.custom_profile_name not in rhel8_cis_5_2_8_current_profile.stdout"
+    - name: "5.2.8 | PATCH | Ensure custom authselect profile is used | Create custom profiles"
+      ansible.builtin.command:
+        cmd: >
+          authselect create-profile {{ rhel8_cis_authselect['custom_profile_name'] }}
+          -b {{ rhel8_cis_authselect['default_file_to_copy'] }}
+      when:
+        - rhel8_cis_authselect_custom_profile_create
+        - "rhel8_cis_authselect.custom_profile_name not in rhel8_cis_5_2_8_current_profile.stdout"
 
-      - name: "5.2.8 | PATCH | Ensure custom authselect profile is used | Force custom profile creates backup"
-        ansible.builtin.shell: "authselect select custom/{{ rhel8_cis_authselect['custom_profile_name'] }} --force --backup=rhel8cis_5_2_8_{{ ansible_date_time.epoch}}"
-        register: authselect_5_4_1_select
-        when:
-            - rhel8_cis_authselect_custom_profile_create
-            - "rhel8_cis_authselect.custom_profile_name not in rhel8_cis_5_2_8_current_profile.stdout"
-
+    - name: "5.2.8 | PATCH | Ensure custom authselect profile is used | Force custom profile creates backup"
+      ansible.builtin.command:
+        cmd: >
+          authselect select custom/{{ rhel8_cis_authselect['custom_profile_name'] }}
+          --force --backup=rhel8cis_5_2_8_{{ ansible_date_time.epoch }}
+      register: authselect_5_4_1_select
+      when:
+        - rhel8_cis_authselect_custom_profile_create
+        - "rhel8_cis_authselect.custom_profile_name not in rhel8_cis_5_2_8_current_profile.stdout"
   when:
-      - rhel8_cis_rule_5_2_8
+    - rhel8_cis_rule_5_2_8
   tags:
-      - level1
-      - manual
-      - patch
-      - authselect
-      - rule_5.2.8
+    - level1
+    - manual
+    - patch
+    - authselect
+    - rule_5.2.8
+
 
 # Tarea 5.2.9 - Asegurar que el authselect incluye with-faillock (Automático)
-- name: "5.2.9 | PATCH | Ensure authselect includes with-faillock | Get Authselect profile options"
+- name: "5.2.9 | PATCH | Ensure authselect includes with-faillock"
   block:
-      - name: "5.2.9  | AUDIT | Ensure authselect includes with-faillock | Gather profiles and enabled features"
-        ansible.builtin.shell: "authselect current | grep with-faillock"
-        failed_when: false
-        changed_when: false
-        check_mode: false
-        register: rhel8_cis_5_2_9_profiles_faillock
+    - name: "5.2.9 | AUDIT | Ensure authselect includes with-faillock | Gather profiles and enabled features"
+      ansible.builtin.command: authselect current
+      register: rhel8_cis_5_2_9_profiles_faillock
+      failed_when: false
+      changed_when: false
+      check_mode: false
 
-      - name: "5.2.9  | AUDIT | Ensure authselect includes with-faillock | Show profiles"
-        ansible.builtin.debug:
-            msg:
-                - "Below are the current custom profiles"
-                - "{{ rhel8_cis_5_2_9_profiles_faillock.stdout_lines }}"
+    - name: "5.2.9 | AUDIT | Ensure authselect includes with-faillock | Show profiles"
+      ansible.builtin.debug:
+        msg:
+          - "Below are the current custom profiles"
+          - "{{ rhel8_cis_5_2_9_profiles_faillock.stdout_lines }}"
 
-      - name: "5.2.9  | PATCH | Ensure authselect includes with-faillock | Authselect add options"
-        ansible.builtin.shell: "authselect select custom/{{ rhel8_cis_authselect['custom_profile_name'] }} {{ rhel8_cis_authselect['options'] }} --force"
-        when: rhel8_cis_authselect_custom_profile_select
+    - name: "5.2.9 | PATCH | Ensure authselect includes with-faillock | Authselect add options"
+      ansible.builtin.command:
+        cmd: >
+          authselect select custom/{{ rhel8_cis_authselect['custom_profile_name'] }}
+          {{ rhel8_cis_authselect['options'] }} --force
+      when: rhel8_cis_authselect_custom_profile_select
 
-      - name: 5.2.9  | PATCH | Ensure authselect includes with-faillock | not Authselect profile"
-        ansible.builtin.lineinfile:
-            path: "/etc/pam.d/password-auth"
-            regexp: "{{ item.regexp }}"
-            line: "{{ item.line }}"
-            insertbefore: "{{ item.before }}"
-        loop:
-            - { 'regexp': '^auth\s+required\s+pam_faillock.so preauth silent deny=.*unlock_time=.*', 'line': 'auth            required       pam_faillock.so preauth silent deny={{ rhel8_cis_pam_faillock.deny }} unlock_time={{ rhel8_cis_pam_faillock.unlock_time }}', 'before':'^auth\s+sufficient\s+pam_unix.so try_first_pass'}
-            - { 'regexp': '^auth\s+required\s+pam_faillock.so authfail deny=.*unlock_time=.*', 'line': 'auth            required       pam_faillock.so authfail deny={{ rhel8_cis_pam_faillock.deny }} unlock_time={{ rhel8_cis_pam_faillock.unlock_time }}', 'before':'^auth\s+required\s+pam_deny.so'}
-            - { 'regexp': '^account\s+required\s+pam_faillock.so', 'line': 'account      required       pam_faillock.so', 'before':'^account     required      pam_unix.so'}
-        when:
-            - rhel8_cis_add_faillock_without_authselect
-            - rhel8_cis_5_2_9_risks == 'ACCEPT'
+    - name: "5.2.9 | PATCH | Ensure authselect includes with-faillock | not Authselect profile"
+      ansible.builtin.lineinfile:
+        path: "/etc/pam.d/password-auth"
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        insertbefore: "{{ item.before }}"
+      loop:
+        - { 'regexp': '^auth\s+required\s+pam_faillock.so preauth silent deny=.*unlock_time=.*', 'line': 'auth            required       pam_faillock.so preauth silent deny={{ rhel8_cis_pam_faillock.deny }} unlock_time={{ rhel8_cis_pam_faillock.unlock_time }}', 'before':'^auth\s+sufficient\s+pam_unix.so try_first_pass'}
+        - { 'regexp': '^auth\s+required\s+pam_faillock.so authfail deny=.*unlock_time=.*', 'line': 'auth            required       pam_faillock.so authfail deny={{ rhel8_cis_pam_faillock.deny }} unlock_time={{ rhel8_cis_pam_faillock.unlock_time }}', 'before':'^auth\s+required\s+pam_deny.so'}
+        - { 'regexp': '^account\s+required\s+pam_faillock.so', 'line': 'account      required       pam_faillock.so', 'before':'^account     required      pam_unix.so'}
+      when:
+        - rhel8_cis_add_faillock_without_authselect
+        - rhel8_cis_5_2_9_risks == 'ACCEPT'
 
-      - name: 5.2.9  | PATCH | Ensure authselect includes with-faillock | not Authselect profile"
-        ansible.builtin.lineinfile:
-            path: "/etc/pam.d/system-auth"
-            regexp: "{{ item.regexp }}"
-            line: "{{ item.line }}"
-            insertbefore: "{{ item.before | default(omit)}}"
-            insertafter: "{{ item.after | default(omit)}}"
-        loop:
-            - { 'regexp': '^auth\s+required\s+pam_faillock.so preauth silent deny=.*unlock_time=.*', 'line':'auth        required      pam_faillock.so preauth silent deny={{ rhel8_cis_pam_faillock.deny }} unlock_time={{ rhel8_cis_pam_faillock.unlock_time }}', 'before':'^auth\s+sufficient\s+pam_unix.so try_first_pass'}
-            - { 'regexp': '^auth\s+required\s+pam_faillock.so authfail deny=.*unlock_time=.*', 'line': 'auth        required      pam_faillock.so authfail deny={{ rhel8_cis_pam_faillock.deny }} unlock_time={{ rhel8_cis_pam_faillock.unlock_time }}', 'before':'^auth\s+required\s+pam_deny.so'}
-            - { 'regexp': '^account\s+required\s+pam_faillock.so', 'line': 'account     required      pam_faillock.so', 'before':'^account     required      pam_unix.so'}
-        when:
-            - rhel8_cis_add_faillock_without_authselect
-            - rhel8_cis_5_2_9_risks == 'ACCEPT'
+    - name: "5.2.9 | PATCH | Ensure authselect includes with-faillock | not Authselect profile"
+      ansible.builtin.lineinfile:
+        path: "/etc/pam.d/system-auth"
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        insertbefore: "{{ item.before | default(omit) }}"
+        insertafter: "{{ item.after | default(omit) }}"
+      loop:
+        - { 'regexp': '^auth\s+required\s+pam_faillock.so preauth silent deny=.*unlock_time=.*', 'line': 'auth        required      pam_faillock.so preauth silent deny={{ rhel8_cis_pam_faillock.deny }} unlock_time={{ rhel8_cis_pam_faillock.unlock_time }}', 'before':'^auth\s+sufficient\s+pam_unix.so try_first_pass'}
+        - { 'regexp': '^auth\s+required\s+pam_faillock.so authfail deny=.*unlock_time=.*', 'line': 'auth        required      pam_faillock.so authfail deny={{ rhel8_cis_pam_faillock.deny }} unlock_time={{ rhel8_cis_pam_faillock.unlock_time }}', 'before':'^auth\s+required\s+pam_deny.so'}
+        - { 'regexp': '^account\s+required\s+pam_faillock.so', 'line': 'account     required       pam_faillock.so', 'before':'^account     required      pam_unix.so'}
+      when:
+        - rhel8_cis_add_faillock_without_authselect
+        - rhel8_cis_5_2_9_risks == 'ACCEPT'
   when:
-      - rhel8_cis_rule_5_2_9
+    - rhel8_cis_rule_5_2_9
   tags:
-      - level1
-      - patch
-      - authselect
-      - rule_5.2.9
+    - level1
+    - patch
+    - authselect
+    - rule_5.2.9
