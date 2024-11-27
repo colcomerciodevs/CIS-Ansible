@@ -449,6 +449,13 @@ rhel8_cis_pass:
     # CIS requires a value of at least 7.
     warn_age: 7
 
+# Lista que contiene los nombres de usuarios críticos que no deben ser afectados 
+# por las policticas de cambio de contraseña
+excluded_users:
+    - root
+    - oracle
+    - admin
+    - tux
 
 ## Allow the forcing of setting user_max_days for logins.
 # This can break current connecting user access

@@ -41,23 +41,23 @@
       - pam
       - rule_5.4.2
 
-# Tarea 5.4.3 -  Asegurar que el bloqueo  de contraseñas está configurado para 5 intentos (Automático)
-- name: "5.4.3 | PATCH | Ensure password reuse is limited | Update custom authselect profile"
+# Tarea 5.4.3 - Asegurar que el bloqueo de contraseñas está configurado para 5 intentos
+## PENDIENTE REVISAR DEPENDE DE AUTHSELECT PERSONALIZADO PARA SU EJECUCION
+- name: "5.4.3 | PATCH | Ensure password attempts are limited to 5 (automatic)"
   block:
-    - name: "5.4.3 | PATCH | Add pam_pwhistory to custom profile (password-auth)"
+    - name: "5.4.3 | Add pam_pwhistory to custom profile (password-auth)"
       ansible.builtin.lineinfile:
         path: "/etc/authselect/custom/{{ rhel8_cis_authselect['custom_profile_name'] }}/password-auth"
-        line: "password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=3 remember={{ rhel8_cis_pam_faillock.remember }}"
+        line: "password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=5 remember={{ rhel8_cis_pam_faillock.remember }}"
         insertafter: '^password\s*requisite\s*pam_pwquality.so'
+      notify: "Check authselect changes"
 
-    - name: "5.4.3 | PATCH | Add pam_pwhistory to custom profile (system-auth)"
+    - name: "5.4.3 | Add pam_pwhistory to custom profile (system-auth)"
       ansible.builtin.lineinfile:
         path: "/etc/authselect/custom/{{ rhel8_cis_authselect['custom_profile_name'] }}/system-auth"
-        line: "password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=3 remember={{ rhel8_cis_pam_faillock.remember }}"
+        line: "password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=5 remember={{ rhel8_cis_pam_faillock.remember }}"
         insertafter: '^password\s*requisite\s*pam_pwquality.so'
-
-    - name: "5.4.3 | PATCH | Apply changes to custom authselect profile"
-      ansible.builtin.command: authselect apply-changes
+      notify: "Check authselect changes"
   when: rhel8_cis_rule_5_4_3
   tags:
     - level1
@@ -65,40 +65,45 @@
     - patch
     - rule_5.4.3
 
-
-# Tarea 5.4.4 - Asegurar que el algoritmo de hash de contraseñas es SHA-512 (Automático)
+# Tarea 5.4.4 - Asegurar que el algoritmo de hash de contraseñas es SHA-512
+## PENDIENTE REVISAR DEPENDE DE AUTHSELECT PERSONALIZADO PARA SU EJECUCION
 - name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512"
   block:
-    - name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 | libuser.conf"
+    - name: "5.4.4 | Ensure SHA-512 is configured in /etc/libuser.conf"
       ansible.builtin.replace:
         path: /etc/libuser.conf
         regexp: '^crypt_style\s*=\s*.*$'
         replace: 'crypt_style = sha512'
+      notify: "Check authselect changes"
 
-    - name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 | login.defs"
+    - name: "5.4.4 | Ensure SHA-512 is configured in /etc/login.defs"
       ansible.builtin.replace:
         path: /etc/login.defs
         regexp: '^ENCRYPT_METHOD.*'
         replace: 'ENCRYPT_METHOD SHA512'
+      notify: "Check authselect changes"
 
-    - name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 | password-auth"
+    - name: "5.4.4 | Ensure SHA-512 in custom profile (password-auth)"
       ansible.builtin.lineinfile:
         path: "/etc/authselect/custom/{{ rhel8_cis_authselect['custom_profile_name'] }}/password-auth"
         line: "password    sufficient    pam_unix.so sha512 shadow try_first_pass use_authtok remember={{ rhel8_cis_pam_faillock.remember }}"
         regexp: '^password\s+sufficient\s+pam_unix.so.*$'
+        state: present
+      notify: "Check authselect changes"
 
-    - name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 | system-auth"
+    - name: "5.4.4 | Ensure SHA-512 in custom profile (system-auth)"
       ansible.builtin.lineinfile:
         path: "/etc/authselect/custom/{{ rhel8_cis_authselect['custom_profile_name'] }}/system-auth"
         line: "password    sufficient    pam_unix.so sha512 shadow try_first_pass use_authtok remember={{ rhel8_cis_pam_faillock.remember }}"
         regexp: '^password\s+sufficient\s+pam_unix.so.*$'
-
-    - name: "5.4.4 | PATCH | Apply changes to custom authselect profile"
-      ansible.builtin.command: authselect apply-changes
+        state: present
+      notify: "Check authselect changes"
   when: rhel8_cis_rule_5_4_4
   tags:
     - level1
     - patch
     - pam
     - rule_5.4.4
+
+
 

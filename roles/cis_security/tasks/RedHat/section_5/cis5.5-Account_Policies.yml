@@ -2,34 +2,47 @@
 # Tarea 5.5.1 - Asegurar que la expiración de contraseñas esté en 42 días o menos (Automático)
 - name: "5.5.1 | PATCH | Ensure password expiration is 365 days or less"
   block:
-      - name: "5.5.1 | PATCH | Ensure password expiration is 365 days or less"
-        ansible.builtin.lineinfile:
-            path: /etc/login.defs
-            regexp: '^PASS_MAX_DAYS'
-            line: "PASS_MAX_DAYS {{ rhel8_cis_pass['max_days'] }}"
+    - name: "5.5.1 | PATCH | Ensure default PASS_MAX_DAYS for new users"
+      ansible.builtin.lineinfile:
+        path: /etc/login.defs
+        regexp: '^PASS_MAX_DAYS'
+        line: "PASS_MAX_DAYS {{ rhel8_cis_pass['max_days'] }}"
+        create: true
+        backup: true
+      tags:
+        - patch
+        - password
 
-      - name: "5.5.1 | AUDIT | Ensure password expiration is 365 days or less | Get existing users PASS_MAX_DAYS"
-        ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && ($5> {{ rhel8_cis_pass['max_days'] }} || $5< {{ rhel8_cis_pass['max_days'] }} || $5 == -1)){print $1}' /etc/shadow"
-        changed_when: false
-        failed_when: false
-        register: discovered_max_days
+    - name: "5.5.1 | AUDIT | Check users with invalid PASS_MAX_DAYS in /etc/shadow"
+      ansible.builtin.command:
+        cmd: >
+          awk -F: '
+          /^[^:]+:[^!*]/ && ($5 != {{ rhel8_cis_pass['max_days'] }} && $5 > 0)
+          { print $1 }' /etc/shadow
+      register: discovered_max_days
+      changed_when: false
+      failed_when: false
+      tags:
+        - audit
 
-      - name: "5.5.1 | PATCH | Ensure password expiration is 365 days or less | Set existing users PASS_MAX_DAYS"
-        ansible.builtin.user:
-            name: "{{ item }}"
-            password_expire_max: "{{ rhel8_cis_pass['max_days'] }}"
-        loop: "{{ discovered_max_days.stdout_lines }}"
-        when:
-            - discovered_max_days.stdout_lines | length > 0
-            - item in discovered_interactive_usernames.stdout
-            - rhel8_cis_force_user_maxdays
+    - name: "5.5.1 | PATCH | Correct PASS_MAX_DAYS for existing users"
+      ansible.builtin.user:
+        name: "{{ item }}"
+        password_expire_max: "{{ rhel8_cis_pass['max_days'] }}"
+      loop: "{{ discovered_max_days.stdout_lines }}"
+      when:
+        - discovered_max_days.stdout_lines | length > 0
+        - item in discovered_interactive_usernames.stdout_lines
+        - rhel8_cis_force_user_maxdays | default(false)
+      tags:
+        - patch
+
   when:
-      - rhel8_cis_rule_5_5_1
+    - rhel8_cis_rule_5_5_1 | default(false)
   tags:
-      - level1
-      - patch
-      - password
-      - rule_5.5.1
+    - level1
+    - password
+    - rule_5.5.1
 
 # Tarea 5.5.2 - Asegurarse de que el mínimo de días entre cambios de contraseñas esté establecido en 3 (Automático)
 - name: "5.5.2 | PATCH | Ensure minimum days between password changes is 7 or more"

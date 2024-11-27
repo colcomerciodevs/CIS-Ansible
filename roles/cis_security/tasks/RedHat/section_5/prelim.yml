@@ -72,16 +72,16 @@
   become: yes
   changed_when: false
 
-#Prelim requerido para identificar usuarios interactivos en el sistema
-- name: "PRELIM | AUDIT | Interactive Users"
-  tags:
-    - always
+# Prelim requerido para la tarea 5.5.1 - identificar usuarios interactivos en el sistema
+- name: "PRELIM | AUDIT | Identify interactive users"
   ansible.builtin.shell: >
-    set -o pipefail; 
-    grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | 
-    awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false" && $7 != "/dev/null") { print $1 }'
+    awk -F: -v excluded="{{ excluded_users | join('|') }}" -v min_uid="{{ min_int_uid }}" '
+    ($3 >= min_uid && !($1 ~ excluded) &&
+     $7 !~ /(nologin|false|null)/) { print $1 }' /etc/passwd
   changed_when: false
   register: discovered_interactive_usernames
+  tags:
+    - always
 
 
 

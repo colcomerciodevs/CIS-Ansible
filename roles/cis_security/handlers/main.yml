@@ -32,3 +32,14 @@
     sysctl_set: yes
   when: ansible_virtualization_type != "docker"
 
+# Handler para verificar cambios y aplicar authselect solo si hubo modificaciones
+- name: "Check authselect changes"
+  block:
+    - name: "Verify if authselect apply-changes is needed"
+      ansible.builtin.command: authselect check
+      register: authselect_check
+      changed_when: "'No changes detected' not in authselect_check.stdout"
+
+    - name: "Apply authselect changes"
+      ansible.builtin.command: authselect apply-changes
+      when: authselect_check.changed
