@@ -1,5 +1,4 @@
 ---
-
 skip_list:
   - schema
   - role-name
@@ -14,7 +13,6 @@ skip_list:
   - yaml[new-line-at-end-of-file]
   - yaml[empty-lines]
   - key-order[task]
-
 
 exclude_paths:
   - files/
