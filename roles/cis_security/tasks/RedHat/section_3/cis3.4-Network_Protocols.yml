@@ -1,12 +1,12 @@
 ---
 # 3.4.1 Asegurar DCCP está deshabilitado (Automático)
 - name: SCORED | 3.4.1 | PATCH | Ensure DCCP is disabled
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/modprobe.d/cis.conf
     regexp: ^(#)?install dccp(\s|$)
     line: install dccp /bin/true
-    mode: 0644
-    create: yes
+    mode: "0644"
+    create: true
   when:
     - rhel8_cis_rule_3_4_1
   tags:
@@ -16,12 +16,12 @@
 
 # Tarea 3.4.2 - Asegurar SCTP está deshabilitado (Automático)
 - name: SCORED | 3.4.2 | PATCH | Ensure SCTP is disabled
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/modprobe.d/cis.conf
     regexp: ^(#)?install sctp(\s|$)
     line: install sctp /bin/true
-    mode: 0644
-    create: yes
+    mode: "0644"
+    create: true
   when:
     - rhel8_cis_rule_3_4_2
   tags:
@@ -31,12 +31,12 @@
 
 # Tarea 3.4.3 - Asegurar RDS está deshabilitado (Automático)
 - name: SCORED | 3.4.3 | PATCH | Ensure RDS is disabled
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/modprobe.d/cis.conf
     regexp: ^(#)?install rds(\s|$)
     line: install rds /bin/true
-    mode: 0644
-    create: yes
+    mode: "0644"
+    create: true
   when:
     - rhel8_cis_rule_3_4_3
   tags:
@@ -46,12 +46,12 @@
 
 # Tarea 3.4.4 - Asegurar TIPC está deshabilitado (Automático)
 - name: SCORED | 3.4.4 | PATCH | Ensure TIPC is disabled
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/modprobe.d/cis.conf
     regexp: ^(#)?install tipc(\s|$)
     line: install tipc /bin/true
-    mode: 0644
-    create: yes
+    mode: "0644"
+    create: true
   when:
     - rhel8_cis_rule_3_4_4
   tags:

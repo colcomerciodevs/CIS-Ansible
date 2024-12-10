@@ -4,7 +4,7 @@
 - name: "PRELIM | Run preliminary tasks"
   ansible.builtin.import_tasks:
     file: prelim.yml
-  become: yes
+  become: true
   tags:
     - prelim_tasks
     - always
@@ -33,6 +33,3 @@
   tags:
     - rhel8cis_section1
     - Configure_Banner
-
-
-

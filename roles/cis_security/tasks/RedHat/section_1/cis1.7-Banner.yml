@@ -1,10 +1,10 @@
 ---
 # Tarea 1.7.1 - Asegurar que el mensaje del día está configurado apropiadamente (Automático)
 - name: SCORED | 1.7.1 | PATCH | Ensure message of the day is configured properly
-  copy:
+  ansible.builtin.copy:
     src: "{{ motd_file }}"
     dest: /etc/motd
-    mode: 0644
+    mode: "0644"
   when:
     - rhel8_cis_rule_1_7_1
   tags:
@@ -15,10 +15,10 @@
 
 # Tarea 1.7.2 - Asegurar que el banner de advertencia de inicio de sesión local esté configurado correctamente
 - name: NOTSCORED | 1.7.2 | PATCH | Ensure local login warning banner is configured properly
-  copy:
+  ansible.builtin.copy:
     src: "{{ issue_file }}"
     dest: /etc/issue
-    mode: 0644
+    mode: "0644"
   when:
     - rhel8_cis_rule_1_7_2
   tags:
@@ -29,10 +29,10 @@
 
 # Tarea 1.7.3 - Asegurar que el banner de advertencia de inicio de sesión remoto esté configurado correctamente
 - name: NOTSCORED | 1.7.3 | PATCH | Ensure remote login warning banner is configured properly
-  copy:
-    src:  "{{ issue_file }}"
+  ansible.builtin.copy:
+    src: "{{ issue_file }}"
     dest: /etc/issue.net
-    mode: 0644
+    mode: "0644"
   when:
     - rhel8_cis_rule_1_7_3
   tags:
@@ -43,12 +43,12 @@
 
 # Tarea 1.7.4 - Asegurar que los permisos sobre /etc./motd están configurados (Automático)
 - name: NOTSCORED | 1.7.4 | PATCH | Ensure permissions on /etc/motd are configured
-  file:
+  ansible.builtin.file:
     dest: /etc/motd
     state: file
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   when:
     - rhel8_cis_rule_1_7_4
   tags:
@@ -59,12 +59,12 @@
 
 # Tarea 1.7.5 - Asegurar que los permisos sobre /etc/issue están configurados (Automático)
 - name: SCORED | 1.7.5 | PATCH | Ensure permissions on /etc/issue are configured
-  file:
+  ansible.builtin.file:
     dest: /etc/issue
     state: file
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   when:
     - rhel8_cis_rule_1_7_5
   tags:
@@ -75,12 +75,12 @@
 
 # Tarea 1.7.6 - Asegurar que los permisos sobre /etc/issue.net están configurados (Automático)
 - name: NOTSCORED | 1.8.1.6 | PATCH | Ensure permissions on /etc/issue.net are configured
-  file:
+  ansible.builtin.file:
     dest: /etc/issue.net
     state: file
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   when:
     - rhel8_cis_rule_1_7_6
   tags:

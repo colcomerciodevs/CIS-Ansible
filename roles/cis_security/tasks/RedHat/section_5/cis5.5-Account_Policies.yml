@@ -2,6 +2,13 @@
 # Tarea 5.5.1 - Asegurar que la expiración de contraseñas esté en 42 días o menos (Automático)
 - name: "5.5.1 | PATCH | Ensure password expiration is 365 days or less"
   block:
+    - name: "Set secure permissions for /etc/login.defs"
+      ansible.builtin.file:
+        path: /etc/login.defs
+        owner: root
+        group: root
+        mode: '0644'
+        
     - name: "5.5.1 | PATCH | Ensure default PASS_MAX_DAYS for new users"
       ansible.builtin.lineinfile:
         path: /etc/login.defs
@@ -9,6 +16,8 @@
         line: "PASS_MAX_DAYS {{ rhel8_cis_pass['max_days'] }}"
         create: true
         backup: true
+        mode: '0644'  
+        validate: '/usr/sbin/usermod -D || echo "Validation failed"' 
       tags:
         - patch
         - password
@@ -47,66 +56,66 @@
 # Tarea 5.5.2 - Asegurarse de que el mínimo de días entre cambios de contraseñas esté establecido en 3 (Automático)
 - name: "5.5.2 | PATCH | Ensure minimum days between password changes is 7 or more"
   block:
-      - name: "5.5.2 | PATCH | Ensure minimum days between password changes is configured | set login.defs"
-        ansible.builtin.lineinfile:
-            path: /etc/login.defs
-            regexp: '^PASS_MIN_DAYS'
-            line: "PASS_MIN_DAYS {{ rhel8_cis_pass['min_days'] }}"
+    - name: "5.5.2 | PATCH | Ensure minimum days between password changes is configured | set login.defs"
+      ansible.builtin.lineinfile:
+        path: /etc/login.defs
+        regexp: '^PASS_MIN_DAYS'
+        line: "PASS_MIN_DAYS {{ rhel8_cis_pass['min_days'] }}"
 
-      - name: "5.5.2 | AUDIT | Ensure minimum days between password changes is configured | Get existing users PASS_MIN_DAYS"
-        ansible.builtin.shell: "awk -F: '/^[^:]+:[^!*]/ && $4< {{ rhel8_cis_pass['min_days'] }} {print $1}' /etc/shadow"
-        changed_when: false
-        failed_when: false
-        register: discovered_min_days
+    - name: "5.5.2 | AUDIT | Ensure minimum days between password changes is configured | Get existing users PASS_MIN_DAYS"
+      ansible.builtin.shell: "awk -F: '/^[^:]+:[^!*]/ && $4< {{ rhel8_cis_pass['min_days'] }} {print $1}' /etc/shadow"
+      changed_when: false
+      failed_when: false
+      register: discovered_min_days
 
-      - name: "5.5.2 | PATCH | Ensure minimum days between password changes is configured | Set existing users PASS_MIN_DAYS"
-        ansible.builtin.user:
-            name: "{{ item }}"
-            password_expire_max: "{{ rhel8_cis_pass['min_days'] }}"
-        loop: "{{ discovered_min_days.stdout_lines }}"
-        when:
-            - discovered_min_days.stdout_lines | length > 0
-            - item in discovered_interactive_usernames.stdout
-            - rhel8_cis_force_user_mindays
+    - name: "5.5.2 | PATCH | Ensure minimum days between password changes is configured | Set existing users PASS_MIN_DAYS"
+      ansible.builtin.user:
+        name: "{{ item }}"
+        password_expire_max: "{{ rhel8_cis_pass['min_days'] }}"
+      loop: "{{ discovered_min_days.stdout_lines }}"
+      when:
+        - discovered_min_days.stdout_lines | length > 0
+        - item in discovered_interactive_usernames.stdout
+        - rhel8_cis_force_user_mindays
   when:
-      - rhel8_cis_rule_5_5_2
+    - rhel8_cis_rule_5_5_2
   tags:
-      - level1
-      - patch
-      - password
-      - rule_5.5.2
+    - level1
+    - patch
+    - password
+    - rule_5.5.2
 
 # Tarea 5.5.3 - Asegurar que la advertencia de expiración de contraseñas esté en 5 días o más (Automático)
 - name: "5.5.3 | PATCH | Ensure password expiration warning days is 7 or more"
   block:
-      - name: "5.5.3 | PATCH | Ensure password expiration warning days is 7 or more | set login.defs"
-        ansible.builtin.lineinfile:
-            path: /etc/login.defs
-            regexp: '^PASS_WARN_AGE'
-            line: "PASS_WARN_AGE {{ rhel8_cis_pass['warn_age'] }}"
+    - name: "5.5.3 | PATCH | Ensure password expiration warning days is 7 or more | set login.defs"
+      ansible.builtin.lineinfile:
+        path: /etc/login.defs
+        regexp: '^PASS_WARN_AGE'
+        line: "PASS_WARN_AGE {{ rhel8_cis_pass['warn_age'] }}"
 
-      - name: "5.5.3 | AUDIT | Ensure password expiration warning days is 7 or more | Get existing users WARN_DAYS"
-        ansible.builtin.shell: "awk -F: '/^[^:]+:[^!*]/ && $6< {{ rhel8_cis_pass['warn_age'] }} {print $1}' /etc/shadow"
-        changed_when: false
-        failed_when: false
-        register: discovered_warn_days
+    - name: "5.5.3 | AUDIT | Ensure password expiration warning days is 7 or more | Get existing users WARN_DAYS"
+      ansible.builtin.shell: "awk -F: '/^[^:]+:[^!*]/ && $6< {{ rhel8_cis_pass['warn_age'] }} {print $1}' /etc/shadow"
+      changed_when: false
+      failed_when: false
+      register: discovered_warn_days
 
-      - name: "5.5.3 | PATCH | Ensure password expiration warning days is 7 or more | Set existing users WARN_DAYS"
-        ansible.builtin.user:
-          name: "{{ item }}"
-          password_warn_days: "{{ rhel8_cis_pass['warn_age'] }}"
-        loop: "{{ discovered_warn_days.stdout_lines }}"
-        when:
-          - discovered_warn_days.stdout_lines | length > 0
-          - item in discovered_interactive_usernames.stdout
-          - rhel8_cis_force_user_warnageclear
+    - name: "5.5.3 | PATCH | Ensure password expiration warning days is 7 or more | Set existing users WARN_DAYS"
+      ansible.builtin.user:
+        name: "{{ item }}"
+        password_warn_days: "{{ rhel8_cis_pass['warn_age'] }}"
+      loop: "{{ discovered_warn_days.stdout_lines }}"
+      when:
+        - discovered_warn_days.stdout_lines | length > 0
+        - item in discovered_interactive_usernames.stdout
+        - rhel8_cis_force_user_warnageclear
   when:
-      - rhel8_cis_rule_5_5_3
+    - rhel8_cis_rule_5_5_3
   tags:
-      - level1
-      - patch
-      - password
-      - rule_5.5.3
+    - level1
+    - patch
+    - password
+    - rule_5.5.3
 
 # Tarea 5.5.4 - Asegurar que el bloqueo de contraseñas por inactividad esté en 30 días o menos (Automático)
 - name: "5.5.4 | PATCH | Ensure inactive password lock is 30 days or less"
@@ -119,11 +128,13 @@
       failed_when: false
       check_mode: false
 
-    - name: "5.5.4 | PATCH | Ensure inactive password lock is 30 days or less | Set default inactive setting"
+    - name: "5.5.4 | PATCH | Asegurar que el bloqueo por inactividad de la contraseña sea de 30 días o menos | Establecer configuración predeterminada"
       ansible.builtin.command:
         cmd: "useradd -D -f {{ rhel8_cis_inactivelock.lock_days }}"
-      when:
-        - "'INACTIVE={{ rhel8_cis_inactivelock.lock_days }}' not in rhel8_cis_5_5_4_inactive_settings.stdout"
+      changed_when: false
+      when: >
+        'INACTIVE=' + rhel8_cis_inactivelock.lock_days | string
+        not in rhel8_cis_5_5_4_inactive_settings.stdout
 
     - name: "5.5.4 | AUDIT | Ensure inactive password lock is 30 days or less | Getting user list"
       ansible.builtin.command:
@@ -137,6 +148,7 @@
       ansible.builtin.command:
         cmd: "chage --inactive {{ rhel8_cis_inactivelock.lock_days }} {{ item }}"
       loop: "{{ rhel8_cis_5_5_4_user_list.stdout_lines }}"
+      changed_when: false
       when:
         - item in discovered_interactive_usernames.stdout
 
@@ -152,115 +164,116 @@
 # Tarea 5.5.5 - Asegurar que todos los usuarios deben tener una fecha de cambio de contraseña en el pasado (Automático)
 - name: "5.5.5 | PATCH | Ensure all users last password change date is in the past"
   block:
-      - name: "5.5.5 | AUDIT | Ensure all users last password change date is in the past | Get current date in Unix Time"
-        ansible.builtin.shell: echo $(($(date --utc --date "$1" +%s)/86400))
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: rhel8_cis_5_5_5_currentut
+    - name: "5.5.5 | AUDIT | Ensure all users last password change date is in the past | Get current date in Unix Time"
+      ansible.builtin.shell: echo $(($(date --utc --date "$1" +%s)/86400))
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: rhel8_cis_5_5_5_currentut
 
-      - name: "5.5.5 | AUDIT | Ensure all users last password change date is in the past | Get list of users with last changed pw date in the future"
-        ansible.builtin.shell: "cat /etc/shadow | awk -F: '{if($3>{{ rhel8_cis_5_5_5_currentut.stdout }})print$1}'"
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: rhel8_cis_5_5_5_user_list
+    - name: "5.5.5 | AUDIT | Ensure all users last password change date is in the past | Get list of users with last changed pw date in the future"
+      ansible.builtin.shell: "cat /etc/shadow | awk -F: '{if($3>{{ rhel8_cis_5_5_5_currentut.stdout }})print$1}'"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: rhel8_cis_5_5_5_user_list
 
-      - name: "5.5.5 | AUDIT | Ensure all users last password change date is in the past | Alert on accounts with pw change in the future"
-        ansible.builtin.debug:
-            msg: "Warning!! The following accounts have the last PW change date in the future: {{ rhel8_cis_5_5_5_user_list.stdout_lines }}"
-        when:
-            - rhel8_cis_5_5_5_user_list.stdout | length > 0
-            - not rhel8_cis_futurepwchgdate_autofix
+    - name: "5.5.5 | AUDIT | Ensure all users last password change date is in the past | Alert on accounts with pw change in the future"
+      ansible.builtin.debug:
+        msg: "Warning!! The following accounts have the last PW change date in the future: {{ rhel8_cis_5_5_5_user_list.stdout_lines }}"
+      when:
+        - rhel8_cis_5_5_5_user_list.stdout | length > 0
+        - not rhel8_cis_futurepwchgdate_autofix
 
-      - name: "5.5.5 | AUDIT | Ensure all users last password change date is in the past | warning count"
-        ansible.builtin.import_tasks:
-            file: warning_facts.yml
-        when:
-            - rhel8_cis_5_5_5_user_list.stdout | length > 0
-            - not rhel8_cis_futurepwchgdate_autofix
+    - name: "5.5.5 | AUDIT | Ensure all users last password change date is in the past | warning count"
+      ansible.builtin.import_tasks:
+        # file: warning_facts.yml
+      when:
+        - rhel8_cis_5_5_5_user_list.stdout | length > 0
+        - not rhel8_cis_futurepwchgdate_autofix
 
-      - name: "5.6.1.5 | PATCH | Ensure all users' last password change date is in the past"
-        ansible.builtin.command:
-          cmd: passwd --expire {{ item }}
-        when:
-          - rhel8_cis_5_5_5_user_list.stdout | length > 0
-          - rhel8_cis_futurepwchgdate_autofix
-        loop: "{{ rhel8_cis_5_5_5_user_list.stdout_lines }}"
+    - name: "5.6.1.5 | PATCH | Ensure all users' last password change date is in the past"
+      ansible.builtin.command:
+        cmd: passwd --expire {{ item }}
+      changed_when: false  
+      when:
+        - rhel8_cis_5_5_5_user_list.stdout | length > 0
+        - rhel8_cis_futurepwchgdate_autofix
+      loop: "{{ rhel8_cis_5_5_5_user_list.stdout_lines }}"
   vars:
-      warn_control_id: '5.6.1.5'
+    warn_control_id: '5.6.1.5'
   when:
-      - rhel8_cis_rule_5_5_5
+    - rhel8_cis_rule_5_5_5
   tags:
-      - level1
-      - account
-      - patch
-      - rule_5.5.3
+    - level1
+    - account
+    - patch
+    - rule_5.5.3
 
 # Tarea 5.5.6 - Asegurar que las cuentas de sistema estén aseguradas (Automático)
 ## DESHABILITADO - Impide el inicio de session a varias cuentas
 - name: "5.5.6 | PATCH | Ensure system accounts are secured"
   block:
-      - name: "5.5.6 | PATCH | Ensure system accounts are secured | Set nologin"
-        ansible.builtin.user:
-            name: "{{ item.id }}"
-            shell: /usr/sbin/nologin
-        loop: "{{ rhel9cis_passwd }}"
-        when:
-            - item.id != "root"
-            - item.id != "tux"
-            - item.id != "admin"
-            - item.id != "oracle"
-            - item.id != "sync"
-            - item.id != "shutdown"
-            - item.id != "halt"
-            - item.id != "nfsnobody"
-            - item.uid < min_int_uid | int
-            - item.shell != "/bin/false"
-            - item.shell != "/usr/sbin/nologin"
-            - item.shell != "/sbin/nologin"
-            - item.shell != "/dev/null"
-        loop_control:
-            label: "{{ item.id }}"
+    - name: "5.5.6 | PATCH | Ensure system accounts are secured | Set nologin"
+      ansible.builtin.user:
+        name: "{{ item.id }}"
+        shell: /usr/sbin/nologin
+      loop: "{{ rhel9cis_passwd }}"
+      when:
+        - item.id != "root"
+        - item.id != "tux"
+        - item.id != "admin"
+        - item.id != "oracle"
+        - item.id != "sync"
+        - item.id != "shutdown"
+        - item.id != "halt"
+        - item.id != "nfsnobody"
+        - item.uid < min_int_uid | int
+        - item.shell != "/bin/false"
+        - item.shell != "/usr/sbin/nologin"
+        - item.shell != "/sbin/nologin"
+        - item.shell != "/dev/null"
+      loop_control:
+        label: "{{ item.id }}"
 
-      - name: "5.5.6 | PATCH | Ensure system accounts are secured | Lock accounts"
-        ansible.builtin.user:
-            name: "{{ item.id }}"
-            password_lock: true
-        loop: "{{ rhel9cis_passwd }}"
-        when:
-            - item.id != "root"
-            - item.id != "tux"
-            - item.id != "admin"
-            - item.id != "oracle"
-            - item.id != "sync"
-            - item.id != "shutdown"
-            - item.id != "halt"
-            - item.id != "nfsnobody"
-            - item.uid < min_int_uid | int
-            - item.shell != "/bin/false"
-            - item.shell != "/usr/sbin/nologin"
-            - item.shell != "/sbin/nologin"
-            - item.shell != "/dev/null"
-        loop_control:
-            label: "{{ item.id }}"
+    - name: "5.5.6 | PATCH | Ensure system accounts are secured | Lock accounts"
+      ansible.builtin.user:
+        name: "{{ item.id }}"
+        password_lock: true
+      loop: "{{ rhel9cis_passwd }}"
+      when:
+        - item.id != "root"
+        - item.id != "tux"
+        - item.id != "admin"
+        - item.id != "oracle"
+        - item.id != "sync"
+        - item.id != "shutdown"
+        - item.id != "halt"
+        - item.id != "nfsnobody"
+        - item.uid < min_int_uid | int
+        - item.shell != "/bin/false"
+        - item.shell != "/usr/sbin/nologin"
+        - item.shell != "/sbin/nologin"
+        - item.shell != "/dev/null"
+      loop_control:
+        label: "{{ item.id }}"
   when:
-      - rhel8_cis_rule_5_5_6
+    - rhel8_cis_rule_5_5_6
   tags:
-      - level1
-      - patch
-      - accounts
-      - rule_5.5.6
+    - level1
+    - patch
+    - accounts
+    - rule_5.5.6
 
 # Tarea 5.5.7 - Asegurar que el grupo por defecto para la cuenta ROOT esté en GID 0 (Automático)
 - name: SCORED | 5.5.7 |  Ensure the default group for the ROOT account is at GID 0 (Automatic)
   ansible.builtin.user:
     name: root
     group: 0
-  become: yes
+  become: true
   when: 
-  - root_gid_check.stdout != '0'
-  - rhel8_cis_rule_5_5_7
+    - root_gid_check.stdout != '0'
+    - rhel8_cis_rule_5_5_7
   tags:
     - level1
     - patch
@@ -271,64 +284,64 @@
 ## DESHABILITADO - Tiene muchas opciones restrictivas que pueden afectar el sistema 
 - name: "5.5.8 | PATCH | Ensure default user umask is 027 or more restrictive"
   block:
-      - name: "5.5.8 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/login.defs pam_umask settings"
-        ansible.builtin.replace:
-            path: "{{ item.path }}"
-            regexp: (?i)(umask\s+\d\d\d)
-            replace: '{{ item.line }} 027'
-        with_items:
-            - { path: '/etc/bashrc', line: 'umask' }
-            - { path: '/etc/profile', line: 'umask' }
-            - { path: '/etc/login.defs', line: 'UMASK' }
+    - name: "5.5.8 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/login.defs pam_umask settings"
+      ansible.builtin.replace:
+        path: "{{ item.path }}"
+        regexp: (?i)(umask\s+\d\d\d)
+        replace: '{{ item.line }} 027'
+      with_items:
+        - { path: '/etc/bashrc', line: 'umask' }
+        - { path: '/etc/profile', line: 'umask' }
+        - { path: '/etc/login.defs', line: 'UMASK' }
 
-      - name: "5.5.8 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/bashrc"
-        ansible.builtin.lineinfile:
-            path: /etc/login.defs
-            regexp: '^USERGROUPS_ENAB'
-            line: USERGROUPS_ENAB no
+    - name: "5.5.8 | PATCH | Ensure default user umask is 027 or more restrictive | Set umask for /etc/bashrc"
+      ansible.builtin.lineinfile:
+        path: /etc/login.defs
+        regexp: '^USERGROUPS_ENAB'
+        line: USERGROUPS_ENAB no
 
-      - name: "5.5.8 | PATCH | Ensure default user umask is 027 or more restrictive | Add umask sessions for pamd"
-        community.general.pamd:
-            name: "{{ item }}"
-            type: session
-            control: required
-            module_path: pam_limits.so
-            new_type: session
-            new_module_path: pam_umask.so
-            new_control: optional
-            state: before
-        register: rhel8_cis_pamd_umask_added
-        loop:
-            - system-auth
-            - password-auth
+    - name: "5.5.8 | PATCH | Ensure default user umask is 027 or more restrictive | Add umask sessions for pamd"
+      community.general.pamd:
+        name: "{{ item }}"
+        type: session
+        control: required
+        module_path: pam_limits.so
+        new_type: session
+        new_module_path: pam_umask.so
+        new_control: optional
+        state: before
+      register: rhel8_cis_pamd_umask_added
+      loop:
+        - system-auth
+        - password-auth
 
-      - name: "5.5.8 | AUDIT | Ensure default user umask is 027 or more restrictive | update umask settings if required"
-        ansible.builtin.replace:
-            path: "/etc/pam.d/{{ item }}"
-            regexp: ^(session\s+)(requisite|required)(\s+pam_umask.so)$
-            replace: \1optional\3
-        loop:
-            - system-auth
-            - password-auth
+    - name: "5.5.8 | AUDIT | Ensure default user umask is 027 or more restrictive | update umask settings if required"
+      ansible.builtin.replace:
+        path: "/etc/pam.d/{{ item }}"
+        regexp: ^(session\s+)(requisite|required)(\s+pam_umask.so)$
+        replace: \1optional\3
+      loop:
+        - system-auth
+        - password-auth
 
   when:
-      - rhel8_cis_rule_5_5_8
+    - rhel8_cis_rule_5_5_8
   tags:
-      - level1
-      - patch
-      - accounts
-      - rule_5.5.8
+    - level1
+    - patch
+    - accounts
+    - rule_5.5.8
 
 
 # Tarea 5.5.9 - Asegurar default user shell timeout is 900 seconds or less (Automático)
 - name: SCORED| 5.5.9 | PATCH | Ensure default user shell timeout is 900 seconds or less
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: "{{ item }}"
     create: true
     regexp: '^TMOUT='
     line: "TMOUT={{ rhel8_cis_shell_timeout }} ; export TMOUT"
-    mode: 0644
+    mode: "0644"
   when:
     - rhel8_cis_rule_5_5_9
   loop:

@@ -3,7 +3,7 @@
 # SECCIÓN 3.1.1-2: Desactivar protocolos y dispositivos de red no utilizados
 - name: "SECTION | 3.1.1-2 | Disable unused network protocols and devices"
   ansible.builtin.import_tasks:
-      file: cis3.1-Disable_Net_Proto.yml   
+    file: cis3.1-Disable_Net_Proto.yml   
   tags:
     - rhel8cis_section3
     - Disable_Net_Proto
@@ -11,7 +11,7 @@
 # SECCIÓN 3.2.1-2: Configuracion parametros de red
 - name: "SECTION | 3.2.1-2 | Network Parameter configuration"
   ansible.builtin.import_tasks:
-      file: cis3.2-Network_Parameter.yml   
+    file: cis3.2-Network_Parameter.yml   
   tags:
     - rhel8cis_section3
     - Network_Parameter
@@ -20,7 +20,7 @@
 # SECCIÓN 3.3.1-9: Configuracion parametros de red
 - name: "SECTION | 3.3.1-9 | Network Parameter configuration"
   ansible.builtin.import_tasks:
-      file: cis3.3-Network_Parameter.yml   
+    file: cis3.3-Network_Parameter.yml   
   tags:
     - rhel8cis_section3
     - Network_Parameter
@@ -28,7 +28,7 @@
 # SECCIÓN 3.4.1-4: Configuracion Protocolos de Red No Comunes
 - name: "SECTION | 3.4.1-4 | Uncommon Network Protocols"
   ansible.builtin.import_tasks:
-      file: cis3.4-Network_Protocols.yml   
+    file: cis3.4-Network_Protocols.yml   
   tags:
     - rhel8cis_section3
     - Network_Protocols

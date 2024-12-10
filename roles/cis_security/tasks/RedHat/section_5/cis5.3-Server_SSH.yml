@@ -2,12 +2,12 @@
 
 # Tarea 5.3.1 - Asegúrese de que los permisos en /etc/ssh/sshd_config están configurados
 - name: SCORED | 5.3.1 | PATCH | Ensure permissions on /etc/ssh/sshd_config are configured
-  file:
+  ansible.builtin.file:
     dest: /etc/ssh/sshd_config
     state: file
     owner: root
     group: root
-    mode: 0600
+    mode: "0600"
   when:
     - rhel8_cis_rule_5_3_1
   tags:
@@ -21,11 +21,11 @@
 
 # Tarea 5.3.2 - Asegurar que los permisos sobre SSH private host key files están configurados
 - name: SCORED | 5.3.2 | PATCH | Ensure permissions on SSH private host key files are configured - update
-  file:
+  ansible.builtin.file:
     dest: '{{ item }}'
     owner: root
     group: root
-    mode: 0600
+    mode: "0600"
   loop: "{{ ssh_host_keys.files | map(attribute='path') | list }}"
   when:
     - rhel8_cis_rule_5_3_2
@@ -39,11 +39,11 @@
 
 # Tarea 5.3.3 - Asegurar que los permisos sobre SSH public host key files están configurados
 - name: SCORED | 5.3.3 | PATCH | Ensure permissions on SSH public host key files are configured - update
-  file:
+  ansible.builtin.file:
     dest: '{{ item }}'
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   loop: "{{ ssh_host_keys.files | map(attribute='path') | list }}"
   when:
     - rhel8_cis_rule_5_3_3
@@ -59,7 +59,7 @@
 - name: SCORED | 5.3.4 | PATCH | Ensure SSH access is limited
   block:
     - name: SCORED | 5.3.4 | PATCH | Ensure SSH access is limited - allowusers
-      lineinfile:
+      ansible.builtin.lineinfile:
         state: present
         dest: /etc/ssh/sshd_config
         regexp: ^AllowUsers
@@ -71,7 +71,7 @@
         - "'allowusers' in rhel8_cis_sshd"
 
     - name: SCORED | 5.3.4 | PATCH | Ensure SSH access is limited - allowgroups
-      lineinfile:
+      ansible.builtin.lineinfile:
         state: present
         dest: /etc/ssh/sshd_config
         regexp: ^AllowGroups
@@ -83,7 +83,7 @@
         - "'allowgroups' in rhel8_cis_sshd"
 
     - name: SCORED | 5.3.4 | PATCH | Ensure SSH access is limited - denyusers
-      lineinfile:
+      ansible.builtin.lineinfile:
         state: present
         dest: /etc/ssh/sshd_config
         regexp: ^DenyUsers
@@ -95,7 +95,7 @@
         - "'denyusers' in rhel8_cis_sshd"
 
     - name: SCORED | 5.3.4 | PATCH | Ensure SSH access is limited - denygroups
-      lineinfile:
+      ansible.builtin.lineinfile:
         state: present
         dest: /etc/ssh/sshd_config
         regexp: ^DenyGroups
@@ -117,7 +117,7 @@
 
 # Tarea 5.3.5 - Asegurar SSH LogLevel sea el apropiado (Automático)
 - name: SCORED | 5.3.5 | PATCH | Ensure SSH LogLevel is appropriate
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^LogLevel
@@ -135,7 +135,7 @@
 # Tarea 5.3.6 - Asegurar SSH X11 forwarding está deshabilitado (Automático)
 ### DESHABILITADO - se utiliza para login a perfil web de internet
 - name: SCORED | 5.3.6 | PATCH | Ensure SSH X11 forwarding is disabled
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^X11Forwarding
@@ -152,7 +152,7 @@
 
 # Tarea 5.3.7 - Asegurar SSH MaxAuthTries esté establecido en 4 o menos (Automático)
 - name: SCORED | 5.3.7 | PATCH | Ensure SSH MaxAuthTries is set to 4 or less
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^(#)?MaxAuthTries \d
@@ -169,7 +169,7 @@
 
 # Tarea 5.3.8 - Asegurar SSH IgnoreRhosts está habilitado (Automático)
 - name: SCORED | 5.3.8 | PATCH | Ensure SSH IgnoreRhosts is enabled
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^IgnoreRhosts
@@ -186,7 +186,7 @@
 
 # Tarea 5.3.9 - Asegurar SSH HostbasedAuthentication está deshabilitado (Automático)
 - name: SCORED | 5.3.9 | PATCH | Ensure SSH HostbasedAuthentication is disabled
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^HostbasedAuthentication
@@ -204,7 +204,7 @@
 # Tarea 5.3.10 - Asegurar SSH root login está deshabilitado (Automático)
 ## DESHABILITADO - muchos servidores utilizan root para login a SSH
 - name: SCORED | 5.3.10 | PATCH | Ensure SSH root login is disabled
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^PermitRootLogin
@@ -221,7 +221,7 @@
 
 # Tarea 5.3.11 - Asegurar SSH PermitEmptyPasswords está deshabilitado (Automático)
 - name: SCORED | 5.3.11 | PATCH | Ensure SSH PermitEmptyPasswords is disabled
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^PermitEmptyPasswords
@@ -238,7 +238,7 @@
 
 # Tarea 5.3.12 - Asegurar SSH PermitUserEnvironment está deshabilitado (Automático)
 - name: SCORED | 5.3.12 | PATCH | Ensure SSH PermitUserEnvironment is disabled
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^PermitUserEnvironment
@@ -257,7 +257,7 @@
 - name: SCORED | 5.3.13 | PATCH | Ensure SSH Idle Timeout Interval is configured
   block:
     - name: SCORED | 5.3.13 | PATCH | Ensure SSH Idle Timeout Interval is configured
-      lineinfile:
+      ansible.builtin.lineinfile:
         state: present
         dest: /etc/ssh/sshd_config
         regexp: ^ClientAliveInterval
@@ -265,7 +265,7 @@
         validate: /usr/sbin/sshd -T -f %s
 
     - name: SCORED | 5.3.13 | PATCH | Ensure SSH ClientAliveCountMax set to <= 3
-      lineinfile:
+      ansible.builtin.lineinfile:
         state: present
         dest: /etc/ssh/sshd_config
         regexp: ^ClientAliveCountMax
@@ -283,7 +283,7 @@
 # Tarea 5.3.14 - Asegurar SSH LoginGraceTime esté establecido para 1 minuto o menos (Automático)
 - name: SCORED | 5.3.14 | PATCH | Ensure SSH LoginGraceTime is set to one minute or
     less
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^LoginGraceTime
@@ -300,7 +300,7 @@
 
 # Tarea 5.3.15 - Asegurar SSH warning banner está configurado (Automático)
 - name: SCORED | 5.3.15 | PATCH | Ensure SSH warning banner is configured
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^Banner
@@ -317,7 +317,7 @@
 
 # Tarea 5.3.16 - Asegurar SSH PAM está habilitado (Automático)
 - name: SCORED | 5.3.16 | PATCH | Ensure SSH PAM is enabled
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^UsePAM
@@ -334,7 +334,7 @@
 
 # Tarea 5.3.17 - Asegurar SSH AllowTcpForwarding está deshabilitado (Automático)
 - name: SCORED | 5.3.17 | PATCH | Ensure SSH AllowTcpForwarding is disabled
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^AllowTcpForwarding
@@ -351,7 +351,7 @@
 
 # Tarea 5.3.18 - Asegurar SSH MaxStartups está configurado (Automático)
 - name: SCORED | 5.3.18 | PATCH | Ensure SSH MaxStartups is configured
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^MaxStartups
@@ -368,7 +368,7 @@
 
 # Tarea 5.3.19 - Asegurar SSH MaxSessions esté delimitado (Automático)
 - name: SCORED | 5.3.19 | PATCH | Ensure SSH MaxSessions is set to 4 or less
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/ssh/sshd_config
     regexp: ^MaxSessions

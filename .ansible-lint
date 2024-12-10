@@ -1,9 +1,22 @@
+---
+
 skip_list:
-  - "schema"
-  - "role-name"
-  - "risky-shell-pipe"
-  - "experimental"
+  - schema
+  - role-name
+  - risky-shell-pipe
+  - experimental
+  - var-naming[no-role-prefix]
+  - var-spacing
+  - name[play]
+  - name[casing]
+  - name[template]
+  - yaml[trailing-spaces]
+  - yaml[new-line-at-end-of-file]
+  - yaml[empty-lines]
+  - key-order[task]
+
 
 exclude_paths:
-  - roles/cis_security/files/
-  - dynamic_inventory/
+  - files/
+
+

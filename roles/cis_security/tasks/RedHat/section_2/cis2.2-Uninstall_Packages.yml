@@ -2,7 +2,7 @@
 
 # Tarea 2.2.1 - Asegurar que el paquete NIS Client no está instalado
 - name: SCORED | 2.2.1 | PATCH | Ensure NIS Client package is not installed
-  package:
+  ansible.builtin.package:
     name: ypbind
     state: absent
   when:
@@ -19,7 +19,7 @@
 
 # Tarea 2.2.2 - Asegurar que el paquete RSH Client no está instalado
 - name: SCORED | 2.2.2 | PATCH | Ensure RSH Client package is not installed
-  package:
+  ansible.builtin.package:
     name: rsh
     state: absent
   when:
@@ -36,7 +36,7 @@
 
 # Tarea 2.2.3 - Asegurar que el paquete Talk Client no está instalado
 - name: SCORED | 2.2_3 | PATCH | Ensure Talk Client package is not installed
-  package:
+  ansible.builtin.package:
     name: talk
     state: absent
   when:
@@ -53,7 +53,7 @@
 
 # Tarea 2.2.4 - Asegurar que el paquete Telnet Client no está instalado
 - name: SCORED | 2.2.4 | PATCH | Ensure Telnet Client package is not installed
-  package:
+  ansible.builtin.package:
     name: telnet
     state: absent
   when:
@@ -70,7 +70,7 @@
 
 # Tarea 2.2.5 - Asegurar que el paquete LDAP Client no está instalado
 - name: SCORED | 2.2.5 | PATCH | Ensure LDAP client is not installed
-  package:
+  ansible.builtin.package:
     name: openldap-clients
     state: absent
   when:
@@ -86,7 +86,7 @@
 
 # Tarea 2.2.6 - Asegurar que el paquete TFTP Client no está instalado
 - name: SCORED | 2.2.6 | PATCH | Ensure TFTP client is not installed
-  package:
+  ansible.builtin.package:
     name: tftp
     state: absent
   when:
@@ -102,7 +102,7 @@
 
 # Tarea 2.2.7 - Asegurar RPC bind no esté instalado (Automático)
 - name: SCORED | 2.2.7 | PATCH | Ensure rpcbind is not installed
-  package:
+  ansible.builtin.package:
     name: rpcbind
     state: absent
   when:
@@ -115,4 +115,3 @@
     - rpcbind
     - patch
     - rule_2_2.7
-

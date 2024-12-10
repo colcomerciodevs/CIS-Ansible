@@ -1,9 +1,9 @@
 ---
 # Tarea 1.1.5 - Asegurar que exista una partición separada para /tmp
 - name: SCORED | 1.1.5 | PATCH | Ensure separate partition exists for /tmp
-  debug: msg={{ item.mount }}
+  ansible.builtin.debug: msg={{ item.mount }}
   loop: "{{ ansible_mounts | selectattr('mount', 'equalto', '/tmp') | list }}"
-  changed_when: no
+  changed_when: false
   when:
     - rhel8_cis_rule_1_1_7
   tags:
@@ -17,13 +17,13 @@
 - name: "SCORED | 1.1.6  | PATCH | Ensure nodev option set on /tmp partition\n\
     \ SCORED | 1.1.7  | PATCH | Ensure nosuid option set on /tmp partition\n SCORED\
     \ | 1.1.8 | PATCH | Ensure noexec option set on /tmp partition"
-  mount:
+  ansible.builtin.mount:
     name: /tmp
     src: "{{ rhel8_cis_tmp['source'] }}"
     state: mounted
     fstype: "{{ rhel8_cis_tmp['fstype'] }}"
     opts: "{{ rhel8_cis_tmp['opts'] }}"
-    fstab: yes
+    fstab: true
   when:
     - rhel8_cis_tmp['enabled'] == 'yes'
     - rhel8_cis_rule_1_1_6
@@ -39,9 +39,9 @@
 
 # Tarea 1.1.9 - Asegurar que /dev/shm esté en una partición separada (Automático)
 - name: NOTSCORED | 1.1.9 | PATCH | Ensure that /dev/shm is in a separate partition (Automatic)
-  debug:
+  ansible.builtin.debug:
     msg: --> Not relevant
-  changed_when: no   
+  changed_when: false   
   when:
     - rhel8_cis_rule_1_1_9
   tags:
@@ -55,13 +55,13 @@
 - name: "SCORED | 1.1.10  | PATCH | Ensure nodev option set on /dev/shm partition\n\
     \ SCORED | 1.1.11  | PATCH | Ensure nosuid option set on /dev/shm partition\n SCORED\
     \ | 1.1.12 | PATCH | Ensure noexec option set on /dev/shm partition"
-  mount:
+  ansible.builtin.mount:
     name: /dev/shm
     src: "{{ rhel8_cis_shm['source'] }}"
     state: mounted
     fstype: "{{ rhel8_cis_shm['fstype'] }}"
     opts: "{{ rhel8_cis_shm['opts'] }}"
-    fstab: yes
+    fstab: true
   when:
     - rhel8_cis_shm['enabled'] == 'yes'
     - rhel8_cis_rule_1_1_10
@@ -77,9 +77,9 @@
 
 # Tarea 1.1.13 - Asegurar que exista una partición separada para /var
 - name: SCORED | 1.1.13 | PATCH | Ensure separate partition exists for /var
-  debug: msg={{ item.mount }}
+  ansible.builtin.debug: msg={{ item.mount }}
   loop: "{{ ansible_mounts | selectattr('mount', 'equalto', '/var') | list }}"
-  changed_when: no
+  changed_when: false
   when:
     - rhel8_cis_rule_1_1_13
   tags:
@@ -93,13 +93,13 @@
 - name: "SCORED | 1.1.14  | PATCH | Ensure nodev option set on /var partition\n\
     \ SCORED | 1.1.15  | PATCH | Ensure nosuid option set on /var partition\n SCORED\
     \ | 1.1.16 | PATCH | Ensure noexec option set on /var partition"
-  mount:
+  ansible.builtin.mount:
     name: /var
     src: "{{ rhel8_cis_var['source'] }}"
     state: mounted
     fstype: "{{ rhel8_cis_var['fstype'] }}"
     opts: "{{ rhel8_cis_var['opts'] }}"
-    fstab: yes
+    fstab: true
   when:
     - rhel8_cis_var['enabled'] == 'yes'
     - rhel8_cis_rule_1_1_14
@@ -115,9 +115,9 @@
 
 # Tarea 1.1.17 - Asegurar que exista una partición separada para /var/tmp
 - name: SCORED | 1.1.17 | PATCH | Ensure separate partition exists for /var/tmp
-  debug: msg={{ item.mount }}
+  ansible.builtin.debug: msg={{ item.mount }}
   loop: "{{ ansible_mounts | selectattr('mount', 'equalto', '/var/tmp') | list }}"
-  changed_when: no
+  changed_when: false
   when:
     - rhel8_cis_rule_1_1_17
   tags:
@@ -131,13 +131,13 @@
 - name: "SCORED | 1.1.18  | PATCH | Ensure nodev option set on /var/tmp partition\n\
     \ SCORED | 1.1.19  | PATCH | Ensure nosuid option set on /var/tmp partition\n SCORED\
     \ | 1.1.20 | PATCH | Ensure noexec option set on /var/tmp partition"
-  mount:
+  ansible.builtin.mount:
     name: /var/tmp
     src: "{{ rhel8_cis_var_tmp['source'] }}"
     state: mounted
     fstype: "{{ rhel8_cis_var_tmp['fstype'] }}"
     opts: "{{ rhel8_cis_var_tmp['opts'] }}"
-    fstab: yes
+    fstab: true
   when:
     - rhel8_cis_var_tmp['enabled'] == 'yes'
     - rhel8_cis_rule_1_1_18
@@ -153,9 +153,9 @@
 
 # Tarea 1.1.21 - Asegurar que exista una partición separada para /var/log
 - name: SCORED | 1.1.21 | PATCH | Ensure separate partition exists for /var/log
-  debug: msg={{ item.mount }}
+  ansible.builtin.debug: msg={{ item.mount }}
   loop: "{{ ansible_mounts | selectattr('mount', 'equalto', '/var/log') | list }}"
-  changed_when: no
+  changed_when: false
   when:
     - rhel8_cis_rule_1_1_21
   tags:
@@ -169,13 +169,13 @@
 - name: "SCORED | 1.1.22  | PATCH | Ensure nodev option set on /var/log partition\n\
     \ SCORED | 1.1.23  | PATCH | Ensure nosuid option set on /var/log partition\n SCORED\
     \ | 1.1.24 | PATCH | Ensure noexec option set on /var/log partition"
-  mount:
+  ansible.builtin.mount:
     name: /var/log
     src: "{{ rhel8_cis_var_log['source'] }}"
     state: mounted
     fstype: "{{ rhel8_cis_var_log['fstype'] }}"
     opts: "{{ rhel8_cis_var_log['opts'] }}"
-    fstab: yes
+    fstab: true
   when:
     - rhel8_cis_var_log['enabled'] == 'yes'
     - rhel8_cis_rule_1_1_22
@@ -191,9 +191,9 @@
 
 # Tarea 1.1.25 - Asegurar que exista una partición separada para /var/log/audit
 - name: SCORED | 1.1.25 | PATCH | Ensure separate partition exists for /var/log/audit
-  debug: msg={{ item.mount }}
+  ansible.builtin.debug: msg={{ item.mount }}
   loop: "{{ ansible_mounts | selectattr('mount', 'equalto', '/var/log/audit') | list }}"
-  changed_when: no
+  changed_when: false
   when:
     - rhel8_cis_rule_1_1_25
   tags:
@@ -207,13 +207,13 @@
 - name: "SCORED | 1.1.26  | PATCH | Ensure nodev option set on /var/log/audit partition\n\
     \ SCORED | 1.1.27  | PATCH | Ensure nosuid option set on /var/log/audit partition\n SCORED\
     \ | 1.1.28 | PATCH | Ensure noexec option set on /var/log/audit partition"
-  mount:
+  ansible.builtin.mount:
     name: /var/log/audit
     src: "{{ rhel8_cis_var_log_audit['source'] }}"
     state: mounted
     fstype: "{{ rhel8_cis_var_log_audit['fstype'] }}"
     opts: "{{ rhel8_cis_var_log_audit['opts'] }}"
-    fstab: yes
+    fstab: true
   when:
     - rhel8_cis_var_log_audit['enabled'] == 'yes'
     - rhel8_cis_rule_1_1_26
@@ -229,9 +229,9 @@
 
 # Tarea 1.1.29 - Asegurar que exista una partición separada para /home
 - name: SCORED | 1.1.29 | PATCH | Ensure separate partition exists for /home
-  debug: msg={{ item.mount }}
+  ansible.builtin.debug: msg={{ item.mount }}
   loop: "{{ ansible_mounts | selectattr('mount', 'equalto', '/home') | list }}"
-  changed_when: no
+  changed_when: false
   when:
     - rhel8_cis_rule_1_1_29
   tags:
@@ -243,9 +243,9 @@
 
 # Tarea 1.1.32, 1.1.33, 1.1.34 - Asegurar que las opciones noexec, nodev y nosuid se apliquen en las particiones removibles
 - name: NOTSCORED | 1.1.32 | 1.1.33 | 1.1.34 | PATCH | Ensure noexec, nodev, nosuid options set on removable media partitions
-  debug:
+  ansible.builtin.debug:
     msg: --> Not relevant
-  changed_when: no   
+  changed_when: false   
   when:
     - rhel8_cis_rule_1_1_32
     - rhel8_cis_rule_1_1_33
@@ -263,13 +263,13 @@
     \ SCORED | 1.1.31  | PATCH | Ensure nosuid option set on /home partition\n SCORED\
     \ | 1.1.35 | PATCH | Ensure usrquota options set on /home partition\n SCORED\
     \ | 1.1.36 | PATCH | Ensure grpquota options set on /home partition"
-  mount:
+  ansible.builtin.mount:
     name: /home
     src: "{{ rhel8_cis_home['source'] }}"
     state: mounted
     fstype: "{{ rhel8_cis_home['fstype'] }}"
     opts: "{{ rhel8_cis_home['opts'] }}"
-    fstab: yes
+    fstab: true
   when:
     - rhel8_cis_home['enabled'] == 'yes'
     - rhel8_cis_rule_1_1_30
@@ -287,12 +287,12 @@
 
 # Tarea 1.1.37 - Asegurar que el sticky bit esté establecido sobre todos los directorios que son de escritura mundial (Automático)
 - name: SCORED | 1.1.37 | PATCH | Ensure sticky bit is set on all world-writable directories
-  shell: |
+  ansible.builtin.shell: |
     set -o pipefail
     df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev \
       -type d -perm -0002 2>/dev/null | xargs chmod a+t
-  changed_when: no
-  failed_when: no
+  changed_when: false
+  failed_when: false
   when:
     - rhel8_cis_rule_1_1_37
   tags:
@@ -305,9 +305,9 @@
 
 # Tarea 1.1.38 - Deshabilitar el Automounting
 - name: Deshabilitar autofs si no hay NFS usándolo y las reglas de CIS lo permiten
-  service:
+  ansible.builtin.service:
     name: autofs
-    enabled: no
+    enabled: false
     state: stopped
   when:
     - "'autofs' in ansible_facts.packages"
@@ -322,12 +322,12 @@
 
 # Tarea 1.1.23 - Deshabilitar almacenamiento USB
 - name: SCORED | 1.1.39 | PATCH | Disable USB Storage
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/modprobe.d/cis.conf
     regexp: ^(#)?install usb-storage(\s|$)
     line: install usb-storage /bin/true
-    mode: 0644
-    create: yes
+    mode: "0644"
+    create: true
   when:
     - rhel8_cis_rule_1_1_39
   tags:
@@ -339,7 +339,7 @@
 
 # Tarea 1.1.23 - Remover modulo de almacenamiento USB
 - name: SCORED | 1.1.39 | PATCH | Remove USB Storage module
-  modprobe:
+  ansible.builtin.modprobe:
     name: usb-storage
     state: absent
   when:

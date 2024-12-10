@@ -9,27 +9,27 @@
 
 # Tarea para reiniciar el servicio sshd para aplicar cualquier cambio en su configuración
 - name: Reiniciar sshd
-  become: yes
+  become: true
   ansible.builtin.systemd:
     name: sshd
     state: restarted
 
-# Tarea para limpiar las tablas de rutas IPv4 
-- name: sysctl flush ipv4 route table
-  become: yes
-  sysctl:
+# Tarea para limpiar las tablas de rutas IPv4
+- name: Sysctl flush ipv4 route table
+  become: true
+  ansible.builtin.sysctl:
     name: net.ipv4.route.flush
     value: 1
-    sysctl_set: yes
+    sysctl_set: true
   when: ansible_virtualization_type != "docker"
 
 # Tarea para limpiar las tablas de rutas IPv6
-- name: sysctl flush ipv6 route table
-  become: yes
-  sysctl:
+- name: Sysctl flush ipv6 route table
+  become: true
+  ansible.builtin.sysctl:
     name: net.ipv6.route.flush
     value: 1
-    sysctl_set: yes
+    sysctl_set: true
   when: ansible_virtualization_type != "docker"
 
 # Handler para verificar cambios y aplicar authselect solo si hubo modificaciones
@@ -40,6 +40,8 @@
       register: authselect_check
       changed_when: "'No changes detected' not in authselect_check.stdout"
 
-    - name: "Apply authselect changes"
-      ansible.builtin.command: authselect apply-changes
+    - name: Apply authselect changes
+      ansible.builtin.command:
+        cmd: authselect apply-changes
       when: authselect_check.changed
+      changed_when: true

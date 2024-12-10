@@ -1,7 +1,7 @@
 ---
 # Tarea 5.4.1 - Asegurar que los requerimientos de creación de contraseñas están configurados
 - name: SCORED | 5.4.1 | PATCH | Ensure password creation requirements are configured
-  lineinfile:
+  ansible.builtin.lineinfile:
     state: present
     dest: /etc/security/pwquality.conf
     regexp: ^{{ item.key }}
@@ -34,12 +34,12 @@
     - { regexp: '^\s*deny\s*=\s*[1-5]\b', line: 'deny = {{ rhel8_cis_pam_faillock.deny }}' }
     - { regexp: '^\s*unlock_time\s*=\s*(0|9[0-9][0-9]|[1-9][0-9][0-9][0-9]+)\b', line: 'unlock_time = {{ rhel8_cis_pam_faillock.unlock_time }}' }
   when:
-      - rhel8_cis_rule_5_4_2
+    - rhel8_cis_rule_5_4_2
   tags:
-      - level1
-      - patch
-      - pam
-      - rule_5.4.2
+    - level1
+    - patch
+    - pam
+    - rule_5.4.2
 
 # Tarea 5.4.3 - Asegurar que el bloqueo de contraseñas está configurado para 5 intentos
 ## PENDIENTE REVISAR DEPENDE DE AUTHSELECT PERSONALIZADO PARA SU EJECUCION

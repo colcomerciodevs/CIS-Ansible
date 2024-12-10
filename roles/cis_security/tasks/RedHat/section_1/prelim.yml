@@ -1,31 +1,27 @@
 # Prelim general requerido | Recolecta los hechos (facts) sobre los paquetes instalados en el sistema
 - name: PRELIM | Gather the rpm package facts
-  package_facts:
+  ansible.builtin.package_facts:
     manager: auto
 
 # Prelim requerido para la tarea 1.1.4 | Verifica si el sistema está arrancando con EFI o UEFI estableciendo un hecho (fact)
 - name: PRELIM | Check to see if we are booting with EFI or UEFI
-  set_fact:
+  ansible.builtin.set_fact:
     booted_with_efi: "{{ ansible_facts['mounts'] | selectattr('mount', 'equalto',\
       \ '/boot/efi') | list | length > 0 }}"
-  changed_when: no
-  check_mode: no
+  changed_when: false
+  check_mode: false
   args:
     warn: false
 
 # Prelim requerido para la tarea 1.1.38 | Revisa si existe el archivo de configuración de autofs
 - name: Check if autofs config file exists
-  stat:
+  ansible.builtin.stat:
     path: /etc/auto.master
   register: autofs_config
 
 # Prelim requerido para la tarea 1.1.38 | Busca montajes NFS gestionados por autofs si existe el archivo de configuración
 - name: Check for NFS mounts managed by autofs if config file exists
-  shell: "grep -i nfs /etc/auto.master || echo ''"
+  ansible.builtin.shell: "grep -i nfs /etc/auto.master || echo ''"
   register: autofs_nfs_check
   when: autofs_config.stat.exists
   changed_when: false
-
-
-
-

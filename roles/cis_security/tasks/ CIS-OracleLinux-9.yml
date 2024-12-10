@@ -6,7 +6,7 @@
 - name: Ejecutar tareas de la Sección 1 (RedHat/Oracle Linux 9)
   ansible.builtin.include_tasks:
     file: RedHat/section_1/main.yml
-  when: rhel8cis_section1 
+  when: rhel8cis_section1
   tags:
     - rhel8cis_section1
 
@@ -14,7 +14,7 @@
 - name: Ejecutar tareas de la Sección 2 (RedHat/Oracle Linux 9)
   ansible.builtin.include_tasks:
     file: RedHat/section_2/main.yml
-  when: rhel8cis_section2 
+  when: rhel8cis_section2
   tags:
     - rhel8cis_section2
 
@@ -22,7 +22,7 @@
 - name: Ejecutar tareas de la Sección 3 (RedHat/Oracle Linux 9)
   ansible.builtin.include_tasks:
     file: RedHat/section_3/main.yml
-  when: rhel8cis_section3 
+  when: rhel8cis_section3
   tags:
     - rhel8cis_section3
 
@@ -30,6 +30,6 @@
 - name: Ejecutar tareas de la Sección 5 (RedHat/Oracle Linux 9)
   ansible.builtin.include_tasks:
     file: RedHat/section_5/main.yml
-  when: rhel8cis_section5 
+  when: rhel8cis_section5
   tags:
     - rhel8cis_section5

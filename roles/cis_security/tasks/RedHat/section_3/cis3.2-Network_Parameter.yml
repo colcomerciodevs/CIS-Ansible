@@ -2,12 +2,12 @@
 
 # Tarea 3.2.1 - Asegurar que el envío packet redirect está deshabilitado (Automático)
 - name: SCORED | 3.2.1 | PATCH | Ensure packet redirect sending is disabled
-  sysctl:
+  ansible.builtin.sysctl:
     name: '{{ item }}'
     value: '0'
-    sysctl_set: yes
+    sysctl_set: true
     state: present
-    reload: yes
+    reload: true
     sysctl_file: /etc/sysctl.d/cis.conf
   loop:
     - net.ipv4.conf.all.send_redirects
@@ -26,21 +26,21 @@
 - name: SCORED | 3.2.2 | PATCH | Ensure IP forwarding is disabled
   block:
     - name: SCORED | 3.2.2 | PATCH | Ensure IPv4 forwarding is disabled
-      sysctl:
+      ansible.builtin.sysctl:
         name: net.ipv4.ip_forward
         value: '0'
         state: present
-        reload: yes
+        reload: true
         sysctl_file: /etc/sysctl.d/cis.conf
       notify:
         - sysctl flush ipv4 route table
 
     - name: SCORED | 3.2.2 | PATCH | Ensure IPv6 forwarding is disabled
-      sysctl:
+      ansible.builtin.sysctl:
         name: net.ipv6.conf.all.forwarding
         value: '0'
         state: present
-        reload: yes
+        reload: true
         sysctl_file: /etc/sysctl.d/cis.conf
       when:
         - rhel8_cis_ipv6_required

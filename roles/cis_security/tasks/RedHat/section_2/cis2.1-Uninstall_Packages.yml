@@ -3,7 +3,7 @@
 
 # Tarea 2.1.4 - Asegurar que xinetd no está instalado
 - name: SCORED | 2.1.4 | PATCH | Ensure xinetd is not installed
-  package:
+  ansible.builtin.package:
     name: xinetd
     state: absent
   when:
@@ -19,7 +19,7 @@
 
 # Tarea 2.1.5 - Asegurar X Window System no esté instalado
 - name: SCORED | 2.1.5 | PATCH | Ensure X Window System is not installed
-  package:
+  ansible.builtin.package:
     name: xorg-x11-server-*
     state: absent
   failed_when: false
@@ -36,12 +36,12 @@
 
 # Tarea 2.1.6 - Asegurar Avahi Server no esté habilitado
 - name: SCORED | 2.1.6 | PATCH | Ensure Avahi Server is not enabled
-  service:
+  ansible.builtin.service:
     name:
       - avahi-autoipd
       - avahi
     state: stopped
-    enabled: no
+    enabled: false
   when:
     - is_new_installation == "yes"
     - "'avahi' in ansible_facts.packages or 'avahi-autopd' in ansible_facts.packages"
@@ -56,7 +56,7 @@
 
 # Tarea 2.1.7 - Asegurar que el paquete CUPS no está instalado
 - name: SCORED | 2.1.7 | PATCH | Ensure CUPS is not installed
-  package:
+  ansible.builtin.package:
     name: cups
     state: absent
   when:
@@ -73,7 +73,7 @@
 
 # Tarea 2.1.8 - Asegurar que el paquete DHCP Server no está instalado
 - name: SCORED | 2.1.8 | PATCH | Ensure DHCP Server is not installed
-  package:
+  ansible.builtin.package:
     name: dhcpd
     state: absent
   when:
@@ -90,7 +90,7 @@
 
 # Tarea 2.1.9 - Asegurar que el paquete LDAP Server no está instalado
 - name: SCORED | 2.1.9 | PATCH | Ensure LDAP Server is not installed
-  package:
+  ansible.builtin.package:
     name: openldap-servers
     state: absent
   when:
@@ -107,7 +107,7 @@
 
 # Tarea 2.1.10 - Asegurar que el paquete NFS no está instalado
 - name: SCORED | 2.1.10 | PATCH | Ensure NFS is not installed
-  package:
+  ansible.builtin.package:
     name:
       - nfs-utils
       - nfs-kernel-server
@@ -127,7 +127,7 @@
 
 # Tarea 2.1.11 - Asegurar que el paquete DNS Server no está instalado
 - name: SCORED | 2.1.11 | PATCH | Ensure DNS Server packages are not installed
-  package:
+  ansible.builtin.package:
     name:
       - bind
       - bind-chroot
@@ -145,7 +145,7 @@
 
 # Tarea 2.1.12 y 2.1.13 - Asegurar que los paquetes FTP y VSFTPD no están instalados
 - name: "SCORED | 2.1.12 | PATCH | Ensure FTP  packages are not installed\n SCORED | 2.1.13 | PATCH | Ensure VSFTPD  packages are not installed"
-  package:
+  ansible.builtin.package:
     name: vsftpd
     state: absent
   when:
@@ -163,7 +163,7 @@
 
 # Tarea 2.1.14 - Asegurar que los paquetes TFTP no están instalados
 - name: SCORED | 2.1.14 | PATCH | Ensure TFTP packages are not installed
-  package:
+  ansible.builtin.package:
     name: tftp-server
     state: absent
   when:
@@ -179,7 +179,7 @@
 
 # Tarea 2.1.15 - Asegurar que el paquete del servidor HTTP no está instalado
 - name: SCORED | 2.1.15 | PATCH | Ensure HTTP Server package is not installed
-  package:
+  ansible.builtin.package:
     name: httpd
     state: absent
   when:
@@ -195,7 +195,7 @@
 
 # Tarea 2.1.16 - Asegurar que los paquetes del servidor IMAP y POP3 no están instalados
 - name: SCORED | 2.1.16 | PATCH | Ensure IMAP and POP3 Server packages are not installed
-  package:
+  ansible.builtin.package:
     name: dovecot
     state: absent
   when:
@@ -211,7 +211,7 @@
 
 # Tarea 2.1.17 - Asegurar que el paquete Samba no está instalado
 - name: SCORED | 2.1.17 | PATCH | Ensure Samba package is not installed
-  package:
+  ansible.builtin.package:
     name: samba
     state: absent
   when:
@@ -227,7 +227,7 @@
 
 # Tarea 2.1.18 - Asegurar que el paquete del servidor HTTP Proxy no está instalado
 - name: SCORED | 2.1.18 | PATCH | Ensure HTTP Proxy Server package is not installed
-  package:
+  ansible.builtin.package:
     name: squid
     state: absent
   when:
@@ -243,10 +243,10 @@
 
 # Tarea 2.1.19 - Asegurar que el servicio SNMP está deshabilitado
 - name: SCORED | 2.1.19 | PATCH | Ensure SNMP service is disabled
-  service:
+  ansible.builtin.service:
     name: snmpd
     state: stopped
-    enabled: no
+    enabled: false
   when:
     - is_new_installation == "yes"
     - "'net-snmp' in ansible_facts.packages"
@@ -277,7 +277,7 @@
 
 # Tarea 2.1.21 - Asegurar que el paquete Telnet Server no está instalado
 - name: SCORED | 2.1.21 | PATCH | Ensure Telnet Server package is not installed
-  package:
+  ansible.builtin.package:
     name: telnet-server
     state: absent
   when:
@@ -293,7 +293,7 @@
 
 # Tarea 2.1.22 - Asegurar que el paquete Rsync no está instalado
 - name: SCORED | 2.1.22 | PATCH | Ensure Rsync package is not installed
-  package:
+  ansible.builtin.package:
     name: rsync
     state: absent
   when:
@@ -309,7 +309,7 @@
 
 # Tarea 2.1.23 - Asegurar que el paquete NIS Server no está instalado
 - name: SCORED | 2.1.23 | PATCH | Ensure NIS Server package is not installed
-  package:
+  ansible.builtin.package:
     name: ypserv
     state: absent
   when:
@@ -322,3 +322,4 @@
     - nis
     - patch
     - rule_2.1.23
+  
