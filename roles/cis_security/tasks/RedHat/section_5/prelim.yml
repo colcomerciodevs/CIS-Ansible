@@ -1,15 +1,5 @@
 ---
 
-# ELIMINAR TAREA LA HACE CONFIGURE AUTHSELECT
-# Prelim general requerido | Verificar perfil actual con authselect
-- name: PRELIM | Verificar el perfil actual de authselect
-  ansible.builtin.command: authselect current
-  register: current_authselect_profile
-  changed_when: false
-  check_mode: false  # Desactiva check mode solo para esta tarea
-
-
-# OK
 # Prelim requerido para la tarea 5.2.4 y 5.2.5 | Encuentra todos los archivos sudoers
 - name: "PRELIM | Find all sudoers files."
   ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
@@ -18,7 +8,7 @@
   check_mode: false
   register: rhel8_cis_sudoers_files
 
-# OK
+
 # Prelim requerido para la tarea 5.3.2 | Buscar archivos de claves privadas del host SSH
 - name: PRELIM | Ensure permissions on SSH private host key files are configured - find
   ansible.builtin.find:
@@ -26,42 +16,38 @@
     patterns: ssh_host_*_key
   register: ssh_host_keys
 
-# OK
+
 # Prelim requerido para la tarea 5.3.3 | Buscar archivos de claves públicas del host SSH
 - name: PRELIM | Ensure permissions on SSH public host key files are configured - find
   ansible.builtin.find:
     paths: /etc/ssh
     patterns: ssh_host_*_key.pub
   register: ssh_host_keys
-  
 
-# ELIMINAR TAREA LA HACE CONFIGURE AUTHSELECT - FALTA DEFINIR  SHA256 TASK
-# Prelim requerido para la tarea 5.4.2 y 5.4.4 | Asegúrese de que faillock y SHA-512 esten configurados en el perfil SSSD
-- name: PRELIM | Ensure faillock and SHA-512 are enabled in authselect profile
-  ansible.builtin.command:
-    cmd: "authselect select sssd with-sha512 with-faillock --force"
+ 
+# Prelim requerido para la tarea 5.5.1 - identificar usuarios interactivos en el sistema
+- name: "PRELIM | AUDIT | Identify interactive users"
+  ansible.builtin.shell: >
+    awk -F: -v excluded="{{ excluded_users | join('|') }}" -v min_uid="{{ min_int_uid }}" '
+    ($3 >= min_uid && !($1 ~ excluded) &&
+     $7 !~ /(nologin|false|null)/) { print $1 }' /etc/passwd
   changed_when: false
-  when:
-    - current_authselect_profile.stdout is defined
-    - "'with-sha512' not in current_authselect_profile.stdout or 'with-faillock' not in current_authselect_profile.stdout"
-  notify: Reiniciar servicios PAM
-  register: authselect_with_sha512_faillock
+  register: discovered_interactive_usernames
+  tags:
+    - always
 
-# Prelim requerido para la tarea 5.4.3 | Asegúrese de que pam_pwhistory.so está configurado en system-auth
-- name: PRELIM | Ensure password reuse is limited to 12 using authselect
-  ansible.builtin.command:
-    cmd: authselect edit
-  register: authselect_edit
-  changed_when: false
 
-  # Prelim requerido para la tarea 5.5.5 | Obtener lista de usuarios del sistema 
-- name: PRELIM | Get list of system users
+  # Prelim requerido para la tarea 5.5.6 | Obtener lista de usuarios del sistema 
+- name: "Generate rhel8_cis_passwd list"
   ansible.builtin.shell: |
-    getent passwd | awk -F: '$3 >= 1000 {print $1}' | grep -vE '^(root|tux|proactiva|admin|oracle)$'
-  register: usuarios_filtrados
-  check_mode: false  # Desactiva check mode solo para esta tarea
-  ignore_errors: true
+    getent passwd | awk -F: '{print "{\"id\": \""$1"\", \"uid\": "$3", \"shell\": \""$7"\"}"}'
+  register: passwd_data
   changed_when: false
+  check_mode: false
+
+- name: "Set rhel8_cis_passwd variable"
+  ansible.builtin.set_fact:
+    rhel8_cis_passwd: "{{ passwd_data.stdout_lines | map('from_json') | list }}"
 
 
 # Prelim requerido para la tarea 5.5.7 | Verificar GID del usuario root 
@@ -73,14 +59,4 @@
   become: true
   changed_when: false
 
-# Prelim requerido para la tarea 5.5.1 - identificar usuarios interactivos en el sistema
-- name: "PRELIM | AUDIT | Identify interactive users"
-  ansible.builtin.shell: >
-    awk -F: -v excluded="{{ excluded_users | join('|') }}" -v min_uid="{{ min_int_uid }}" '
-    ($3 >= min_uid && !($1 ~ excluded) &&
-     $7 !~ /(nologin|false|null)/) { print $1 }' /etc/passwd
-  changed_when: false
-  register: discovered_interactive_usernames
-  tags:
-    - always
 
