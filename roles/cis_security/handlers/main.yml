@@ -15,7 +15,7 @@
     state: restarted
 
 # Tarea para limpiar las tablas de rutas IPv4
-- name: Sysctl flush ipv4 route table
+- name: sysctl flush ipv4 route table
   become: true
   ansible.builtin.sysctl:
     name: net.ipv4.route.flush
@@ -24,7 +24,7 @@
   when: ansible_virtualization_type != "docker"
 
 # Tarea para limpiar las tablas de rutas IPv6
-- name: Sysctl flush ipv6 route table
+- name: sysctl flush ipv6 route table
   become: true
   ansible.builtin.sysctl:
     name: net.ipv6.route.flush
