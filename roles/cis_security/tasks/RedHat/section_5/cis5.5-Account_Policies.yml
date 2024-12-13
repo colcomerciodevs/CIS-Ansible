@@ -301,25 +301,19 @@
         path: /etc/login.defs
         regexp: '^USERGROUPS_ENAB'
         line: 'USERGROUPS_ENAB no'
-
+ 
     - name: "5.5.8 | PATCH | Add pam_umask.so to the custom authselect profile"
       ansible.builtin.lineinfile:
         path: "/etc/authselect/custom/{{ rhel8_cis_authselect['custom_profile_name'] }}/{{ item }}"
         regexp: '^session\s+required\s+pam_umask.so'
         line: 'session optional pam_umask.so'
         insertafter: '^session\s+required\s+pam_limits.so'
+      notify: "Check authselect changes"
+      when:
+        - rhel8_cis_rule_5_5_8_authselect
       loop:
         - system-auth
         - password-auth
-
-    - name: "5.5.8 | PATCH | Apply the custom authselect profile"
-      ansible.builtin.command:
-        cmd: >
-          authselect select custom/{{ rhel8_cis_authselect['custom_profile_name'] }}
-          --force
-      register: authselect_apply
-      changed_when: authselect_apply.rc == 0
-
   when:
     - rhel8_cis_rule_5_5_8
   tags:
@@ -327,7 +321,6 @@
     - patch
     - accounts
     - rule_5.5.8
-
 
 
 # Tarea 5.5.9 - Asegurar default user shell timeout is 900 seconds or less (Automático)

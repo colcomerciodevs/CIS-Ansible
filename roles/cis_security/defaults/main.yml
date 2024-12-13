@@ -181,10 +181,12 @@ rhel8_cis_rule_5_3_19: true
 
 
 # Configure PAM
-rhel8_cis_rule_5_4_1: true
-rhel8_cis_rule_5_4_2: true
-rhel8_cis_rule_5_4_3: true
-rhel8_cis_rule_5_4_4: true
+## AUTSELECT personalizado alto riesgo de implementar 
+rhel8_cis_rule_5_4_1: true # Depende de AUTSELECT - Modulo PWQUALITY habilitado por defecto en perfil SSSD 
+rhel8_cis_rule_5_4_2: false # DESHABILITADO - Depende del perfil personalizado de AUTSELECT para agregar Modulo FAILLOCK
+rhel8_cis_rule_5_4_3: false # DESHABILITADO - Depende del perfil personalizado de AUTSELECT para agregar Modulo PAM_PWHISTORY
+rhel8_cis_rule_5_4_4_authselect: false # DESHABILITADO - Modulo pam_unix.so con SHA-512 por defecto en perfil SSSD -se debe pasar al perfil personalizado
+rhel8_cis_rule_5_4_4: true # Configuracion que no depende de AUTSELECT
 
 # Configure Account Policies
 rhel8_cis_rule_5_5_1: true
@@ -195,6 +197,7 @@ rhel8_cis_rule_5_5_5: true
 rhel8_cis_rule_5_5_6: false ## DESHABILITADO - Impide el inicio de session a varias cuentas
 rhel8_cis_rule_5_5_7: true
 rhel8_cis_rule_5_5_8: false ## DESHABILITADO - Tiene muchas opciones restrictivas que pueden afectar el sistema
+rhel8_cis_rule_5_5_8_authselect: false ## DESHABILITADO - Depende del perfil personalizado de AUTSELECT para agregar Modulo PAM_UMASK
 rhel8_cis_rule_5_5_9: true
 rhel8_cis_rule_5_5_10: true
 
