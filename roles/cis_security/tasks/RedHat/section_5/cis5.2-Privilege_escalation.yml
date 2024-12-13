@@ -4,7 +4,9 @@
   ansible.builtin.package:
     name: sudo
     state: present
-  when: rhel8_cis_rule_5_2_1 and ansible_facts.packages['sudo'] is not defined
+  when:
+    - rhel8_cis_rule_5_2_1
+    - ansible_facts.packages['sudo'] is not defined or ansible_facts.packages['sudo'][0].state != 'installed'
   changed_when: false
   tags:
     - level1
