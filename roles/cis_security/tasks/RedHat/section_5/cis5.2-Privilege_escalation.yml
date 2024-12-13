@@ -6,13 +6,14 @@
     state: present
   when:
     - rhel8_cis_rule_5_2_1
-    - ansible_facts.packages['sudo'] is not defined or ansible_facts.packages['sudo'][0].state != 'installed'
+    - "'sudo' not in ansible_facts.packages"
   changed_when: false
   tags:
     - level1
     - patch
     - sudo
     - rule_5_2_1
+
 
 
 # Tarea 5.2.2 - Asegurar que comandos sudo usen pty (Automático)
