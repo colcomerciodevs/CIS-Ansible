@@ -337,6 +337,7 @@ rhel8_cis_authselect:
   custom_profile_name: custom-profile
   # This variable configures the ID of the existing profile that should be used as a base for the new profile.
   default_file_to_copy: "sssd --symlink-meta"
+  # Modificadores predefinidos
   options: with-sudo with-faillock without-nullok
 
 

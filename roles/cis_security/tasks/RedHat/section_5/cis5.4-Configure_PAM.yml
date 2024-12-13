@@ -45,18 +45,14 @@
 ## PENDIENTE REVISAR DEPENDE DE AUTHSELECT PERSONALIZADO (PAM_PWHISTORY) PARA SU EJECUCION
 - name: "5.4.3 | PATCH | Ensure password attempts are limited to 5 (automatic)"
   block:
-    - name: "5.4.3 | Add pam_pwhistory to custom profile (password-auth)"
+    - name: "5.4.3 | Add pam_pwhistory to custom profile"
       ansible.builtin.lineinfile:
-        path: "/etc/authselect/custom/{{ rhel8_cis_authselect['custom_profile_name'] }}/password-auth"
+        path: "/etc/authselect/custom/{{ rhel8_cis_authselect['custom_profile_name'] }}/{{ item }}"
         line: "password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=5 remember={{ rhel8_cis_pam_faillock.remember }}"
         insertafter: '^password\s*requisite\s*pam_pwquality.so'
-      notify: "Check authselect changes"
-
-    - name: "5.4.3 | Add pam_pwhistory to custom profile (system-auth)"
-      ansible.builtin.lineinfile:
-        path: "/etc/authselect/custom/{{ rhel8_cis_authselect['custom_profile_name'] }}/system-auth"
-        line: "password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=5 remember={{ rhel8_cis_pam_faillock.remember }}"
-        insertafter: '^password\s*requisite\s*pam_pwquality.so'
+      loop:
+        - password-auth
+        - system-auth
       notify: "Check authselect changes"
   when: rhel8_cis_rule_5_4_3
   tags:
@@ -64,6 +60,7 @@
     - pam
     - patch
     - rule_5.4.3
+
 
 # Tarea 5.4.4 - Asegurar que el algoritmo de hash de contraseñas es SHA-512
 ## PENDIENTE REVISAR DEPENDE DE AUTHSELECT PERSONALIZADO PARA SU EJECUCION
