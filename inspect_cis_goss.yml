@@ -1,9 +1,9 @@
 ---
-- name: Inspeccionar control CIS con Goss
+- name: Inspeccionar controles CIS con Goss
   hosts: "{{ target_ip | default('localhost') }}" 
   become: true
   vars:
-    audit_failures: []  # Variable para registrar errores
+    audit_failures: []  # Variable para registrar auditorías fallidas de forma estructurada
   tasks:
     - name: Copiar el binario de Goss al servidor remoto
       ansible.builtin.copy:
@@ -20,32 +20,28 @@
               mode: "0600"
               contents:
                 - "PermitRootLogin no"
+            /etc/passwd:
+              exists: true
+              mode: "0644"
         dest: /tmp/goss.yaml
         mode: '0644'
 
     - name: Ejecutar validación de Goss
-      ansible.builtin.command: /usr/local/bin/goss --gossfile /tmp/goss.yaml validate -f documentation
+      ansible.builtin.command: /usr/local/bin/goss --gossfile /tmp/goss.yaml validate -f json
       register: goss_result
       failed_when: false  # No detener el playbook si falla la auditoría
       changed_when: false
 
-    - name: Registrar errores si los hay
+    - name: Procesar errores de la validación
       ansible.builtin.set_fact:
-        audit_failures: "{{ audit_failures + [goss_result.stdout] }}"
-      when: goss_result.rc != 0
+        audit_failures: "{{ audit_failures + [item] }}"
+      with_items: "{{ goss_result.stdout | from_json | json_query('results[?result==`failed`]') }}"
 
-    - name: Mostrar resultados de la validación
+    - name: Mostrar resultados detallados de auditorías fallidas
       ansible.builtin.debug:
         msg: |
-          Resultados de la validación de Goss:
-          {{ goss_result.stdout }}
-
-    - name: Mostrar resumen de auditorías fallidas
-      ansible.builtin.debug:
-        msg: |
-          Resumen de auditorías fallidas:
-          {{ audit_failures | join('\n') }}
+          Auditorías fallidas:
+          {% for failure in audit_failures %}
+          - {{ failure.title }}: {{ failure.summary_line }}
+          {% endfor %}
       when: audit_failures | length > 0
-
-
-
