@@ -24,10 +24,20 @@
     - name: Ejecutar validación de Goss
       ansible.builtin.command: /usr/local/bin/goss --gossfile /tmp/goss.yaml validate -f documentation
       register: goss_result
-      failed_when: goss_result.rc != 0
+      failed_when: false  # No marque la tarea como fallida automáticamente
       changed_when: false
 
     - name: Mostrar resultados de la validación
       ansible.builtin.debug:
-        var: goss_result.stdout
+        msg: |
+          Resultados de la validación de Goss:
+          {{ goss_result.stdout }}
+
+    - name: Reportar errores si los hay
+      ansible.builtin.fail:
+        msg: |
+          Fallos detectados en la validación de Goss:
+          {{ goss_result.stdout }}
+      when: goss_result.rc != 0  # Marca el playbook como fallido si hay errores en Goss
+
 
