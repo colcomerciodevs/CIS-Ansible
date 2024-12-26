@@ -18,11 +18,11 @@
               mode: "600"
               contains:
                 - "PermitRootLogin no"
-        dest: /etc/goss/goss.yaml
+        dest: /tmp/goss.yaml
         mode: '0644'
 
     - name: Ejecutar validación de Goss
-      ansible.builtin.command: /usr/local/bin/goss validate -f documentation
+      ansible.builtin.command: /usr/local/bin/goss --gossfile /tmp/goss.yaml validate -f documentation
       register: goss_result
       failed_when: goss_result.rc != 0
       changed_when: false
@@ -30,3 +30,4 @@
     - name: Mostrar resultados de la validación
       ansible.builtin.debug:
         var: goss_result.stdout
+
