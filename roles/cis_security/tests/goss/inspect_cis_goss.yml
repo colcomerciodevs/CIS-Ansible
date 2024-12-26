@@ -1,0 +1,37 @@
+---
+- name: Inspeccionar control CIS con Goss
+  hosts: "{{ target_ip | default('localhost') }}" 
+  become: true
+  tasks:
+    - name: Instalar dependencias necesarias
+      ansible.builtin.package:
+        name: curl
+        state: present
+
+    - name: Copiar el binario de Goss al servidor remoto
+      ansible.builtin.copy:
+        src: goss
+        dest: /usr/local/bin/goss
+        mode: '0755'
+
+    - name: Copiar el archivo de configuración de Goss
+      ansible.builtin.copy:
+        content: |
+          file:
+            /etc/ssh/sshd_config:
+              exists: true
+              mode: "600"
+              contains:
+                - "PermitRootLogin no"
+        dest: /etc/goss/goss.yaml
+        mode: '0644'
+
+    - name: Ejecutar validación de Goss
+      ansible.builtin.command: /usr/local/bin/goss validate -f documentation
+      register: goss_result
+      failed_when: goss_result.rc != 0
+      changed_when: false
+
+    - name: Mostrar resultados de la validación
+      ansible.builtin.debug:
+        var: goss_result.stdout
