@@ -29,6 +29,10 @@
       failed_when: false  # No detener el playbook si falla la auditoría
       changed_when: false
 
+    - name: Depurar salida completa de Goss
+      ansible.builtin.debug:
+        var: goss_result.stdout
+
     - name: Procesar errores de la validación
       ansible.builtin.set_fact:
         audit_failures: "{{ audit_failures + [{'title': item.title, 'details': item.summary_line}] }}"
