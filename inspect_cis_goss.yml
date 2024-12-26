@@ -12,12 +12,22 @@
     - name: Copiar el archivo de configuración de Goss
       ansible.builtin.copy:
         content: |
-          file:
-            /etc/ssh/sshd_config:
-              exists: true
-              mode: "0600"
-              contents:
-                - "PermitRootLogin no"
+          command:
+            var_tmp_partition:
+              title: 1.1.4.1 | Ensure separate partition exists for /var/tmp
+              exec: mount -l | grep -w /var/tmp
+              exit-status: 0
+              stdout:
+              - 'on /var/tmp'
+              meta:
+                server: 2
+                workstation: 2
+                CIS_ID:
+                - 1.1.4.1
+                CISv8: 3.3
+                CISv8_IG1: true
+                CISv8_IG2: true
+                CISv8_IG3: true
         dest: /tmp/goss.yaml
         mode: '0644'
 
