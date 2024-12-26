@@ -3,11 +3,6 @@
   hosts: "{{ target_ip | default('localhost') }}" 
   become: true
   tasks:
-    - name: Instalar dependencias necesarias
-      ansible.builtin.package:
-        name: curl
-        state: present
-
     - name: Copiar el binario de Goss al servidor remoto
       ansible.builtin.copy:
         src: goss/goss
