@@ -10,7 +10,7 @@
 
     - name: Copiar el binario de Goss al servidor remoto
       ansible.builtin.copy:
-        src: goss
+        src: goss/goss
         dest: /usr/local/bin/goss
         mode: '0755'
 
