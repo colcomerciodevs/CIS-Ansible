@@ -2,6 +2,8 @@
 - name: Inspeccionar control CIS con Goss
   hosts: "{{ target_ip | default('localhost') }}" 
   become: true
+  vars:
+    audit_failures: []  # Variable para registrar errores
   tasks:
     - name: Copiar el binario de Goss al servidor remoto
       ansible.builtin.copy:
@@ -24,8 +26,13 @@
     - name: Ejecutar validación de Goss
       ansible.builtin.command: /usr/local/bin/goss --gossfile /tmp/goss.yaml validate -f documentation
       register: goss_result
-      failed_when: false  # No marque la tarea como fallida automáticamente
+      failed_when: false  # No detener el playbook si falla la auditoría
       changed_when: false
+
+    - name: Registrar errores si los hay
+      ansible.builtin.set_fact:
+        audit_failures: "{{ audit_failures + [goss_result.stdout] }}"
+      when: goss_result.rc != 0
 
     - name: Mostrar resultados de la validación
       ansible.builtin.debug:
@@ -33,11 +40,12 @@
           Resultados de la validación de Goss:
           {{ goss_result.stdout }}
 
-    - name: Reportar errores si los hay
-      ansible.builtin.fail:
+    - name: Mostrar resumen de auditorías fallidas
+      ansible.builtin.debug:
         msg: |
-          Fallos detectados en la validación de Goss:
-          {{ goss_result.stdout }}
-      when: goss_result.rc != 0  # Marca el playbook como fallido si hay errores en Goss
+          Resumen de auditorías fallidas:
+          {{ audit_failures | join('\n') }}
+      when: audit_failures | length > 0
+
 
 
