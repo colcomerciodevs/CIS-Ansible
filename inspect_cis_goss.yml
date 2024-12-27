@@ -37,7 +37,9 @@
       failed_when: goss_result.rc != 0
       changed_when: false
 
-    - name: Mostrar resultados de la validación
+    - name: Mostrar resultados de la validación (formateados)
       ansible.builtin.debug:
-        var: goss_result.stdout
+        msg: |
+          Resultado de la validación Goss:
+          {{ goss_result.stdout | regex_replace('(?m)^', '  ') }}
 
