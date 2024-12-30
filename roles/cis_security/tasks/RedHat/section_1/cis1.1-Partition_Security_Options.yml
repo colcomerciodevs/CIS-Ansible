@@ -13,6 +13,10 @@
     - rule_1.1.7
     - skip_ansible_lint
 
+- name: Depuración de rhel8_cis_tmp
+  ansible.builtin.debug:
+    var: rhel8_cis_tmp
+
 # Tarea 1.1.6-8 - Asegurar que las opciones nodev, nosuid y noexec se apliquen en la partición /tmp
 - name: "SCORED | 1.1.6  | PATCH | Ensure nodev option set on /tmp partition\n\
     \ SCORED | 1.1.7  | PATCH | Ensure nosuid option set on /tmp partition\n SCORED\
