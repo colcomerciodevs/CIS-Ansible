@@ -13,9 +13,12 @@
     - rule_1.1.7
     - skip_ansible_lint
 
-- name: Depuración de rhel8_cis_tmp
+- name: Depuración avanzada del módulo mount
   ansible.builtin.debug:
-    var: rhel8_cis_tmp
+    msg:
+      - "src: {{ rhel8_cis_tmp['source'] }}"
+      - "fstype: {{ rhel8_cis_tmp['fstype'] }}"
+      - "opts: {{ rhel8_cis_tmp['opts'] }}"
 
 # Tarea 1.1.6-8 - Asegurar que las opciones nodev, nosuid y noexec se apliquen en la partición /tmp
 - name: "SCORED | 1.1.6  | PATCH | Ensure nodev option set on /tmp partition\n\
