@@ -19,15 +19,15 @@
     \ SCORED | 1.1.7  | PATCH | Ensure nosuid option set on /tmp partition\n SCORED\
     \ | 1.1.8 | PATCH | Ensure noexec option set on /tmp partition"
   ansible.posix.mount:
-      name: /tmp
-      src: "{{ item.device }}"
-      fstype: "{{ item.fstype }}"
-      state: present
-      opts: defaults,{% if rhel8_cis_rule_1_1_6 %}nodev,{% endif %}{% if rhel8_cis_rule_1_1_7 %}noexec,{% endif %}{% if rhel8_cis_rule_1_1_8 %}nosuid{% endif %}
+    name: /tmp
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    state: present
+    opts: defaults,{% if rhel8_cis_rule_1_1_6 %}nodev,{% endif %}{% if rhel8_cis_rule_1_1_7 %}noexec,{% endif %}{% if rhel8_cis_rule_1_1_8 %}nosuid{% endif %}
   notify: Remount tmp
   loop: "{{ ansible_facts.mounts }}"
   loop_control:
-      label: "{{ item.device }}"
+    label: "{{ item.device }}"
   when:
     - item.mount == "/tmp"
     - rhel8_cis_rule_1_1_6 or
@@ -59,11 +59,11 @@
     \ SCORED | 1.1.11  | PATCH | Ensure nosuid option set on /dev/shm partition\n SCORED\
     \ | 1.1.12 | PATCH | Ensure noexec option set on /dev/shm partition"
   ansible.posix.mount:
-      name: /dev/shm
-      src: tmpfs
-      fstype: tmpfs
-      state: mounted
-      opts: defaults,{% if rhel8_cis_rule_1_1_10 %}nodev,{% endif %}{% if rhel8_cis_rule_1_1_11 %}noexec,{% endif %}{% if rhel8_cis_rule_1_1_12 %}nosuid{% endif %}
+    name: /dev/shm
+    src: tmpfs
+    fstype: tmpfs
+    state: mounted
+    opts: defaults,{% if rhel8_cis_rule_1_1_10 %}nodev,{% endif %}{% if rhel8_cis_rule_1_1_11 %}noexec,{% endif %}{% if rhel8_cis_rule_1_1_12 %}nosuid{% endif %}
   notify: Change_requires_reboot
   when:
     - rhel8_cis_rule_1_1_10 or
@@ -96,14 +96,14 @@
     \ SCORED | 1.1.15  | PATCH | Ensure nosuid option set on /var partition\n SCORED\
     \ | 1.1.16 | PATCH | Ensure noexec option set on /var partition"
   ansible.builtin.mount:
-      name: /var
-      src: "{{ item.device }}"
-      fstype: "{{ item.fstype }}"
-      state: present
-      opts: defaults,{% if rhel8_cis_rule_1_1_14 %}nodev,{% endif %}{% if rhel8_cis_rule_1_1_15 %}nosuid{% endif %}
+    name: /var
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    state: present
+    opts: defaults,{% if rhel8_cis_rule_1_1_14 %}nodev,{% endif %}{% if rhel8_cis_rule_1_1_15 %}nosuid{% endif %}
   loop: "{{ ansible_facts.mounts }}"
   loop_control:
-      label: "{{ item.device }}"
+    label: "{{ item.device }}"
   notify: Change_requires_reboot
   when:
     - item.mount == "/var"
@@ -137,14 +137,14 @@
     \ SCORED | 1.1.19  | PATCH | Ensure nosuid option set on /var/tmp partition\n SCORED\
     \ | 1.1.20 | PATCH | Ensure noexec option set on /var/tmp partition"
   ansible.builtin.mount:
-      name: /var/tmp
-      src: "{{ item.device }}"
-      fstype: "{{ item.fstype }}"
-      state: present
-      opts: defaults,{% if rhel8_cis_rule_1_1_18 %}noexec,{% endif %}{% if rhel8_cis_rule_1_1_19 %}nosuid,{% endif %}{% if rhel8_cis_rule_1_1_20 %}nodev{% endif %}
+    name: /var/tmp
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    state: present
+    opts: defaults,{% if rhel8_cis_rule_1_1_18 %}noexec,{% endif %}{% if rhel8_cis_rule_1_1_19 %}nosuid,{% endif %}{% if rhel8_cis_rule_1_1_20 %}nodev{% endif %}
   loop: "{{ ansible_facts.mounts }}"
   loop_control:
-      label: "{{ item.device }}"
+    label: "{{ item.device }}"
   notify: Change_requires_reboot
   when:
     - item.mount == "/var/tmp"
@@ -178,14 +178,14 @@
     \ SCORED | 1.1.23  | PATCH | Ensure nosuid option set on /var/log partition\n SCORED\
     \ | 1.1.24 | PATCH | Ensure noexec option set on /var/log partition"
   ansible.builtin.mount:
-      name: /var/log
-      src: "{{ item.device }}"
-      fstype: "{{ item.fstype }}"
-      state: present
-      opts: defaults,{% if rhel8_cis_rule_1_1_22 %}nodev,{% endif %}{% if rhel8_cis_rule_1_1_23 %}noexec,{% endif %}{% if rhel8_cis_rule_1_1_24 %}nosuid{% endif %}
+    name: /var/log
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    state: present
+    opts: defaults,{% if rhel8_cis_rule_1_1_22 %}nodev,{% endif %}{% if rhel8_cis_rule_1_1_23 %}noexec,{% endif %}{% if rhel8_cis_rule_1_1_24 %}nosuid{% endif %}
   loop: "{{ ansible_facts.mounts }}"
   loop_control:
-      label: "{{ item.device }}"
+    label: "{{ item.device }}"
   notify: Change_requires_reboot
   when:
     - item.mount == "/var/log"
@@ -219,14 +219,14 @@
     \ SCORED | 1.1.27  | PATCH | Ensure nosuid option set on /var/log/audit partition\n SCORED\
     \ | 1.1.28 | PATCH | Ensure noexec option set on /var/log/audit partition"
   ansible.builtin.mount:
-      name: /var/log/audit
-      src: "{{ item.device }}"
-      fstype: "{{ item.fstype }}"
-      state: present
-      opts: defaults,{% if rhel8_cis_rule_1_1_26 %}noexec,{% endif %}{% if rhel8_cis_rule_1_1_27 %}nodev,{% endif %}{% if rhel8_cis_rule_1_1_28 %}nosuid{% endif %}
+    name: /var/log/audit
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    state: present
+    opts: defaults,{% if rhel8_cis_rule_1_1_26 %}noexec,{% endif %}{% if rhel8_cis_rule_1_1_27 %}nodev,{% endif %}{% if rhel8_cis_rule_1_1_28 %}nosuid{% endif %}
   loop: "{{ ansible_facts.mounts }}"
   loop_control:
-      label: "{{ item.device }}"
+    label: "{{ item.device }}"
   notify: Change_requires_reboot
   when:
     - item.mount == "/var/log/audit"
@@ -278,14 +278,14 @@
     \ | 1.1.35 | PATCH | Ensure usrquota options set on /home partition\n SCORED\
     \ | 1.1.36 | PATCH | Ensure grpquota options set on /home partition"
   ansible.builtin.mount:
-      name: /home
-      src: "{{ item.device }}"
-      fstype: "{{ item.fstype }}"
-      state: present
-      opts: defaults,{% if rhel8_cis_rule_1_1_30 %}nodev,{% endif %}{% if rhel8_cis_rule_1_1_31 %}nosuid,{% endif %}{% if rhel8_cis_rule_1_1_35 %}usrquota,{% endif %}{% if rhel8_cis_rule_1_1_36 %}grpquota{% endif %}
+    name: /home
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    state: present
+    opts: defaults,{% if rhel8_cis_rule_1_1_30 %}nodev,{% endif %}{% if rhel8_cis_rule_1_1_31 %}nosuid,{% endif %}{% if rhel8_cis_rule_1_1_35 %}usrquota,{% endif %}{% if rhel8_cis_rule_1_1_36 %}grpquota{% endif %}
   loop: "{{ ansible_facts.mounts }}"
   loop_control:
-      label: "{{ item.device }}"
+    label: "{{ item.device }}"
   notify: Change_requires_reboot
   when:
     - item.mount == "/home"
