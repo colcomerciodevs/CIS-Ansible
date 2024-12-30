@@ -7,6 +7,11 @@
     path: /tmp
     state: remounted
 
+# Tarea para establecer una variable personalziada de las tareas que requieren reinicio
+- name: Change_requires_reboot
+  ansible.builtin.set_fact:
+    change_requires_reboot: true
+
 # Tarea para reiniciar el servicio systemd-logind, que gestiona las sesiones de usuario y el manejo de dispositivos
 - name: Reiniciar servicios PAM
   ansible.builtin.systemd:

@@ -204,49 +204,6 @@ rhel8_cis_rule_5_5_10: true
 
 ##########   variables required in tasks ############
 
-## Section 1.1: Partition Security options
-# Mounting options
-rhel8_cis_tmp:
-  source: /tmp
-  fstype: none
-  opts: defaults, nodev, nosuid, noexec
-  enabled: true
-
-rhel8_cis_shm:
-  source: /dev/shm
-  fstype: tmpfs
-  opts: defaults, nodev, nosuid, noexec
-  enabled: true
-
-rhel8_cis_var:
-  source: /var
-  fstype: none
-  opts: defaults, nodev, nosuid  # No recomendaría 'noexec' en todo /var
-  enabled: true
-
-rhel8_cis_var_tmp:
-  source: /var/tmp
-  fstype: none
-  opts: defaults, nodev, nosuid, noexec
-  enabled: true
-
-rhel8_cis_var_log:
-  source: /var/log
-  fstype: none
-  opts: defaults, nodev, nosuid, noexec
-  enabled: true
-
-rhel8_cis_var_log_audit:
-  source: /var/log/audit
-  fstype: none
-  opts: defaults, nodev, nosuid, noexec
-  enabled: true
-
-rhel8_cis_home:
-  source: /home
-  fstype: none
-  opts: defaults,nodev,nosuid,usrquota,grpquota
-  enabled: true
 
 ## Section 1.7: Banner
 # Messages more relevant for daily use (e.g. ads). After login.
