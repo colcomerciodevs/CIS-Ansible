@@ -30,9 +30,9 @@
       label: "{{ item.device }}"
   when:
     - item.mount == "/tmp"
-    - rhel8_cis_rule_1_1_6
-    - rhel8_cis_rule_1_1_7
-    - rhel8_cis_rule_1_1_8
+    - rhel8_cis_rule_1_1_6 or
+      rhel8_cis_rule_1_1_7 or
+      rhel8_cis_rule_1_1_8
   tags:
     - level1
     - scored
@@ -67,8 +67,8 @@
   notify: Change_requires_reboot
   when:
     - rhel8_cis_rule_1_1_10 or
-    - rhel8_cis_rule_1_1_11 or
-    - rhel8_cis_rule_1_1_12
+      rhel8_cis_rule_1_1_11 or
+      rhel8_cis_rule_1_1_12
   tags:
     - level1
     - scored
@@ -107,9 +107,9 @@
   notify: Change_requires_reboot
   when:
     - item.mount == "/var"
-    - rhel8_cis_rule_1_1_14
-    - rhel8_cis_rule_1_1_15
-    - rhel8_cis_rule_1_1_16
+    - rhel8_cis_rule_1_1_14 or
+      rhel8_cis_rule_1_1_15 or
+      rhel8_cis_rule_1_1_16
   tags:
     - level1
     - scored
@@ -148,9 +148,9 @@
   notify: Change_requires_reboot
   when:
     - item.mount == "/var/tmp"
-    - rhel8_cis_rule_1_1_18
-    - rhel8_cis_rule_1_1_19
-    - rhel8_cis_rule_1_1_20
+    - rhel8_cis_rule_1_1_18 or
+      rhel8_cis_rule_1_1_19 or
+      rhel8_cis_rule_1_1_20
   tags:
     - level1
     - scored
@@ -189,9 +189,9 @@
   notify: Change_requires_reboot
   when:
     - item.mount == "/var/log"
-    - rhel8_cis_rule_1_1_22
-    - rhel8_cis_rule_1_1_23
-    - rhel8_cis_rule_1_1_24
+    - rhel8_cis_rule_1_1_22 or
+      rhel8_cis_rule_1_1_23 or
+      rhel8_cis_rule_1_1_24
   tags:
     - level1
     - scored
@@ -230,9 +230,9 @@
   notify: Change_requires_reboot
   when:
     - item.mount == "/var/log/audit"
-    - rhel8_cis_rule_1_1_26
-    - rhel8_cis_rule_1_1_27
-    - rhel8_cis_rule_1_1_28
+    - rhel8_cis_rule_1_1_26 or
+      rhel8_cis_rule_1_1_27 or
+      rhel8_cis_rule_1_1_28
   tags:
     - level1
     - scored
@@ -289,10 +289,10 @@
   notify: Change_requires_reboot
   when:
     - item.mount == "/home"
-    - rhel8_cis_rule_1_1_30
-    - rhel8_cis_rule_1_1_31
-    - rhel8_cis_rule_1_1_35
-    - rhel8_cis_rule_1_1_36
+    - rhel8_cis_rule_1_1_30 or
+      rhel8_cis_rule_1_1_31 or
+      rhel8_cis_rule_1_1_35 or
+      rhel8_cis_rule_1_1_36
   tags:
     - level1
     - scored
