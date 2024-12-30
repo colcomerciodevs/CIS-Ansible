@@ -1,6 +1,12 @@
 ---
 # handlers file for cis_security
 
+# Tarea para intentar volver a montar el sistema de archivos en el punto especificado (path).
+- name: Remount tmp
+  ansible.posix.mount:
+    path: /tmp
+    state: remounted
+
 # Tarea para reiniciar el servicio systemd-logind, que gestiona las sesiones de usuario y el manejo de dispositivos
 - name: Reiniciar servicios PAM
   ansible.builtin.systemd:

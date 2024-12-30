@@ -24,14 +24,18 @@
 - name: "SCORED | 1.1.6  | PATCH | Ensure nodev option set on /tmp partition\n\
     \ SCORED | 1.1.7  | PATCH | Ensure nosuid option set on /tmp partition\n SCORED\
     \ | 1.1.8 | PATCH | Ensure noexec option set on /tmp partition"
-  ansible.builtin.mount:
-    name: /tmp
-    src: "{{ rhel8_cis_tmp['source'] }}"
-    state: mounted
-    fstype: "{{ rhel8_cis_tmp['fstype'] }}"
-    opts: "{{ rhel8_cis_tmp['opts'] }}"
-    fstab: true
+  ansible.posix.mount:
+      name: /tmp
+      src: "{{ item.device }}"
+      fstype: "{{ item.fstype }}"
+      state: present
+      opts: defaults,{% if rhel8_cis_rule_1_1_6 %}nodev,{% endif %}{% if rhel8_cis_rule_1_1_7 %}noexec,{% endif %}{% if rhel8_cis_rule_1_1_8 %}nosuid{% endif %}
+  notify: Remount tmp
+  loop: "{{ ansible_facts.mounts }}"
+  loop_control:
+      label: "{{ item.device }}"
   when:
+    - item.mount == "/tmp"
     - rhel8_cis_rule_1_1_6
     - rhel8_cis_rule_1_1_7
     - rhel8_cis_rule_1_1_8
