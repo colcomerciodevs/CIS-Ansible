@@ -29,7 +29,6 @@
     opts: "{{ rhel8_cis_tmp['opts'] }}"
     fstab: true
   when:
-    #- rhel8_cis_tmp['enabled'] == 'true'
     - rhel8_cis_rule_1_1_6
     - rhel8_cis_rule_1_1_7
     - rhel8_cis_rule_1_1_8
