@@ -78,7 +78,7 @@ rhel8_cis_rule_2_1_3: true
 
 ## Uninstall Packages - special proposal services
 rhel8_cis_rule_2_1_4: true
-rhel8_cis_rule_2_1_5: false # ## DESHABILITADO - se utiliza para login a perfil web de internet
+rhel8_cis_rule_2_1_5: true 
 rhel8_cis_rule_2_1_6: true
 rhel8_cis_rule_2_1_7: true
 rhel8_cis_rule_2_1_8: true
