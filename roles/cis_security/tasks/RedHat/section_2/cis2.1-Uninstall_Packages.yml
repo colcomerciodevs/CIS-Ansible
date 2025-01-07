@@ -109,8 +109,7 @@
   block:
     - name: Ensure NFS utilities are not installed
       ansible.builtin.package:
-        name:
-          - nfs-utils
+        name: nfs-utils
         state: absent
       when:
         - is_new_installation == "yes"
@@ -161,23 +160,38 @@
     - patch
     - rule_2.1.11
 
-# Tarea 2.1.12 y 2.1.13 - Asegurar que los paquetes FTP y VSFTPD no están instalados
-- name: "SCORED | 2.1.12 | PATCH | Ensure FTP  packages are not installed\n SCORED | 2.1.13 | PATCH | Ensure VSFTPD  packages are not installed"
+# Tarea 2.1.12 - Asegurar que el paquete FTP Server no está instalado
+- name: "SCORED | 2.1.12 | PATCH | Ensure FTP packages are not installed"
   ansible.builtin.package:
-    name: vsftpd
+    name: ftp
     state: absent
   when:
     - is_new_installation == "yes"
-    - "'vsftpd' in ansible_facts.packages"
+    - "'ftp' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_12
-    - rhel8_cis_rule_2_1_13
   tags:
     - level1
     - scored
     - ftp
     - patch
     - rule_2.1.12
+
+# Tarea 2.1.13 - Asegurar que el paquete VSFTPD Server no está instalado
+- name: "SCORED | 2.1.13 | PATCH | Ensure VSFTPD packages are not installed"
+  ansible.builtin.package:
+    name: vsftpd
+    state: absent
+  when:
+    - is_new_installation == "yes"
+    - "'vsftpd' in ansible_facts.packages"
+    - rhel8_cis_rule_2_1_13
+  tags:
+    - level1
+    - scored
+    - ftp
+    - patch
     - rule_2.1.13
+
 
 # Tarea 2.1.14 - Asegurar que los paquetes TFTP no están instalados
 - name: SCORED | 2.1.14 | PATCH | Ensure TFTP packages are not installed
