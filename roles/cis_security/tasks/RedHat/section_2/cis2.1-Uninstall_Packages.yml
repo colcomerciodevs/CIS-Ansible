@@ -126,6 +126,7 @@
       ansible.builtin.shell: |
         systemctl list-unit-files | grep -w nfs-server.service || echo "not_found"
       register: nfs_service_check
+      changed_when: false
 
     - name: Stop and mask NFS server
       ansible.builtin.systemd:
