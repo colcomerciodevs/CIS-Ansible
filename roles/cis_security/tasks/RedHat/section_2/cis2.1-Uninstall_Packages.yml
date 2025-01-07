@@ -146,8 +146,6 @@
         - rule_2.1.10
 
 
-
-
 # Tarea 2.1.11 - Asegurar que el paquete DNS Server no está instalado
 - name: SCORED | 2.1.11 | PATCH | Ensure DNS Server packages are not installed
   ansible.builtin.package:
