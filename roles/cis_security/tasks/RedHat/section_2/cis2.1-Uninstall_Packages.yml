@@ -122,19 +122,17 @@
         - patch
         - rule_2.1.10
 
-    - name: Check if NFS server service exists
-      ansible.builtin.shell: |
-        systemctl list-unit-files | grep -w nfs-server.service || echo "not_found"
-      register: nfs_service_check
-      changed_when: false
+    - name: Check if the NFS Server service exists
+      ansible.builtin.set_fact:
+        nfs_service_exists: "{{ 'nfs-server.service' in ansible_facts.services }}"
 
-    - name: Stop and mask NFS server
+    - name: Stop and mask the NFS Server service
       ansible.builtin.systemd:
         name: nfs-server
         masked: true
         state: stopped
       when:
-        - nfs_service_check.stdout != "not_found"
+        - nfs_service_exists
         - is_new_installation == "yes"
         - rhel8_cis_rule_2_1_10
       tags:

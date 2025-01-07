@@ -5,6 +5,10 @@
   ansible.builtin.package_facts:
     manager: auto
 
+# Prelim general requerido | Recolecta los hechos (facts) sobre los servicios del sistema
+- name: PRELIM | Gather the service facts
+  ansible.builtin.service_facts:
+
 # AUDIT | Inicializar lista de paquetes auditados
 - name: Inicializar lista de paquetes auditados
   ansible.builtin.set_fact:
