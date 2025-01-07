@@ -12,6 +12,12 @@
   ansible.builtin.set_fact:
     change_requires_reboot: true
 
+# Tarea para reinciar el servicio de Chronyd
+- name: Restart chronyd
+  ansible.builtin.service:
+    name: chronyd
+    state: restarted
+
 # Tarea para reiniciar el servicio systemd-logind, que gestiona las sesiones de usuario y el manejo de dispositivos
 - name: Reiniciar servicios PAM
   ansible.builtin.systemd:
