@@ -35,7 +35,7 @@
 
 # Tarea 2.1.6 - Asegurar Avahi Server no esté habilitado
 - name: SCORED | 2.1.6 | PATCH | Ensure Avahi Server is not enabled
-  ansible.builtin.service:
+  ansible.builtin.package:
     name:
       - avahi-autoipd
       - avahi
