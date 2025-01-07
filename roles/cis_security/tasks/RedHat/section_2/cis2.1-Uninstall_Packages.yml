@@ -122,23 +122,29 @@
         - patch
         - rule_2.1.10
 
-    - name: Stop and mask NFS server
-      ansible.builtin.systemd:
-        name: nfs-server
-        masked: true
-        state: stopped
-      ignore_errors: yes
-      when:
-        - is_new_installation == "yes"
-        - rhel8_cis_rule_2_1_10
-      tags:
-        - level1
-        - scored
-        - nfs
-        - rpc
-        - services
-        - patch
-        - rule_2.1.10
+   - name: Check if NFS server service exists
+      ansible.builtin.shell: |
+        systemctl list-unit-files | grep -w nfs-server.service || echo "not_found"
+      register: nfs_service_check
+
+- name: Stop and mask NFS server
+  ansible.builtin.systemd:
+    name: nfs-server
+    masked: true
+    state: stopped
+  when:
+    - nfs_service_check.stdout != "not_found"
+    - is_new_installation == "yes"
+    - rhel8_cis_rule_2_1_10
+  tags:
+    - level1
+    - scored
+    - nfs
+    - rpc
+    - services
+    - patch
+    - rule_2.1.10
+
 
 
 
@@ -337,7 +343,7 @@
   when:
     - is_new_installation == "yes"
     - "'rsync' in ansible_facts.packages"
-    - rhel8_cis_rule_2_1.22
+    - rhel8_cis_rule_2_1_22
   tags:
     - level1
     - scored
