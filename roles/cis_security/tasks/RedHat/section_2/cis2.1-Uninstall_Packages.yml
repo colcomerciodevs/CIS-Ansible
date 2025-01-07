@@ -21,7 +21,6 @@
   ansible.builtin.package:
     name: xorg-x11-server-common
     state: absent
-  failed_when: false
   when:
     - is_new_installation == "yes"
     - "'xorg-x11-server-common' in ansible_facts.packages"
@@ -39,8 +38,7 @@
     name:
       - avahi-autoipd
       - avahi
-    state: stopped
-    enabled: false
+    state: absent
   when:
     - is_new_installation == "yes"
     - "'avahi' in ansible_facts.packages or 'avahi-autopd' in ansible_facts.packages"
