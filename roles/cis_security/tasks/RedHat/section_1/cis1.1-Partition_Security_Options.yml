@@ -44,7 +44,7 @@
 # Tarea 1.1.9 - Asegurar que /dev/shm esté en una partición separada (Automático)
 - name: NOTSCORED | 1.1.9 | PATCH | Ensure that /dev/shm is in a separate partition (Automatic)
   ansible.builtin.debug:
-    msg: --> Not relevant
+    msg: --> Not relevant - No Presente en el CIS
   changed_when: false   
   when:
     - rhel8_cis_rule_1_1_9

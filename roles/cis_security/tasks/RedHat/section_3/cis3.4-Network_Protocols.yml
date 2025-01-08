@@ -46,7 +46,7 @@
 # Tarea 3.4.4 - Asegurar TIPC está deshabilitado (Automático)
 - name: SCORED | 3.4.4 | PATCH | Ensure TIPC is disabled
   ansible.builtin.debug:
-    msg: --> Not relevant - No Presente en el CIS RHEL
+    msg: --> Not relevant - No Presente en el CIS 
   when:
     - rhel8_cis_rule_3_4_4
   tags:
