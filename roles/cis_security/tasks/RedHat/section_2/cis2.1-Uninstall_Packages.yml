@@ -85,11 +85,11 @@
     - patch
     - rule_2.1.8
 
+## DELETE - Remove recommendation, openldap is required by protected sudo package
 # Tarea 2.1.9 - Asegurar que el paquete LDAP Server no está instalado
 - name: SCORED | 2.1.9 | PATCH | Ensure LDAP Server is not installed
-  ansible.builtin.package:
-    name: openldap-servers
-    state: absent
+  ansible.builtin.debug:
+    msg: --> CONTROL CIS DELETE - openldap is required by protected sudo package
   when:
     - is_new_installation == "yes"
     - "'openldap-servers' in ansible_facts.packages"

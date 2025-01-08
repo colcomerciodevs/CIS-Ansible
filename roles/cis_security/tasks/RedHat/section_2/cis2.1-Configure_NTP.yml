@@ -28,6 +28,19 @@
     - ntp
     - rule_2.2.1
 
+# Tarea 2.1.2 - Asegurar que systemd-timesyncd está configurado (Automático)
+- name: NOTSCORED | 2.1.2 | PATCH | Ensure systemd-timesyncd is configured (Automatic)
+  ansible.builtin.debug:
+    msg: --> Not relevant - No Presente en el CIS RHEL
+  changed_when: false   
+  when:
+    - rhel8_cis_rule_2_1_2
+  tags:
+    - level1
+    - notscored
+    - patch
+    - rule_2.1.2  
+
 # Tarea 2.1.3 - Asegurar que chrony está configurado (Automático)
 - name: SCORED | 2.1.3 | PATCH | Ensure chrony is configured
   ansible.builtin.template:

@@ -29,14 +29,11 @@
     - patch
     - rule_3.4.2
 
+## DELETE RHEL - Ensure RDS is disabled - Recommendation Dropped
 # Tarea 3.4.3 - Asegurar RDS está deshabilitado (Automático)
 - name: SCORED | 3.4.3 | PATCH | Ensure RDS is disabled
-  ansible.builtin.lineinfile:
-    dest: /etc/modprobe.d/cis.conf
-    regexp: ^(#)?install rds(\s|$)
-    line: install rds /bin/true
-    mode: "0644"
-    create: true
+  ansible.builtin.debug:
+    msg: --> CONTROL CIS DELETE - Not relevant
   when:
     - rhel8_cis_rule_3_4_3
   tags:
@@ -44,14 +41,12 @@
     - patch
     - rule_3.4.3
 
+
+## OMITIDA RHEL - No esta presente en el CIS
 # Tarea 3.4.4 - Asegurar TIPC está deshabilitado (Automático)
 - name: SCORED | 3.4.4 | PATCH | Ensure TIPC is disabled
-  ansible.builtin.lineinfile:
-    dest: /etc/modprobe.d/cis.conf
-    regexp: ^(#)?install tipc(\s|$)
-    line: install tipc /bin/true
-    mode: "0644"
-    create: true
+  ansible.builtin.debug:
+    msg: --> Not relevant - No Presente en el CIS RHEL
   when:
     - rhel8_cis_rule_3_4_4
   tags:
