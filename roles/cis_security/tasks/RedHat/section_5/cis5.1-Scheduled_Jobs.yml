@@ -131,7 +131,7 @@
     - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users | Ensure cron.allow is restricted to authorized users"
       ansible.builtin.file:
         path: /etc/cron.allow
-        state: '{{ "file" if  rhel8_cis_5_1_8_cron_allow_state.stat.exists else "touch" }}'
+        state: file
         owner: root
         group: root
         mode: "0600"
@@ -142,7 +142,6 @@
         line: "{{ item }}"
         state: present
       loop: "{{ authorized_cron_users }}"
-      when: rhel8_cis_5_1_8_cron_allow_state.stat.exists
   when:
     - rhel8_cis_rule_5_1_8
   tags:
@@ -150,6 +149,7 @@
     - patch
     - cron
     - rule_5.1.8
+
 
 # Tarea 5.1.9 - Asegurar que at esté restringido solo a usuarios autorizados (Automático)
 ### IMPORTANTE UNICAMENTE LOS USUARIOS QUE ESTAN EN /etc/at.allow TIENEN PERMISOS PARA PROGRAMAR AT
@@ -179,7 +179,6 @@
         line: "{{ item }}"
         state: present
       loop: "{{ authorized_at_users }}"
-      when: rhel8_cis_5_1_9_at_allow_state.stat.exists
   when:
     - rhel8_cis_rule_5_1_9
   tags:
