@@ -21,7 +21,6 @@
     - rule_5_2_1
 
 
-
 # Tarea 5.2.2 - Asegurar que comandos sudo usen pty (Automático)
 ## DESHABILITADO - Validar afectacion con ansible
 - name: "5.2.2 | PATCH | Ensure sudo commands use pty"
