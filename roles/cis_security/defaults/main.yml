@@ -344,7 +344,9 @@ rhel8_cis_sshd:
   # (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
   # for users whose primary group or supplementary group list matches one of the patterns. This is done
   # by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
-  # allowgroups: systems dba   # Aquí defines los grupos permitidos a conectarse por SSH
+
+  # Aquí defines los grupos permitidos a conectarse por SSH
+  allowgroups: ssh_access   
 
   # This variable, if specified, configures a list of USER name patterns, separated by spaces, to prevent SSH access
   # for users whose user name matches one of the patterns. This is done
