@@ -282,6 +282,11 @@ rhel8_cis_sudo_timestamp_timeout: 15
 # CIS requires that such a group be CREATED(named according to site policy) and be kept EMPTY.
 rhel8_cis_sugroup: nosugroup
 
+# List of allowed users to use the 'su' command
+rhel8_cis_users_infra:
+  - admin
+  - tux
+
 
 ## Section 5.2 - Configure authselect: Custom authselect profile settings(name, profile to customize, options)
 ## Controls:
