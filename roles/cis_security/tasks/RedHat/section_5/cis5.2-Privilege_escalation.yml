@@ -22,7 +22,6 @@
 
 
 # Tarea 5.2.2 - Asegurar que comandos sudo usen pty (Automático)
-## DESHABILITADO - Validar afectacion con ansible
 - name: "5.2.2 | PATCH | Ensure sudo commands use pty"
   ansible.builtin.lineinfile:
     path: /etc/sudoers
@@ -124,26 +123,27 @@
       ansible.builtin.group:
         name: "{{ rhel8_cis_sugroup }}"
         state: present
-      register: rhel8_cis_5_2_7_sugroup
 
-    - name: "5.2.7 | PATCH | Ensure access to the su command is restricted | remove users from group"
+    - name: "5.2.7 | PATCH | Ensure access to the su command is restricted | Configure pam_wheel in custom profile"
       ansible.builtin.lineinfile:
-        path: /etc/group
-        regexp: '^{{ rhel8_cis_sugroup }}(:.:.*:).*$'
-        line: '{{ rhel8_cis_sugroup }}\g<1>'
-        backrefs: true
-
-    - name: "5.2.7 | PATCH | Ensure access to the su command is restricted | Setting pam_wheel to use_uid"
-      ansible.builtin.lineinfile:
-        path: /etc/pam.d/su
+        path: "/etc/authselect/custom/{{ rhel8_cis_authselect['custom_profile_name'] }}/pam.d/su"
         regexp: '^(#)?auth\s+required\s+pam_wheel\.so'
         line: 'auth           required        pam_wheel.so use_uid group={{ rhel8_cis_sugroup }}'
+        state: present
+
+    - name: "5.2.7 | PATCH | Ensure access to the su command is restricted | Apply custom profile"
+      ansible.builtin.command:
+        cmd: >
+          authselect apply-changes
+      changed_when: true
+
   when:
     - rhel8_cis_rule_5_2_7
   tags:
     - level1
     - patch
-    - sudo
+    - authselect
     - rule_5.2.7
+
 
 

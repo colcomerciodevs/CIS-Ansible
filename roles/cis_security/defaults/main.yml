@@ -149,12 +149,12 @@ rhel8_cis_rule_5_1_9: true
 
 # Configure SUDO
 rhel8_cis_rule_5_2_1: true
-rhel8_cis_rule_5_2_2: false ## DESHABILITADO - Validar afectacion con ansible
+rhel8_cis_rule_5_2_2: true 
 rhel8_cis_rule_5_2_3: true
 rhel8_cis_rule_5_2_4: true
 rhel8_cis_rule_5_2_5: true
 rhel8_cis_rule_5_2_6: true
-rhel8_cis_rule_5_2_7: false ## DESHABILITADO - esta restriccion de SU es bastante restrictiva y afectaria el acceso a root
+rhel8_cis_rule_5_2_7: true
 rhel8_cis_rule_5_2_8: true
 rhel8_cis_rule_5_2_9: true
 
@@ -280,7 +280,7 @@ rhel8_cis_sudo_timestamp_timeout: 15
 ## Control 5.2.7 - Ensure access to the 'su' command is restricted
 # This variable determines the name of the group of users that are allowed to use the su command.
 # CIS requires that such a group be CREATED(named according to site policy) and be kept EMPTY.
-rhel9cis_sugroup: nosugroup
+rhel8_cis_sugroup: nosugroup
 
 
 ## Section 5.2 - Configure authselect: Custom authselect profile settings(name, profile to customize, options)
