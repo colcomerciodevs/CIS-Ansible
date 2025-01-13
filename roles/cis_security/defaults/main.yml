@@ -302,12 +302,12 @@ rhel8_cis_authselect:
 # This variable governs if an authselect custom profile should be automatically created, by copying and
 # customizing one of the default profiles. The default profiles include: sssd, winbind, or the nis. This profile can then be
 # customized to follow site specific requirements.
-rhel8_cis_authselect_custom_profile_create: false
+rhel8_cis_authselect_custom_profile_create: true
 
 ## Control 5.2.9 - Ensure authselect includes with-faillock | Create custom profiles
 # This variable governs if the existing custom profile should be selected(Note: please keep in mind that all future updates
 # to the PAM templates and meta files in the original profile will be reflected in your custom profile, too.)
-rhel8_cis_authselect_custom_profile_select: false
+rhel8_cis_authselect_custom_profile_select: true
 
 
 ## Options Server SSH
