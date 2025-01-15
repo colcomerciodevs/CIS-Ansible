@@ -33,3 +33,10 @@
     - rhel8cis_section5
     - Privilege_escalation
 
+# SECCIÓN 5.3.1-19: Configuracion server SSH
+- name: "SECTION | 5.3.1-19 | Server_SSH"
+  ansible.builtin.import_tasks:
+    file: cis5.3-Server_SSH.yml   
+  tags:
+    - rhel8cis_section5
+    - Server_SSH
