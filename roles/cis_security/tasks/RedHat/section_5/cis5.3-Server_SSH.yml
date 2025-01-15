@@ -65,7 +65,7 @@
         line: AllowUsers {{ rhel8_cis_sshd['allowusers'] }}
         validate: /usr/sbin/sshd -T -f %s
       notify:
-        - restart sshd
+        - Restart sshd
       when:
         - "'allowusers' in rhel8_cis_sshd"
 
@@ -77,7 +77,7 @@
         line: AllowGroups {{ rhel8_cis_sshd['allowgroups'] }}
         validate: /usr/sbin/sshd -T -f %s
       notify:
-        - restart sshd
+        - Restart sshd
       when:
         - "'allowgroups' in rhel8_cis_sshd"
 
@@ -89,7 +89,7 @@
         line: DenyUsers {{ rhel8_cis_sshd['denyusers'] }}
         validate: /usr/sbin/sshd -T -f %s
       notify:
-        - restart sshd
+        - Restart sshd
       when:
         - "'denyusers' in rhel8_cis_sshd"
 
@@ -101,7 +101,7 @@
         line: DenyGroups {{ rhel8_cis_sshd['denygroups'] }}
         validate: /usr/sbin/sshd -T -f %s
       notify:
-        - restart sshd
+        - Restart sshd
       when:
         - "'denygroups' in rhel8_cis_sshd"
   when:
