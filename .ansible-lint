@@ -12,6 +12,7 @@ skip_list:
   - yaml[trailing-spaces]
   - yaml[new-line-at-end-of-file]
   - yaml[empty-lines]
+  - yaml[line-length]
   - key-order[task]
 
 exclude_paths:

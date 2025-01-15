@@ -311,7 +311,7 @@
   when:
     - rhel8_cis_rule_5_3_14
   notify:
-        - Restart sshd
+    - Restart sshd
   tags:
     - level1
     - level2
@@ -330,7 +330,7 @@
   when:
     - rhel8_cis_rule_5_3_15
   notify:
-        - Restart sshd
+    - Restart sshd
   tags:
     - level1
     - level2

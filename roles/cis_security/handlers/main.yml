@@ -9,7 +9,7 @@
 
 # Tarea para intentar volver a montar el sistema de archivos en el punto especificado (path).
 - name: Remount tmp
-  ansible.posix.mount:
+  ansible.builtin.mount:
     path: /tmp
     state: remounted
 

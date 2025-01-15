@@ -33,6 +33,6 @@
     regexp: '^Banner'
     line: 'Banner /etc/issue.net'
     state: present
-    create: yes
-    backup: yes
+    create: true
+    backup: true
   notify: Restart sshd
