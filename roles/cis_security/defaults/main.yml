@@ -162,13 +162,13 @@ rhel8_cis_rule_5_2_9: true
 rhel8_cis_rule_5_3_1: true
 rhel8_cis_rule_5_3_2: true
 rhel8_cis_rule_5_3_3: true
-rhel8_cis_rule_5_3_4: false ## DESHABILITADO -  pendiente definir usuarios y grupos con permisos
+rhel8_cis_rule_5_3_4: true
 rhel8_cis_rule_5_3_5: true
-rhel8_cis_rule_5_3_6: false ## DESHABILITADO - se utiliza para login a perfil web de internet
+rhel8_cis_rule_5_3_6: true
 rhel8_cis_rule_5_3_7: true
 rhel8_cis_rule_5_3_8: true
 rhel8_cis_rule_5_3_9: true
-rhel8_cis_rule_5_3_10: false ## DESHABILITADO - muchos servidores utilizan root para login a SSH
+rhel8_cis_rule_5_3_10: true
 rhel8_cis_rule_5_3_11: true
 rhel8_cis_rule_5_3_12: true
 rhel8_cis_rule_5_3_13: true
@@ -283,7 +283,7 @@ rhel8_cis_sudo_timestamp_timeout: 15
 rhel8_cis_sugroup: nosugroup
 
 # List of allowed users to use the 'su' command
-rhel8_cis_users_infra:
+authorized_su_users:
   - admin
   - tux
 

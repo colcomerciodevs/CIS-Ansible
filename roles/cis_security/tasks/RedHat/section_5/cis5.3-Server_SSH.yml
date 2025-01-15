@@ -55,7 +55,6 @@
     - rule_5.3.3
 
 # Tarea 5.3.4 - Asegurar que el acceso a SSH este limitado
-## DESHABILITADO -  pendiente definir usuarios y grupos con permisos
 - name: SCORED | 5.3.4 | PATCH | Ensure SSH access is limited
   block:
     - name: SCORED | 5.3.4 | PATCH | Ensure SSH access is limited - allowusers
@@ -133,7 +132,6 @@
     - rule_5.3.5
 
 # Tarea 5.3.6 - Asegurar SSH X11 forwarding está deshabilitado (Automático)
-### DESHABILITADO - se utiliza para login a perfil web de internet
 - name: SCORED | 5.3.6 | PATCH | Ensure SSH X11 forwarding is disabled
   ansible.builtin.lineinfile:
     state: present

@@ -136,7 +136,7 @@
         name: "{{ item }}"
         groups: "{{ rhel8_cis_sugroup }}"
         append: true
-      with_items: "{{ rhel8_cis_users_infra }}"
+      with_items: "{{ authorized_su_users }}"
 
     - name: "5.2.7 | PATCH | Ensure access to the su command is restricted | Configure pam_wheel for nosugroup"
       ansible.builtin.lineinfile:
