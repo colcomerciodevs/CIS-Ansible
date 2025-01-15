@@ -26,13 +26,3 @@
   when: autofs_config.stat.exists
   changed_when: false
 
-# Prelim requerido para la tarea 1.7.x - Asegurar que SSH muestre el banner de advertencia configurado
-- name: SCORED | 1.7.7 | PATCH | Ensure SSH warning banner is configured
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^Banner'
-    line: 'Banner /etc/issue.net'
-    state: present
-    create: true
-    backup: true
-  notify: Restart sshd

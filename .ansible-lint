@@ -15,7 +15,11 @@ skip_list:
   - yaml[line-length]
   - key-order[task]
 
+
 exclude_paths:
-  - files/
+  - roles/cis_security/files/
+  - roles/cis_security/handlers/
+  
+  
 
 

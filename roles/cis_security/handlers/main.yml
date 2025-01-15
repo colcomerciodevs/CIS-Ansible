@@ -9,9 +9,10 @@
 
 # Tarea para intentar volver a montar el sistema de archivos en el punto especificado (path).
 - name: Remount tmp
-  ansible.builtin.mount:
+  ansible.posix.mount:  
     path: /tmp
     state: remounted
+  
 
 # Tarea para establecer una variable personalziada de las tareas que requieren reinicio
 - name: Change_requires_reboot
