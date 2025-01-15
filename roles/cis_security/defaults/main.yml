@@ -321,6 +321,31 @@ rhel8_cis_authselect_custom_profile_select: true
 # - 5.3.13 - Ensure SSH Idle Timeout Interval is configured
 # - 5.3.14 - Ensure SSH LoginGraceTime is set to one minute or less
 rhel8_cis_sshd:
+
+ # This variable, if specified, configures a list of USER name patterns, separated by spaces, to allow SSH
+  # access for users whose user name matches one of the patterns. This is done
+  # by setting the value of `AllowUsers` option in `/etc/ssh/sshd_config` file.
+  # If an USER@HOST format will be used, the specified user will be allowed only on that particular host.
+  ### allowusers: user1 user2    # Aquí defines los usuarios específicos que pueden conectarse por SSH
+
+  # (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
+  # for users whose primary group or supplementary group list matches one of the patterns. This is done
+  # by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
+
+  # Aquí defines los grupos permitidos a conectarse por SSH
+  allowgroups: ssh_access   
+
+  # This variable, if specified, configures a list of USER name patterns, separated by spaces, to prevent SSH access
+  # for users whose user name matches one of the patterns. This is done
+  # by setting the value of `DenyUsers` option in `/etc/ssh/sshd_config` file.
+  # If an USER@HOST format will be used, the specified user will be restricted only on that particular host.
+  ### denyusers: "nobody"   # Aquí defines los usuarios que tienen el acceso denegado por SSH
+
+  # This variable, if specified, configures a list of GROUP name patterns, separated by spaces,
+  # to prevent SSH access for users whose primary group or supplementary group list matches one of the patterns. This is done
+  # by setting the value of `DenyGroups` option in `/etc/ssh/sshd_config` file.
+  ### denygroups: ""      # Aquí defines los grupos que tienen el acceso denegado por SSH
+
   # This variable sets the maximum number of unresponsive "keep-alive" messages
   # that can be sent from the server to the client before the connection is considered
   # inactive and thus, closed.
@@ -335,31 +360,8 @@ rhel8_cis_sshd:
   # The MaxStartups option in the SSH configuration controls the number of simultaneous unauthenticated SSH
   # connections that the server will allow before it starts rejecting new connections.
   maxstartups: 10:30:60
-  # This variable, if specified, configures a list of USER name patterns, separated by spaces, to allow SSH
-  # access for users whose user name matches one of the patterns. This is done
-  # by setting the value of `AllowUsers` option in `/etc/ssh/sshd_config` file.
-  # If an USER@HOST format will be used, the specified user will be allowed only on that particular host.
-  # allowusers: user1 user2    # Aquí defines los usuarios específicos que pueden conectarse por SSH
 
-  # (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
-  # for users whose primary group or supplementary group list matches one of the patterns. This is done
-  # by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
-
-  # Aquí defines los grupos permitidos a conectarse por SSH
-  allowgroups: ssh_access   
-
-  # This variable, if specified, configures a list of USER name patterns, separated by spaces, to prevent SSH access
-  # for users whose user name matches one of the patterns. This is done
-  # by setting the value of `DenyUsers` option in `/etc/ssh/sshd_config` file.
-  # If an USER@HOST format will be used, the specified user will be restricted only on that particular host.
-  denyusers: "nobody"   # Aquí defines los usuarios que tienen el acceso denegado por SSH
-
-  # This variable, if specified, configures a list of GROUP name patterns, separated by spaces,
-  # to prevent SSH access for users whose primary group or supplementary group list matches one of the patterns. This is done
-  # by setting the value of `DenyGroups` option in `/etc/ssh/sshd_config` file.
-  denygroups: ""      # Aquí defines los grupos que tienen el acceso denegado por SSH
-
-
+ 
 ## Section 5.4: Configure PAM
 rhel8_cis_pam_faillock:
   # This variable sets the amount of time a user will be unlocked after the max amount of
