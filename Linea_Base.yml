@@ -2,7 +2,6 @@
 - name: Aplicar el rol CIS Security
   hosts: "{{ target_ip | default('localhost') }}"  # Proporciona 'localhost' como valor por defecto
   become: true
-  become_user: tux  # Usar el usuario tux para escalada
   gather_facts: true
 
   roles:
