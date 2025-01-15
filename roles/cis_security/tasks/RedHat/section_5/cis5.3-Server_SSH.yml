@@ -10,6 +10,8 @@
     mode: "0600"
   when:
     - rhel8_cis_rule_5_3_1
+  notify:
+    - Restart sshd
   tags:
     - level1
     - level2
@@ -124,6 +126,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_5
+  notify:
+    - Restart sshd
   tags:
     - level1
     - level2
@@ -141,6 +145,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_6
+  notify:
+    - Restart sshd
   tags:
     - level1
     - level2
@@ -158,6 +164,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_7
+  notify:
+    - Restart sshd
   tags:
     - level1
     - level2
@@ -175,6 +183,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_8
+  notify:
+    - Restart sshd
   tags:
     - level1
     - level2
@@ -192,6 +202,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_9
+  notify:
+    - Restart sshd
   tags:
     - level1
     - level2
@@ -200,7 +212,6 @@
     - rule_5.3.9
 
 # Tarea 5.3.10 - Asegurar SSH root login está deshabilitado (Automático)
-## DESHABILITADO - muchos servidores utilizan root para login a SSH
 - name: SCORED | 5.3.10 | PATCH | Ensure SSH root login is disabled
   ansible.builtin.lineinfile:
     state: present
@@ -210,6 +221,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_10
+  notify:
+    - Restart sshd
   tags:
     - level1
     - level2
@@ -227,6 +240,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_11
+  notify:
+    - Restart sshd
   tags:
     - level1
     - level2
@@ -244,6 +259,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_12
+  notify:
+    - Restart sshd
   tags:
     - level1
     - level2
@@ -261,6 +278,8 @@
         regexp: ^ClientAliveInterval
         line: ClientAliveInterval {{ rhel8_cis_sshd['clientaliveinterval'] }}
         validate: /usr/sbin/sshd -T -f %s
+      notify:
+        - Restart sshd
 
     - name: SCORED | 5.3.13 | PATCH | Ensure SSH ClientAliveCountMax set to <= 3
       ansible.builtin.lineinfile:
@@ -269,6 +288,8 @@
         regexp: ^ClientAliveCountMax
         line: ClientAliveCountMax {{ rhel8_cis_sshd['clientalivecountmax'] }}
         validate: /usr/sbin/sshd -T -f %s
+      notify:
+        - Restart sshd
   when:
     - rhel8_cis_rule_5_3_13
   tags:
@@ -289,6 +310,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_14
+  notify:
+        - Restart sshd
   tags:
     - level1
     - level2
@@ -306,6 +329,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_15
+  notify:
+        - Restart sshd
   tags:
     - level1
     - level2
@@ -323,6 +348,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_16
+  notify:
+    - Restart sshd
   tags:
     - level1
     - level2
@@ -340,6 +367,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_17
+  notify:
+    - Restart sshd
   tags:
     - level1
     - level2
@@ -357,6 +386,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_18
+  notify:
+    - Restart sshd
   tags:
     - level1
     - level2
@@ -374,6 +405,8 @@
     validate: /usr/sbin/sshd -T -f %s
   when:
     - rhel8_cis_rule_5_3_19
+  notify:
+    - Restart sshd
   tags:
     - level1
     - level2
