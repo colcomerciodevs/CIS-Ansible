@@ -7,7 +7,7 @@
     regexp: ^{{ item.key }}
     line: '{{ item.key }} = {{ item.value }}'
   loop:
-    - {key: minlen, value: '8'}        # Longitud mínima de 8 caracteres
+    - {key: minlen, value: '14'}        # Longitud mínima de 14 caracteres
     - {key: minclass, value: '4'}      # Mínimo de 4 tipos de caracteres (dígitos, mayúsculas, minúsculas, otros)
     - {key: dcredit, value: '-1'}      # Al menos 1 dígito
     - {key: ucredit, value: '-1'}      # Al menos 1 letra mayúscula
@@ -24,7 +24,7 @@
     - rule_5.4.1
 
 # Tarea 5.4.2 - Asegurar que el bloqueo de contraseñas está configurado para 5 intentos (Automático)
-## PENDIENTE REVISAR DEPENDE DEL MODULO FAILLOCK EN AUTHSELECT PARA SU EJECUCION
+## DEPENDE DEL MODULO FAILLOCK EN AUTHSELECT PARA SU EJECUCION
 - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured in faillock.conf"
   ansible.builtin.lineinfile:
     path: /etc/security/faillock.conf
@@ -42,13 +42,13 @@
     - rule_5.4.2
 
 # Tarea 5.4.3 - Asegurar que el bloqueo de contraseñas está configurado para 5 intentos
-## PENDIENTE REVISAR DEPENDE DE AUTHSELECT PERSONALIZADO (PAM_PWHISTORY) PARA SU EJECUCION
+## DEPENDE DE AUTHSELECT PERSONALIZADO (PAM_PWHISTORY) PARA SU EJECUCION
 - name: "5.4.3 | PATCH | Ensure password attempts are limited to 5 (automatic)"
   block:
     - name: "5.4.3 | Add pam_pwhistory to custom profile"
       ansible.builtin.lineinfile:
         path: "/etc/authselect/custom/{{ rhel8_cis_authselect['custom_profile_name'] }}/{{ item }}"
-        line: "password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=5 remember={{ rhel8_cis_pam_faillock.remember }}"
+        line: "password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=3 remember={{ rhel8_cis_pam_faillock.remember }}"
         insertafter: '^password\s*requisite\s*pam_pwquality.so'
       loop:
         - password-auth
@@ -63,7 +63,7 @@
 
 
 # Tarea 5.4.4 - Asegurar que el algoritmo de hash de contraseñas es SHA-512
-## PENDIENTE REVISAR DEPENDE DE AUTHSELECT PERSONALIZADO PARA SU EJECUCION
+## DEPENDE DE AUTHSELECT PERSONALIZADO PARA SU EJECUCION
 - name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512"
   block:
     - name: "5.4.4 | Ensure SHA-512 is configured in /etc/libuser.conf"

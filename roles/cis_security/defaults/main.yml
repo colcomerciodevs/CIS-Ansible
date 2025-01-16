@@ -183,9 +183,9 @@ rhel8_cis_rule_5_3_19: true
 # Configure PAM
 ## AUTSELECT personalizado alto riesgo de implementar 
 rhel8_cis_rule_5_4_1: true # Depende de AUTSELECT - Modulo PWQUALITY habilitado por defecto en perfil SSSD 
-rhel8_cis_rule_5_4_2: false # DESHABILITADO - Depende del perfil personalizado de AUTSELECT para agregar Modulo FAILLOCK
-rhel8_cis_rule_5_4_3: false # DESHABILITADO - Depende del perfil personalizado de AUTSELECT para agregar Modulo PAM_PWHISTORY
-rhel8_cis_rule_5_4_4_authselect: false # DESHABILITADO - Modulo pam_unix.so con SHA-512 por defecto en perfil SSSD -se debe pasar al perfil personalizado
+rhel8_cis_rule_5_4_2: true # Depende del perfil personalizado de AUTSELECT para agregar Modulo FAILLOCK
+rhel8_cis_rule_5_4_3: true # Depende del perfil personalizado de AUTSELECT para agregar Modulo PAM_PWHISTORY
+rhel8_cis_rule_5_4_4_authselect: true # Modulo pam_unix.so con SHA-512 por defecto en perfil SSSD -se debe pasar al perfil personalizado
 rhel8_cis_rule_5_4_4: true # Configuracion que no depende de AUTSELECT
 
 # Configure Account Policies

@@ -40,3 +40,11 @@
   tags:
     - rhel8cis_section5
     - Server_SSH
+
+# SECCIÓN 5.4.1-4: Configuración de PAM (Pluggable Authentication Modules)
+- name: "SECTION | 5.4.1-4 | Configure PAM"
+  ansible.builtin.import_tasks:
+    file: cis5.4-Configure_PAM.yml   
+  tags:
+    - rhel8cis_section5
+    - Configure_PAM
