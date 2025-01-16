@@ -270,6 +270,14 @@ authorized_at_users:
 # This variable defines the path and file name of the sudo log file.
 rhel8_cis_sudolog_location: "/var/log/sudo.log"
 
+## Control 5.2.4 - Ensure that a password must be provided for user escalation
+# ansible users excluded from removing NOPASSWD in ansible
+sudoers_exclude_nopasswd_users:
+  - ansible
+  - tux
+  - ansible_test
+
+
 ## Control 5.2.6 -Ensure sudo authentication timeout is configured correctly
 # This variable sets the duration (in minutes) during which a user's authentication credentials
 # are cached after successfully authenticating using "sudo". This allows the user to execute

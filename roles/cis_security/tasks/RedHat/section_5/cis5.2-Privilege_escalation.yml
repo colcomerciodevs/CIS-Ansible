@@ -54,17 +54,23 @@
 - name: "5.2.4 | PATCH | Ensure users must provide password for escalation"
   ansible.builtin.replace:
     path: "{{ item }}"
-    regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)'
+    regexp: "^((?!#|({{ sudoers_exclude_nopasswd_users | join('|') }})).*)NOPASSWD(.*)"
     replace: '\1PASSWD\2'
     validate: '/usr/sbin/visudo -cf %s'
   loop: "{{ rhel8_cis_sudoers_files.stdout_lines }}"
   when:
     - rhel8_cis_rule_5_2_4
+  vars:
+    sudoers_exclude_nopasswd_users:
+      - ansible
+      - tux
+      - ansible_test
   tags:
     - level2
     - patch
     - sudo
     - rule_5.2.4
+
 
 # Tarea 5.2.5 - Asegurar que la re-authentication para escalamiento de privilegios no esté globalmente deshabilitada (Automático)
 - name: "5.2.5 | PATCH | Ensure re-authentication for privilege escalation is not disabled globally"
