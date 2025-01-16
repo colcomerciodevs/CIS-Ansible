@@ -71,14 +71,14 @@
         path: /etc/libuser.conf
         regexp: '^crypt_style\s*=\s*.*$'
         replace: 'crypt_style = sha512'
-      notify: "Check authselect changes"
+      notify: Check authselect changes
 
     - name: "5.4.4 | Ensure SHA-512 is configured in /etc/login.defs"
       ansible.builtin.replace:
         path: /etc/login.defs
         regexp: '^ENCRYPT_METHOD.*'
         replace: 'ENCRYPT_METHOD SHA512'
-      notify: "Check authselect changes"
+      notify: Check authselect changes
 
     - name: "5.4.4 | Ensure SHA-512 in custom profiles"
       ansible.builtin.lineinfile:
@@ -89,7 +89,7 @@
       loop:
         - password-auth
         - system-auth
-      notify: "Check authselect changes"
+      notify: Check authselect changes
       when: 
         - rhel8_cis_rule_5_4_4_authselect
   when: 
