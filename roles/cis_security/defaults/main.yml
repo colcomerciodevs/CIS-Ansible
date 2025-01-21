@@ -428,7 +428,8 @@ allowed_shells:
 
 ## Allow the forcing of setting user_max_days for logins.
 # This can break current connecting user access
-rhel8_cis_force_user_maxdays: false
+# Tarea Crítica: Auditoría de Configuración Sensible se omiten usuarios por debajo de UID 1000 y cuentas de usuario criticas
+rhel8_cis_force_user_maxdays: true
 
 ## Allow the force setting of minimum days between changing the password
 # This can break current connecting user access

@@ -26,15 +26,28 @@
       ansible.builtin.command:
         cmd: >
           awk -F: '
-          /^[^:]+:[^!*]/ && ($5 != {{ rhel8_cis_pass['max_days'] }} && $5 > 0)
-          { print $1 }' /etc/shadow
+          BEGIN {
+            min_uid={{ min_int_uid }};
+            while (getline < "/etc/passwd") {
+              split($0, fields, ":");
+              if (fields[3] >= min_uid && !(fields[1] ~ /^({{ excluded_users | join("|") }})$/)) {
+                valid_users[fields[1]] = 1;
+              }
+            }
+          }
+          /^[^:]+:[^!*]/ && ($5 != {{ rhel8_cis_pass['max_days'] }} && $5 > 0) {
+            if ($1 in valid_users) {
+              print $1;
+            }
+          }' /etc/shadow
       register: discovered_max_days
       changed_when: false
       failed_when: false
       tags:
         - audit
 
-    # DESHABILITADO - This can break current connecting user access
+
+    # Tarea Crítica: Auditoría de Configuración Sensible
     - name: "5.5.1 | PATCH | Correct PASS_MAX_DAYS for existing users"
       ansible.builtin.user:
         name: "{{ item }}"
