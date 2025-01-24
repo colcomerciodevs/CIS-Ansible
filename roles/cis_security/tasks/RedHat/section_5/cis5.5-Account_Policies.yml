@@ -17,11 +17,10 @@
         create: true
         backup: true
         mode: "0644"
-        validate: '/usr/sbin/usermod -D -f %s || echo "Validation failed"'
       tags:
         - patch
         - password
-      
+         
     - name: "5.5.1 | AUDIT | Check users with invalid PASS_MAX_DAYS in /etc/shadow"
       ansible.builtin.command:
         cmd: >
