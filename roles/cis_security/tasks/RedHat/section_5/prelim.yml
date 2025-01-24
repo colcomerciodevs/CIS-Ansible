@@ -27,15 +27,14 @@
  
 # Prelim requerido para la tarea 5.5.1 - identificar usuarios interactivos en el sistema
 - name: "PRELIM | AUDIT | Identify interactive users"
-  ansible.builtin.shell: >
-    awk -F: -v excluded="{{ excluded_users | join('|') }}" -v min_uid="{{ min_int_uid }}" '
-    ($3 >= min_uid && !($1 ~ excluded) &&
-     $7 !~ /(nologin|false|null)/) { print $1 }' /etc/passwd
+  ansible.builtin.command: >
+    awk -F: -v excluded="{{ excluded_users | join('|') }}"
+          -v min_uid="{{ min_int_uid }}"
+          '($3 >= min_uid && $1 !~ excluded && $7 !~ /(nologin|false|null)/) { print $1 }' /etc/passwd
   changed_when: false
   register: discovered_interactive_usernames
   tags:
     - always
-
 
   # Prelim requerido para la tarea 5.5.6 | Obtener lista de usuarios del sistema 
 - name: "Generate rhel8_cis_passwd list"

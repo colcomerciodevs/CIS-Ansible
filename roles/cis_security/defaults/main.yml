@@ -194,10 +194,10 @@ rhel8_cis_rule_5_5_2: true
 rhel8_cis_rule_5_5_3: true
 rhel8_cis_rule_5_5_4: true
 rhel8_cis_rule_5_5_5: true
-rhel8_cis_rule_5_5_6: false ## DESHABILITADO - Impide el inicio de session a varias cuentas
+rhel8_cis_rule_5_5_6: true
 rhel8_cis_rule_5_5_7: true
-rhel8_cis_rule_5_5_8: false ## DESHABILITADO - Tiene muchas opciones restrictivas que pueden afectar el sistema
-rhel8_cis_rule_5_5_8_authselect: false ## DESHABILITADO - Depende del perfil personalizado de AUTSELECT para agregar Modulo PAM_UMASK
+rhel8_cis_rule_5_5_8: true
+rhel8_cis_rule_5_5_8_authselect: true ## Depende del perfil personalizado de AUTSELECT para agregar Modulo PAM_UMASK
 rhel8_cis_rule_5_5_9: true
 rhel8_cis_rule_5_5_10: true
 
@@ -433,11 +433,11 @@ rhel8_cis_force_user_maxdays: true
 
 ## Allow the force setting of minimum days between changing the password
 # This can break current connecting user access
-rhel8_cis_force_user_mindays: false
+rhel8_cis_force_user_mindays: true
 
 ## Allow the forcing of of number of days before warning users of password expiry
 # This can break current connecting user access
-rhel8_cis_force_user_warnage: false
+rhel8_cis_force_user_warnage: true
 
 ## Control 5.5.4 - Ensure inactive password lock is 30 days or less
 rhel8_cis_inactivelock:
