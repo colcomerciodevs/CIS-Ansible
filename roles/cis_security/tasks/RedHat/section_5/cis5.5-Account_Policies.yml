@@ -69,7 +69,7 @@
       register: discovered_min_days
 
     # Tarea Crítica: Auditoría de Configuración Sensible
-    - name: "5.6.1.2 | PATCH | Set PASS_MIN_DAYS for existing users"
+    - name: "5.5.2 | PATCH | Set PASS_MIN_DAYS for existing users"
       ansible.builtin.command:
         cmd: "chage --mindays {{ rhel8_cis_pass['min_days'] }} {{ item }}"
       loop: "{{ discovered_min_days.stdout_lines }}"
@@ -310,7 +310,7 @@
         regexp: '^session\s+required\s+pam_umask.so'
         line: 'session required pam_umask.so'
         insertafter: '^session\s+required\s+pam_limits.so'
-      notify: "Check authselect changes"
+      notify: Check authselect changes
       when:
         - rhel8_cis_rule_5_5_8_authselect
         - rhel8_cis_authselect['custom_profile_name'] in authselect_status.stdout
