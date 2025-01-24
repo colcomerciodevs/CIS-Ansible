@@ -298,11 +298,11 @@
         state: present
 
     - name: "5.5.8 | VALIDATE | Ensure custom authselect profile is active"
-      command: authselect current
+      ansible.builtin.command: authselect current
       register: authselect_status
       changed_when: false
 
-    - name: "5.5.8 | PATCH | Add pam_umask.so to the custom authselect profile"
+    - name: "5.5.8 | PATCH | Agregar pam_umask.so al perfil personalizado de authselect"
       ansible.builtin.lineinfile:
         path: "/etc/authselect/custom/{{ rhel8_cis_authselect['custom_profile_name'] }}/{{ item }}"
         regexp: '^session\s+required\s+pam_umask.so'
@@ -311,7 +311,7 @@
       notify: "Check authselect changes"
       when:
         - rhel8_cis_rule_5_5_8_authselect
-        - "'{{ rhel8_cis_authselect['custom_profile_name'] }}' in authselect_status.stdout"
+        - rhel8_cis_authselect['custom_profile_name'] in authselect_status.stdout
       loop:
         - system-auth
         - password-auth
