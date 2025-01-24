@@ -48,3 +48,11 @@
   tags:
     - rhel8cis_section5
     - Configure_PAM
+
+# SECCIÓN 5.5.1-10: Configuración del entorno y cuentas de usuario
+- name: "SECTION | 5.5.1-10 | Environment and User Accounts"
+  ansible.builtin.import_tasks:
+    file: cis5.5-Account_Policies.yml   
+  tags:
+    - rhel8cis_section5
+    - Account_Policies
