@@ -16,12 +16,12 @@
         line: "PASS_MAX_DAYS {{ rhel8_cis_pass['max_days'] }}"
         create: true
         backup: true
-        mode: "0644" 
-        validate: '/usr/sbin/usermod -D || echo "Validation failed"' 
+        mode: "0644"
+        validate: '/usr/sbin/usermod -D -f %s || echo "Validation failed"'
       tags:
         - patch
         - password
-
+      
     - name: "5.5.1 | AUDIT | Check users with invalid PASS_MAX_DAYS in /etc/shadow"
       ansible.builtin.command:
         cmd: >
