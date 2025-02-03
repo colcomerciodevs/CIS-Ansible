@@ -281,16 +281,22 @@
 ## DEPENDE DEL MODULO PAM_UMASK EN AUTHSELECT PARA SU EJECUCION
 - name: "5.5.8 | PATCH | Ensure default user umask is 027 or more restrictive"
   block:
-    - name: "5.5.8 | PATCH | Ensure umask is set in /etc/bashrc, /etc/profile, /etc/login.defs"
+    - name: "5.5.8 | PATCH | Ensure umask is set correctly in /etc/bashrc, /etc/profile"
       ansible.builtin.lineinfile:
         path: "{{ item }}"
-        regexp: '^(umask|UMASK)'
+        regexp: '^umask'
         line: 'umask 027'
         state: present
       loop:
         - /etc/bashrc
         - /etc/profile
-        - /etc/login.defs
+
+    - name: "5.5.8 | PATCH | Ensure UMASK is set correctly in /etc/login.defs"
+      ansible.builtin.lineinfile:
+        path: "/etc/login.defs"
+        regexp: '^UMASK'
+        line: 'UMASK 027'
+        state: present
 
     - name: "5.5.8 | PATCH | Ensure USERGROUPS_ENAB is set to no in /etc/login.defs"
       ansible.builtin.lineinfile:

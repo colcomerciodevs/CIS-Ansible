@@ -292,8 +292,10 @@ rhel8_cis_sugroup: nosugroup
 
 # List of allowed users to use the 'su' command
 authorized_su_users:
-  - admin
   - tux
+  - aromero
+  - csotomonte
+  - jcastano
 
 
 ## Section 5.2 - Configure authselect: Custom authselect profile settings(name, profile to customize, options)
@@ -411,7 +413,6 @@ rhel8_cis_pass:
 excluded_users:
   - root
   - oracle
-  - admin
   - tux
   - proactiva
   - halt
