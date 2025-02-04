@@ -1,0 +1,23 @@
+---
+
+## Crear grupo soporte
+- name: Crear grupo soporte
+  ansible.builtin.group:
+    name: soporte
+    state: present
+
+## Crear usuario proactiva
+- name: Crear usuario proactiva
+  ansible.builtin.user:
+    name: proactiva
+    password: "{{ 'Corbeta22*' | password_hash('sha512') }}"
+    groups: soporte
+    state: present
+
+## Agregar proactiva a sudoers
+- name: Agregar proactiva a sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    line: "proactiva ALL=(ALL) NOPASSWD: ALL"
+    state: present
+    validate: visudo -cf %s

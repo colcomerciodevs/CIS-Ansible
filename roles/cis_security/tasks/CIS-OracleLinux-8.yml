@@ -1,4 +1,14 @@
 ---
+
+# Tarea para ejecutar la Sección General requerida para las  políticas de seguridad CIS en Oracle Linux 8
+- name: Ejecutar tareas de General (RedHat/Oracle Linux 9)
+  ansible.builtin.include_tasks:
+    file: General/main.yml
+  when: rhel8cis_General
+  tags:
+    - rhel8cis_General
+
+
 # Tarea para ejecutar la Sección 1 de las políticas de seguridad CIS en Oracle Linux 8
 - name: Ejecutar tareas de la Sección 1 (RedHat/Oracle Linux 8)
   ansible.builtin.include_tasks:

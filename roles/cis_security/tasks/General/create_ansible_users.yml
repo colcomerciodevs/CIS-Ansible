@@ -1,0 +1,52 @@
+---
+
+## Crear Usuarios de ansible
+- name: Crear usuarios Ansible (iacolcoauto y ansible_test)
+  ansible.builtin.user:
+    name: "{{ item }}"
+    shell: /bin/bash
+    create_home: true
+    groups: wheel,ssh_access
+  loop:
+    - iacolcoauto
+    - ansible_test
+
+
+## Permitir SUDO sin contraseña -- Requerido en Ansible
+- name: Permitir sudo sin contraseña a usuarios Ansible
+  ansible.builtin.lineinfile:
+    path: "/etc/sudoers.d/{{ item }}"
+    line: "{{ item }} ALL=(ALL) NOPASSWD: ALL"
+    create: true
+    owner: root
+    group: root
+    mode: '0440'
+    validate: visudo -cf %s
+  loop:
+    - iacolcoauto
+    - ansible_test
+
+
+## Crear directorio .ssh para usuarios Ansible
+- name: Crear directorio .ssh para usuarios Ansible
+  ansible.builtin.file:
+    path: "/home/{{ item }}/.ssh"
+    state: directory
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0700'
+  loop:
+    - iacolcoauto
+    - ansible_test
+
+## Agregar claves públicas SSH a usuarios Ansible
+- name: Agregar claves públicas SSH a usuarios Ansible
+  ansible.builtin.copy:
+    dest: "/home/{{ item.user }}/.ssh/authorized_keys"
+    content: "{{ item.key }}"
+    owner: "{{ item.user }}"
+    group: "{{ item.user }}"
+    mode: '0600'
+  loop:
+    - { user: "iacolcoauto", key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD4AmpqyaZbdLvbJc7qXFOV7uY7DJTmHVsWwqeHA3Lg+hjUpkystnGoc+Q2i9ePEHQzZyhQUcalbsVo1RTt0o0cYBvzoKihjouMt+a6bVRSOCkIA0ApxRUB9it8wsJ0kKpHVBWXByjuOLtOVzETmtmWMb93yvMWW3uv4v6PJSnzxw/ayh5EF1IlFZ9HDSnowi99AOVYv6SmzyH2ChSQAoyMlSTDxh7ZqtlOr8ijPWx9eiUs+5hnIbWpElIDydtcnylRRQMT5ipbRPBRilrenih0K066nBO0DEeeMDSqjhMSHXFx11Bj2RTUUc38jzjmrRaxsykdjx4USQWgXRSRj64f admin@micrserv05" }
+    - { user: "ansible_test", key: "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPW8I6d7AAAkfrObeWMBdayjEHP9pzCfR5/KGVNkq4nBCK2Sb7dohPLsateMZfaQD0DCBI7YJDrKUw4P9ZOCXbM= root@Ansible" }

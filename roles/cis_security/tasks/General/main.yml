@@ -1,0 +1,44 @@
+---
+
+# TAREA GENERAL 1: Crear Grupo para Acceso SSH limitado
+- name: "GENERAL 1 | creating group for ssh access"
+  ansible.builtin.import_tasks:
+    file: create_group_ssh_access.yml
+  become: true
+  tags:
+    - GENERAL_tasks
+    - always
+    - rhel8cis_General
+
+# TAREA GENERAL 2: Crear Usuarios administradores Infraesttructura
+- name: "GENERAL 2 | Create Infrastructure administrator users"
+  ansible.builtin.import_tasks:
+    file: create_admin_users.yml
+  become: true
+  tags:
+    - GENERAL_tasks
+    - always
+    - rhel8cis_General
+
+# TAREA GENERAL 3: Crear Usuarios para ejecucion de playbooks en ansible
+- name: "GENERAL 3 | Create Ansible users"
+  ansible.builtin.import_tasks:
+    file: create_ansible_users.yml
+  become: true
+  tags:
+    - GENERAL_tasks
+    - always
+    - rhel8cis_General
+
+
+# TAREA GENERAL 3: Crear Usuarios para Proactiva
+- name: "GENERAL 3 | Create Proactiva user"
+  ansible.builtin.import_tasks:
+    file: create_user_proactiva.yml
+  become: true
+  tags:
+    - GENERAL_tasks
+    - always
+    - rhel8cis_General
+
+

@@ -1,0 +1,18 @@
+---
+
+## Crear Grupo para restringir el acceso SSH
+- name: Crear un grupo en el sistema
+  ansible.builtin.group:
+    name: ssh_access
+    state: present
+
+
+## Incluir el administrador global tux a el grupo con permiso de SSH
+- name: Agregar tux al grupo ssh_access
+  ansible.builtin.user:
+    name: tux
+    groups: ssh_access
+    append: true
+
+
+
