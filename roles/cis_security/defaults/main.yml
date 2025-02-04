@@ -270,6 +270,7 @@ rhel8_cis_sudolog_location: "/var/log/sudo.log"
 # ansible users excluded from removing NOPASSWD in ansible
 sudoers_exclude_nopasswd_users:
   - tux
+  - proactiva
   - iacolcoauto
   - ansible_test
 
