@@ -252,16 +252,12 @@ rhel8_cis_ipv6_required: false
 # IMPORTANTE UNICAMENTE LOS USUARIOS QUE ESTAN EN /etc/cron.allow TIENEN PERMISOS PARA PROGRAMAR CRON
 authorized_cron_users:
   - root
-  - admin
   - tux
-  - oracle
 
 # IMPORTANTE UNICAMENTE LOS USUARIOS QUE ESTAN EN /etc/at.allow TIENEN PERMISOS PARA PROGRAMAR AT
 authorized_at_users:
   - root
-  - admin
   - tux
-  - oracle
 
 
 ## Control 5.2.3 - Ensure sudo log file exists
@@ -273,8 +269,8 @@ rhel8_cis_sudolog_location: "/var/log/sudo.log"
 ## Control 5.2.4 - Ensure that a password must be provided for user escalation
 # ansible users excluded from removing NOPASSWD in ansible
 sudoers_exclude_nopasswd_users:
-  - ansible
   - tux
+  - iacolcoauto
   - ansible_test
 
 
@@ -412,13 +408,13 @@ rhel8_cis_pass:
 # por las policticas de cambio de contraseña
 excluded_users:
   - root
-  - oracle
   - tux
   - proactiva
+  - iacolcoauto
+  - ansible_test
   - halt
   - shutdown
   - sync
-  - root
   - nfsnobody
 
 allowed_shells:
