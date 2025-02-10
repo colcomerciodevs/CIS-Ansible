@@ -33,7 +33,6 @@
     path: "/home/{{ item }}/.ssh"
     state: directory
     owner: "{{ item }}"
-    group: "{{ item }}"
     mode: '0700'
   loop:
     - iacolcoauto
