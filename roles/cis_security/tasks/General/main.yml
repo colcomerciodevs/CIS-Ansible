@@ -8,7 +8,7 @@
   tags:
     - GENERAL_tasks
     - always
-    - rhel8cis_General
+    - rhel8cis_general
 
 # TAREA GENERAL 2: Crear Usuarios administradores Infraesttructura
 - name: "GENERAL 2 | Create Infrastructure administrator users"
@@ -18,7 +18,7 @@
   tags:
     - GENERAL_tasks
     - always
-    - rhel8cis_General
+    - rhel8cis_general
 
 # TAREA GENERAL 3: Crear Usuarios para ejecucion de playbooks en ansible
 - name: "GENERAL 3 | Create Ansible users"
@@ -28,7 +28,7 @@
   tags:
     - GENERAL_tasks
     - always
-    - rhel8cis_General
+    - rhel8cis_general
 
 
 # TAREA GENERAL 3: Crear Usuarios para Proactiva
@@ -39,6 +39,6 @@
   tags:
     - GENERAL_tasks
     - always
-    - rhel8cis_General
+    - rhel8cis_general
 
 

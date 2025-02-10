@@ -8,6 +8,7 @@ system_is_ec2: false
 # These variables govern whether the tasks of a particular section are to be executed when running the role.
 # E.g: If you want to execute the tasks of Section 1 you should set the "_section1" variable to true.
 # If you do not want the tasks from that section to get executed you simply set the variable to "false".
+rhel8cis_general: true
 rhel8cis_section1: true
 rhel8cis_section2: true
 rhel8cis_section3: true
