@@ -44,7 +44,6 @@
     dest: "/home/{{ item.user }}/.ssh/authorized_keys"
     content: "{{ item.key }}"
     owner: "{{ item.user }}"
-    group: "{{ item.user }}"
     mode: '0600'
   loop:
     - { user: "iacolcoauto", key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD4AmpqyaZbdLvbJc7qXFOV7uY7DJTmHVsWwqeHA3Lg+hjUpkystnGoc+Q2i9ePEHQzZyhQUcalbsVo1RTt0o0cYBvzoKihjouMt+a6bVRSOCkIA0ApxRUB9it8wsJ0kKpHVBWXByjuOLtOVzETmtmWMb93yvMWW3uv4v6PJSnzxw/ayh5EF1IlFZ9HDSnowi99AOVYv6SmzyH2ChSQAoyMlSTDxh7ZqtlOr8ijPWx9eiUs+5hnIbWpElIDydtcnylRRQMT5ipbRPBRilrenih0K066nBO0DEeeMDSqjhMSHXFx11Bj2RTUUc38jzjmrRaxsykdjx4USQWgXRSRj64f admin@micrserv05" }
