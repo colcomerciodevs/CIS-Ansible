@@ -118,37 +118,47 @@
 ### IMPORTANTE UNICAMENTE LOS USUARIOS QUE ESTAN EN /etc/cron.allow TIENEN PERMISOS PARA PROGRAMAR CRON
 - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users"
   block:
-    - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users | Remove cron.deny"
+    - name: "5.1.8 | PATCH | Remove cron.deny"
       ansible.builtin.file:
         path: /etc/cron.deny
         state: absent
 
-    - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users | Check if cron.allow exists"
+    - name: "5.1.8 | PATCH | Check if cron.allow exists"
       ansible.builtin.stat:
         path: "/etc/cron.allow"
-      register: rhel8_cis_5_1_8_cron_allow_state
+      register: cron_allow_state
 
-    - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users | Ensure cron.allow is restricted to authorized users"
+    - name: "5.1.8 | PATCH | Ensure cron.allow exists"
       ansible.builtin.file:
         path: /etc/cron.allow
-        state: file
+        state: touch
+        owner: root
+        group: root
+        mode: "0600"
+      when: not cron_allow_state.stat.exists
+
+    - name: "5.1.8 | PATCH | Ensure cron.allow is restricted to authorized users"
+      ansible.builtin.file:
+        path: /etc/cron.allow
         owner: root
         group: root
         mode: "0600"
 
-    - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users | Add authorized users to cron.allow"
+    - name: "5.1.8 | PATCH | Add authorized users to cron.allow"
       ansible.builtin.lineinfile:
         path: /etc/cron.allow
         line: "{{ item }}"
         state: present
-      loop: "{{ authorized_cron_users }}"
+      loop: "{{ authorized_cron_users | default([]) }}"
+      when: authorized_cron_users is defined and authorized_cron_users | length > 0
   when:
-    - rhel8_cis_rule_5_1_8
+    - rhel8_cis_rule_5_1_8 | default(false)
   tags:
     - level1
     - patch
     - cron
     - rule_5.1.8
+
 
 
 # Tarea 5.1.9 - Asegurar que at esté restringido solo a usuarios autorizados (Automático)
