@@ -53,7 +53,7 @@
       loop:
         - password-auth
         - system-auth
-      notify: "Check authselect changes"
+      notify: Check authselect changes
   when: rhel8_cis_rule_5_4_3
   tags:
     - level1
