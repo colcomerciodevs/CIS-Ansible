@@ -56,6 +56,7 @@
     sysctl_set: true
   when: ansible_virtualization_type != "docker"
 
+
 # Handler para verificar cambios y aplicar authselect solo si hubo modificaciones
 - name: Check authselect changes
   listen: "authselect update"
