@@ -1,18 +1,13 @@
 ---
 
 # Tarea 2.1.4 - Asegurar que xinetd no está instalado
-- name: SCORED | 2.1.4 | PATCH | Ensure xinetd is not installed (Check)
-  ansible.builtin.command: rpm -q xinetd
-  register: xinetd_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.4 | PATCH | Ensure xinetd is not installed (Remove)
+- name: SCORED | 2.1.4 | PATCH | Ensure xinetd is not installed
   ansible.builtin.package:
     name: xinetd
     state: absent
   when:
-    - xinetd_check.rc == 0
+    - is_new_installation == "yes"
+    - "'xinetd' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_4
   tags:
     - level1
@@ -22,18 +17,13 @@
     - rule_2.1.4
 
 # Tarea 2.1.5 - Asegurar X Window System no esté instalado
-- name: SCORED | 2.1.5 | PATCH | Ensure X Window System is not installed (Check)
-  ansible.builtin.command: rpm -q xorg-x11-server-common
-  register: xorg_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.5 | PATCH | Ensure X Window System is not installed (Remove)
+- name: SCORED | 2.1.5 | PATCH | Ensure X Window System is not installed
   ansible.builtin.package:
     name: xorg-x11-server-common
     state: absent
   when:
-    - xorg_check.rc == 0
+    - is_new_installation == "yes"
+    - "'xorg-x11-server-common' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_5
   tags:
     - level1
@@ -43,20 +33,15 @@
     - rule_2.1.5
 
 # Tarea 2.1.6 - Asegurar Avahi Server no esté habilitado
-- name: SCORED | 2.1.6 | PATCH | Ensure Avahi Server is not installed (Check)
-  ansible.builtin.command: rpm -q avahi avahi-autoipd
-  register: avahi_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.6 | PATCH | Ensure Avahi Server is not installed (Remove)
+- name: SCORED | 2.1.6 | PATCH | Ensure Avahi Server is not enabled
   ansible.builtin.package:
     name:
       - avahi-autoipd
       - avahi
     state: absent
   when:
-    - avahi_check.rc == 0
+    - is_new_installation == "yes"
+    - "'avahi' in ansible_facts.packages or 'avahi-autopd' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_6
   tags:
     - level1
@@ -67,18 +52,13 @@
     - rule_2.1.6
 
 # Tarea 2.1.7 - Asegurar que el paquete CUPS no está instalado
-- name: SCORED | 2.1.7 | PATCH | Ensure CUPS is not installed (Check)
-  ansible.builtin.command: rpm -q cups
-  register: cups_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.7 | PATCH | Ensure CUPS is not installed (Remove)
+- name: SCORED | 2.1.7 | PATCH | Ensure CUPS is not installed
   ansible.builtin.package:
     name: cups
     state: absent
   when:
-    - cups_check.rc == 0
+    - is_new_installation == "yes"
+    - "'cups' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_7
   tags:
     - level1
@@ -89,18 +69,13 @@
     - rule_2.1.7
 
 # Tarea 2.1.8 - Asegurar que el paquete DHCP Server no está instalado
-- name: SCORED | 2.1.8 | PATCH | Ensure DHCP Server is not installed (Check)
-  ansible.builtin.command: rpm -q dhcp-server
-  register: dhcp_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.8 | PATCH | Ensure DHCP Server is not installed (Remove)
+- name: SCORED | 2.1.8 | PATCH | Ensure DHCP Server is not installed
   ansible.builtin.package:
     name: dhcp-server
     state: absent
   when:
-    - dhcp_check.rc == 0
+    - is_new_installation == "yes"
+    - "'dhcp-server' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_8
   tags:
     - level1
@@ -127,65 +102,59 @@
     - patch
     - rule_2.1.9
 
-# Tarea 2.1.10 - Asegurar que nfs-utils no está instalado y el servicio NFS está detenido
-- name: SCORED | 2.1.10 | PATCH | Ensure NFS utilities are not installed (Check)
-  ansible.builtin.command: rpm -q nfs-utils
-  register: nfs_check
-  ignore_errors: true
-  changed_when: false
+# Tarea 2.1.10 - Ensure nfs-utils is not installed or the nfs-server service is masked
+- name: SCORED | 2.1.10 | PATCH | Ensure NFS utilities are not installed and NFS server is stopped and masked
+  block:
+    - name: Ensure NFS utilities are not installed
+      ansible.builtin.package:
+        name: nfs-utils
+        state: absent
+      when:
+        - is_new_installation == "yes"
+        - "'nfs-utils' in ansible_facts.packages"
+        - rhel8_cis_rule_2_1_10
+      tags:
+        - level1
+        - scored
+        - nfs
+        - rpc
+        - services
+        - patch
+        - rule_2.1.10
 
-- name: SCORED | 2.1.10 | PATCH | Ensure NFS utilities are not installed (Remove)
-  ansible.builtin.package:
-    name: nfs-utils
-    state: absent
-  when:
-    - nfs_check.rc == 0
-    - rhel8_cis_rule_2_1_10
-  tags:
-    - level1
-    - scored
-    - nfs
-    - rpc
-    - services
-    - patch
-    - rule_2.1.10
+    - name: Check if the NFS Server service exists
+      ansible.builtin.set_fact:
+        nfs_service_exists: "{{ 'nfs-server.service' in ansible_facts.services }}"
 
-- name: Check if the NFS Server service exists
-  ansible.builtin.set_fact:
-    nfs_service_exists: "{{ 'nfs-server.service' in ansible_facts.services }}"
+    - name: Stop and mask the NFS Server service
+      ansible.builtin.systemd:
+        name: nfs-server
+        masked: true
+        state: stopped
+      when:
+        - nfs_service_exists
+        - is_new_installation == "yes"
+        - rhel8_cis_rule_2_1_10
+      tags:
+        - level1
+        - scored
+        - nfs
+        - rpc
+        - services
+        - patch
+        - rule_2.1.10
 
-- name: Stop and mask the NFS Server service
-  ansible.builtin.systemd:
-    name: nfs-server
-    masked: true
-    state: stopped
-  when:
-    - nfs_service_exists
-    - rhel8_cis_rule_2_1_10
-  tags:
-    - level1
-    - scored
-    - nfs
-    - rpc
-    - services
-    - patch
-    - rule_2.1.10
 
 # Tarea 2.1.11 - Asegurar que el paquete DNS Server no está instalado
-- name: SCORED | 2.1.11 | PATCH | Ensure DNS Server packages are not installed (Check)
-  ansible.builtin.command: rpm -q bind bind-chroot
-  register: bind_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.11 | PATCH | Ensure DNS Server packages are not installed (Remove)
+- name: SCORED | 2.1.11 | PATCH | Ensure DNS Server packages are not installed
   ansible.builtin.package:
     name:
       - bind
       - bind-chroot
     state: absent
   when:
-    - bind_check.rc == 0
+    - is_new_installation == "yes"
+    - "'bind' in ansible_facts.packages or 'bind-chroot' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_11
   tags:
     - level1
@@ -195,18 +164,13 @@
     - rule_2.1.11
 
 # Tarea 2.1.12 - Asegurar que el paquete FTP Server no está instalado
-- name: SCORED | 2.1.12 | PATCH | Ensure FTP packages are not installed (Check)
-  ansible.builtin.command: rpm -q ftp
-  register: ftp_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.12 | PATCH | Ensure FTP packages are not installed (Remove)
+- name: "SCORED | 2.1.12 | PATCH | Ensure FTP packages are not installed"
   ansible.builtin.package:
     name: ftp
     state: absent
   when:
-    - ftp_check.rc == 0
+    - is_new_installation == "yes"
+    - "'ftp' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_12
   tags:
     - level1
@@ -216,18 +180,13 @@
     - rule_2.1.12
 
 # Tarea 2.1.13 - Asegurar que el paquete VSFTPD Server no está instalado
-- name: SCORED | 2.1.13 | PATCH | Ensure VSFTPD packages are not installed (Check)
-  ansible.builtin.command: rpm -q vsftpd
-  register: vsftpd_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.13 | PATCH | Ensure VSFTPD packages are not installed (Remove)
+- name: "SCORED | 2.1.13 | PATCH | Ensure VSFTPD packages are not installed"
   ansible.builtin.package:
     name: vsftpd
     state: absent
   when:
-    - vsftpd_check.rc == 0
+    - is_new_installation == "yes"
+    - "'vsftpd' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_13
   tags:
     - level1
@@ -236,19 +195,15 @@
     - patch
     - rule_2.1.13
 
-# Tarea 2.1.14 - Asegurar que los paquetes TFTP no están instalados
-- name: SCORED | 2.1.14 | PATCH | Ensure TFTP packages are not installed (Check)
-  ansible.builtin.command: rpm -q tftp-server
-  register: tftp_check
-  ignore_errors: true
-  changed_when: false
 
-- name: SCORED | 2.1.14 | PATCH | Ensure TFTP packages are not installed (Remove)
+# Tarea 2.1.14 - Asegurar que los paquetes TFTP no están instalados
+- name: SCORED | 2.1.14 | PATCH | Ensure TFTP packages are not installed
   ansible.builtin.package:
     name: tftp-server
     state: absent
   when:
-    - tftp_check.rc == 0
+    - is_new_installation == "yes"
+    - "'tftp-server' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_14
   tags:
     - level1
@@ -258,20 +213,15 @@
     - rule_2.1.14
 
 # Tarea 2.1.15 - Asegurar que el paquete del servidor HTTP no está instalado
-- name: SCORED | 2.1.15 | PATCH | Ensure HTTP Server packages are not installed (Check)
-  ansible.builtin.command: rpm -q httpd nginx
-  register: httpd_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.15 | PATCH | Ensure HTTP Server packages are not installed (Remove)
+- name: SCORED | 2.1.15 | PATCH | Ensure HTTP Server packages are not installed
   ansible.builtin.package:
     name: 
       - httpd
       - nginx
     state: absent
   when:
-    - httpd_check.rc == 0
+    - is_new_installation == "yes"
+    - "'httpd' in ansible_facts.packages or 'nginx' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_15
   tags:
     - level1
@@ -280,21 +230,17 @@
     - patch
     - rule_2.1.15
 
-# Tarea 2.1.16 - Asegurar que los paquetes del servidor IMAP y POP3 no están instalados
-- name: SCORED | 2.1.16 | PATCH | Ensure IMAP and POP3 Server packages are not installed (Check)
-  ansible.builtin.command: rpm -q dovecot cyrus-imapd
-  register: imap_check
-  ignore_errors: true
-  changed_when: false
 
-- name: SCORED | 2.1.16 | PATCH | Ensure IMAP and POP3 Server packages are not installed (Remove)
+# Tarea 2.1.16 - Asegurar que los paquetes del servidor IMAP y POP3 no están instalados
+- name: SCORED | 2.1.16 | PATCH | Ensure IMAP and POP3 Server packages are not installed
   ansible.builtin.package:
     name: 
       - dovecot
       - cyrus-imapd
     state: absent
   when:
-    - imap_check.rc == 0
+    - is_new_installation == "yes"
+    - "'dovecot' in ansible_facts.packages or 'cyrus-imapd' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_16
   tags:
     - level1
@@ -304,40 +250,31 @@
     - patch
     - rule_2.1.16
 
-# Tarea 2.1.17 - Asegurar que el paquete Samba no está instalado
-- name: SCORED | 2.1.17 | PATCH | Ensure Samba package is not installed (Check)
-  ansible.builtin.command: rpm -q samba
-  register: samba_check
-  ignore_errors: true
-  changed_when: false
 
-- name: SCORED | 2.1.17 | PATCH | Ensure Samba package is not installed (Remove)
+# Tarea 2.1.17 - Asegurar que el paquete Samba no está instalado
+- name: SCORED | 2.1.17 | PATCH | Ensure Samba package is not installed
   ansible.builtin.package:
     name: samba
     state: absent
   when:
-    - samba_check.rc == 0
+    - is_new_installation == "yes"
+    - "'samba' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_17
   tags:
     - level1
     - scored
     - samba
     - patch
-    - rule_2.1.17
+    - rule_2_1_17
 
 # Tarea 2.1.18 - Asegurar que el paquete del servidor HTTP Proxy no está instalado
-- name: SCORED | 2.1.18 | PATCH | Ensure HTTP Proxy Server package is not installed (Check)
-  ansible.builtin.command: rpm -q squid
-  register: squid_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.18 | PATCH | Ensure HTTP Proxy Server package is not installed (Remove)
+- name: SCORED | 2.1.18 | PATCH | Ensure HTTP Proxy Server package is not installed
   ansible.builtin.package:
     name: squid
     state: absent
   when:
-    - squid_check.rc == 0
+    - is_new_installation == "yes"
+    - "'squid' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_18
   tags:
     - level1
@@ -347,18 +284,13 @@
     - rule_2.1.18
 
 # Tarea 2.1.19 - Asegurar que el servicio SNMP está deshabilitado
-- name: SCORED | 2.1.19 | PATCH | Ensure net-snmp service is disabled (Check)
-  ansible.builtin.command: rpm -q net-snmp
-  register: snmp_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.19 | PATCH | Ensure net-snmp service is disabled (Remove)
+- name: SCORED | 2.1.19 | PATCH | Ensure net-snmp service is disabled
   ansible.builtin.package:
     name: net-snmp
     state: absent
   when:
-    - snmp_check.rc == 0
+    - is_new_installation == "yes"
+    - "'net-snmp' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_19
   tags:
     - level1
@@ -368,20 +300,15 @@
     - rule_2.1.19
 
 # Tarea 2.1.20 - Asegurar que el agente de mail transfer está configurado para modo local-only
-- name: SCORED | 2.1.20 | PATCH | Ensure mail transfer agent is configured for local-only mode (Check)
-  ansible.builtin.command: rpm -q postfix
-  register: postfix_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.20 | PATCH | Ensure mail transfer agent is configured for local-only mode (Configure)
+- name: SCORED | 2.1.20 | PATCH | Ensure mail transfer agent is configured for local-only mode
   ansible.builtin.lineinfile:
     path: /etc/postfix/main.cf
     regexp: "^(#)?inet_interfaces"
     line: "inet_interfaces = loopback-only"
   notify: Restart postfix
   when:
-    - postfix_check.rc == 0
+    - is_new_installation == "yes"
+    - "'postfix' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_20
   tags:
     - level1
@@ -390,19 +317,14 @@
     - rule_2.1.20
 
 # Tarea 2.1.21 - Asegurar que el paquete Telnet Server no está instalado
-- name: SCORED | 2.1.21 | PATCH | Ensure Telnet Server package is not installed (Check)
-  ansible.builtin.command: rpm -q telnet-server
-  register: telnet_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.21 | PATCH | Ensure Telnet Server package is not installed (Remove)
+- name: SCORED | 2.1.21 | PATCH | Ensure Telnet Server package is not installed
   ansible.builtin.package:
     name: telnet-server
     state: absent
   when:
-    - telnet_check.rc == 0
-    - rhel8_cis_rule_2_1_21
+    - is_new_installation == "yes"
+    - "'telnet-server' in ansible_facts.packages"
+    - rhel8_cis_rule_2_1.21
   tags:
     - level1
     - scored
@@ -411,18 +333,13 @@
     - rule_2.1.21
 
 # Tarea 2.1.22 - Asegurar que el paquete Rsync no está instalado
-- name: SCORED | 2.1.22 | PATCH | Ensure Rsync package is not installed (Check)
-  ansible.builtin.command: rpm -q rsync
-  register: rsync_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.22 | PATCH | Ensure Rsync package is not installed (Remove)
+- name: SCORED | 2.1.22 | PATCH | Ensure Rsync package is not installed
   ansible.builtin.package:
     name: rsync
     state: absent
   when:
-    - rsync_check.rc == 0
+    - is_new_installation == "yes"
+    - "'rsync' in ansible_facts.packages"
     - rhel8_cis_rule_2_1_22
   tags:
     - level1
@@ -432,22 +349,18 @@
     - rule_2.1.22
 
 # Tarea 2.1.23 - Asegurar que el paquete NIS Server no está instalado
-- name: SCORED | 2.1.23 | PATCH | Ensure NIS Server package is not installed (Check)
-  ansible.builtin.command: rpm -q ypserv
-  register: nis_check
-  ignore_errors: true
-  changed_when: false
-
-- name: SCORED | 2.1.23 | PATCH | Ensure NIS Server package is not installed (Remove)
+- name: SCORED | 2.1.23 | PATCH | Ensure NIS Server package is not installed
   ansible.builtin.package:
     name: ypserv
     state: absent
   when:
-    - nis_check.rc == 0
-    - rhel8_cis_rule_2_1_23
+    - is_new_installation == "yes"
+    - "'ypserv' in ansible_facts.packages"
+    - rhel8_cis_rule_2_1.23
   tags:
     - level1
     - scored
     - nis
     - patch
     - rule_2.1.23
+  
