@@ -1,21 +1,18 @@
 --- 
 
 # Tarea 2.1.1 - Asegurar que la sincronización de tiempo está en uso (Automático)
-- name: NOTSCORED | 2.1.1 | PATCH | Ensure time synchronization is in use - check service
-  ansible.builtin.command:
-    cmd: rpm -q {{ rhel8_cis_time_synchronization }}
-  register: time_sync_check
-  changed_when: false
-  ignore_errors: true
+- name: NOTSCORED | 2.1.1 | PATCH | Ensure time synchronization is in use - service
+    install {{ rhel8_cis_time_synchronization }}
+  ansible.builtin.package:
+    name: '{{ rhel8_cis_time_synchronization }}'
+    state: present
   when:
     - rhel8_cis_rule_2_1_1
-
-- name: Show time synchronization status
-  ansible.builtin.debug:
-    msg: "El paquete {{ rhel8_cis_time_synchronization }} está {{ 'presente' if time_sync_check.rc == 0 else 'ausente' }}"
-  when:
-    - rhel8_cis_rule_2_1_1
-
+  tags:
+    - level1
+    - patch
+    - ntp
+    - rule_2.1.1
 
 - name: 'NOTSCORED | 2.1.1 | PATCH | Ensure time synchronization is in use - service
     start '
