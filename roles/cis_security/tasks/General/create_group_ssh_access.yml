@@ -7,12 +7,16 @@
     state: present
 
 
-## Incluir el administrador global tux a el grupo con permiso de SSH
-- name: Agregar tux al grupo ssh_access
+## Crear Usuarios de ansible
+- name: Crear usuarios Ansible (iacolcoauto y ansible_test)
   ansible.builtin.user:
-    name: tux
-    groups: wheel,ssh_access
-    append: true
+    name: "{{ item }}"
+    shell: /bin/bash
+    create_home: true
+    groups: ssh_access
+  loop:
+    - tux
+
 
 
 
