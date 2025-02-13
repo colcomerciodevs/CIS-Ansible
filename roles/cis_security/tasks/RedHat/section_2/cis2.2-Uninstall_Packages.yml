@@ -76,7 +76,7 @@
   when:
     - "'openldap-clients' in ansible_facts.packages"
     - is_new_installation == "yes"
-    - rhel8_cis_rule_2_2.5
+    - rhel8_cis_rule_2_2_5
   tags:
     - level1
     - scored
@@ -92,7 +92,7 @@
   when:
     - "'tftp' in ansible_facts.packages"
     - is_new_installation == "yes"
-    - rhel8_cis_rule_2_2.6
+    - rhel8_cis_rule_2_2_6
   tags:
     - level1
     - scored
@@ -108,7 +108,7 @@
   when:
     - "'rpcbind' in ansible_facts.packages"
     - is_new_installation == "yes"
-    - rhel8_cis_rule_2_2.7
+    - rhel8_cis_rule_2_2_7
   tags:
     - level1
     - scored
