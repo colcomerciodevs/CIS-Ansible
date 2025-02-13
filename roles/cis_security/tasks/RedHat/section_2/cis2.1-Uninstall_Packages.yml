@@ -305,7 +305,6 @@
     path: /etc/postfix/main.cf
     regexp: "^(#)?inet_interfaces"
     line: "inet_interfaces = loopback-only"
-  notify: Restart postfix
   when:
     - is_new_installation == "yes"
     - "'postfix' in ansible_facts.packages"
