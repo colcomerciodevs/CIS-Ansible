@@ -322,7 +322,7 @@
         - rhel8_cis_authselect['custom_profile_name'] in authselect_status.stdout
       loop:
         - system-auth
-        - password-auth
+        - password-auth  
   when:
     - rhel8_cis_rule_5_5_8
   tags:
@@ -330,6 +330,10 @@
     - patch
     - accounts
     - rule_5.5.8
+
+# Forzar ejecución de handlers aquí para asegurarnos de que PAM se reinicie antes de continuar
+- name: "5.5.8 | DEBUG | Ensure handlers are recognized"
+  ansible.builtin.meta: flush_handlers
 
 
 # Tarea 5.5.9 - Asegurar default user shell timeout is 900 seconds or less (Automático)

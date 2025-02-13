@@ -23,6 +23,10 @@
     - pam
     - rule_5.4.1
 
+# Forzar ejecución de handlers aquí para asegurarnos de que PAM se reinicie antes de continuar
+- name: "5.4.1 | DEBUG | Ensure handlers are recognized"
+  ansible.builtin.meta: flush_handlers
+
 # Tarea 5.4.2 - Asegurar que el bloqueo de contraseñas está configurado para 5 intentos (Automático)
 ## DEPENDE DEL MODULO FAILLOCK EN AUTHSELECT PARA SU EJECUCION
 - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured in faillock.conf"
@@ -60,6 +64,10 @@
     - pam
     - patch
     - rule_5.4.3
+
+# Forzar ejecución de handlers aquí para asegurarnos de que PAM se reinicie antes de continuar
+- name: "5.4.3 | DEBUG | Ensure handlers are recognized"
+  ansible.builtin.meta: flush_handlers
 
 
 # Tarea 5.4.4 - Asegurar que el algoritmo de hash de contraseñas es SHA-512
@@ -100,5 +108,7 @@
     - pam
     - rule_5.4.4
 
-
+# Forzar ejecución de handlers aquí para asegurarnos de que authselect se aplica antes de finalizar
+- name: "5.4.4 | DEBUG | Ensure handlers are recognized"
+  ansible.builtin.meta: flush_handlers
 
