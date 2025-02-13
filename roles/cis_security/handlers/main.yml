@@ -58,6 +58,7 @@
 
 # Handler para verificar cambios y aplicar authselect solo si hubo modificaciones
 - name: Check authselect changes
+  listen: "authselect update"
   block:
     - name: "Verify if authselect apply-changes is needed"
       ansible.builtin.command: authselect check
@@ -69,3 +70,4 @@
         cmd: authselect apply-changes
       when: authselect_check.changed
       changed_when: true
+

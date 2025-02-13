@@ -316,7 +316,7 @@
         regexp: '^session\s+required\s+pam_umask.so'
         line: 'session required pam_umask.so'
         insertafter: '^session\s+required\s+pam_limits.so'
-      notify: Check authselect changes
+      notify: authselect update
       when:
         - rhel8_cis_rule_5_5_8_authselect
         - rhel8_cis_authselect['custom_profile_name'] in authselect_status.stdout

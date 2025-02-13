@@ -13,8 +13,7 @@
     - {key: ucredit, value: '-1'}      # Al menos 1 letra mayúscula
     - {key: ocredit, value: '-1'}      # Al menos 1 carácter especial
     - {key: lcredit, value: '-1'}      # Al menos 1 letra minúscula
-  notify: 
-    - Reiniciar servicios PAM
+  notify: authselect update
   when:
     - rhel8_cis_rule_5_4_1
   tags:
@@ -58,8 +57,7 @@
       loop:
         - password-auth
         - system-auth
-      notify: 
-        - Reiniciar servicios PAM
+      notify: authselect update
   when: rhel8_cis_rule_5_4_3
   tags:
     - level1
@@ -99,8 +97,7 @@
       loop:
         - password-auth
         - system-auth
-      notify: 
-        - Reiniciar servicios PAM
+      notify: authselect update
       when: 
         - rhel8_cis_rule_5_4_4_authselect
   when: 
