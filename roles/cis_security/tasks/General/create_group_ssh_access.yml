@@ -11,7 +11,7 @@
 - name: Agregar tux al grupo ssh_access
   ansible.builtin.user:
     name: tux
-    groups: ssh_access
+    groups: wheel,ssh_access
     append: true
 
 
