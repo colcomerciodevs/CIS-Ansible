@@ -79,7 +79,7 @@ rhel8_cis_rule_2_1_3: true
 
 ## Uninstall Packages - special proposal services
 rhel8_cis_rule_2_1_4: true
-rhel8_cis_rule_2_1_5: true 
+rhel8_cis_rule_2_1_5: false ## requiere para internet 
 rhel8_cis_rule_2_1_6: true
 rhel8_cis_rule_2_1_7: true
 rhel8_cis_rule_2_1_8: true
@@ -165,7 +165,7 @@ rhel8_cis_rule_5_3_2: true
 rhel8_cis_rule_5_3_3: true
 rhel8_cis_rule_5_3_4: true
 rhel8_cis_rule_5_3_5: true
-rhel8_cis_rule_5_3_6: true
+rhel8_cis_rule_5_3_6: false ### requiere salida internet
 rhel8_cis_rule_5_3_7: true
 rhel8_cis_rule_5_3_8: true
 rhel8_cis_rule_5_3_9: true
