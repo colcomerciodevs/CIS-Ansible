@@ -1,5 +1,15 @@
 ---
 
+# TAREA GENERAL 0: Crear Grupo para Acceso SSH limitado
+- name: "GENERAL 0 | validation of required repositories"
+  ansible.builtin.import_tasks:
+    file: validate_repos.yml
+  become: true
+  tags:
+    - GENERAL_tasks
+    - always
+    - rhel8cis_general
+
 # TAREA GENERAL 1: Crear Grupo para Acceso SSH limitado
 - name: "GENERAL 1 | creating group for ssh access"
   ansible.builtin.import_tasks:
