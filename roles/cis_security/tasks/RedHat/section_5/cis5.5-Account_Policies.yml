@@ -105,22 +105,20 @@
       register: discovered_warn_days
 
     # Tarea Crítica: Auditoría de Configuración Sensible
-    - name: "5.5.3 | PATCH | Ensure password expiration warning days is 7 or more | Set existing users WARN_DAYS"
-      ansible.builtin.user:
-        name: "{{ item }}"
-        password_warn_days: "{{ rhel8_cis_pass['warn_age'] }}"
+    - name: "5.5.3 | PATCH | Set password warning days with shell"
+      ansible.builtin.shell: |
+        chage --warndays {{ rhel8_cis_pass['warn_age'] }} {{ item }}
       loop: "{{ discovered_warn_days.stdout_lines }}"
       when:
         - discovered_warn_days.stdout_lines | length > 0
         - item in discovered_interactive_usernames.stdout
         - rhel8_cis_force_user_warnage
-  when:
-    - rhel8_cis_rule_5_5_3
-  tags:
-    - level1
-    - patch
-    - password
-    - rule_5.5.3
+      tags:
+        - level1
+        - patch
+        - password
+        - rule_5.5.3
+
 
 # Tarea 5.5.4 - Asegurar que el bloqueo de contraseñas por inactividad esté en 30 días o menos (Automático)
 - name: "5.5.4 | PATCH | Ensure inactive password lock is 30 days or less"
