@@ -8,7 +8,7 @@
 
 
 ## Crear Usuarios de ansible
-- name: Crear usuarios Ansible (iacolcoauto y ansible_test)
+- name: Crear tux
   ansible.builtin.user:
     name: "{{ item }}"
     shell: /bin/bash
