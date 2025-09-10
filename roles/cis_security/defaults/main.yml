@@ -407,9 +407,10 @@ rhel8_cis_pass:
 
 ## Section 5.5.1 - Excluded users for correct PASS_MAX_DAYS for existing users
 # Lista que contiene los nombres de usuarios críticos que no deben ser afectados
-# por las policticas de cambio de contraseña
+# por las politicas de cambio de contraseña
 excluded_users:
   - root
+  - admin
   - tux
   - proactiva
   - iacolcoauto
@@ -418,6 +419,11 @@ excluded_users:
   - shutdown
   - sync
   - nfsnobody
+  - oracle
+  - postgres
+  - pos
+  - alktstwms
+  - alktstems
 
 allowed_shells:
   - "/bin/false"
