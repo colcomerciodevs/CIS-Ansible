@@ -43,7 +43,7 @@
     - scored
     - patch
     - rule_1.1.2
-    - squashfs    
+    - squashfs
 
 # Tarea 1.1.3 - Asegurar que el montaje del filesystem udf esté deshabilitado
 - name: SCORED | 1.1.3 | PATCH | Ensure mounting of udf filesystems is disabled
