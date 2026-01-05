@@ -79,7 +79,7 @@ rhel8_cis_rule_2_1_3: true
 
 ## Uninstall Packages - special proposal services
 rhel8_cis_rule_2_1_4: true
-rhel8_cis_rule_2_1_5: false ## requiere para internet 
+rhel8_cis_rule_2_1_5: false ## requiere para internet
 rhel8_cis_rule_2_1_6: true
 rhel8_cis_rule_2_1_7: true
 rhel8_cis_rule_2_1_8: true
@@ -150,7 +150,7 @@ rhel8_cis_rule_5_1_9: true
 
 # Configure SUDO
 rhel8_cis_rule_5_2_1: true
-rhel8_cis_rule_5_2_2: true 
+rhel8_cis_rule_5_2_2: true
 rhel8_cis_rule_5_2_3: true
 rhel8_cis_rule_5_2_4: true
 rhel8_cis_rule_5_2_5: true
@@ -182,8 +182,8 @@ rhel8_cis_rule_5_3_19: true
 
 
 # Configure PAM
-## AUTSELECT personalizado alto riesgo de implementar 
-rhel8_cis_rule_5_4_1: true # Depende de AUTSELECT - Modulo PWQUALITY habilitado por defecto en perfil SSSD 
+## AUTSELECT personalizado alto riesgo de implementar
+rhel8_cis_rule_5_4_1: true # Depende de AUTSELECT - Modulo PWQUALITY habilitado por defecto en perfil SSSD
 rhel8_cis_rule_5_4_2: true # Depende del perfil personalizado de AUTSELECT para agregar Modulo FAILLOCK
 rhel8_cis_rule_5_4_3: true # Depende del perfil personalizado de AUTSELECT para agregar Modulo PAM_PWHISTORY
 rhel8_cis_rule_5_4_4_authselect: true # Modulo pam_unix.so con SHA-512 por defecto en perfil SSSD -se debe pasar al perfil personalizado
@@ -341,7 +341,7 @@ rhel8_cis_sshd:
   # by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
 
   # Aquí defines los grupos permitidos a conectarse por SSH
-  allowgroups: ssh_access   
+  allowgroups: ssh_access
 
   # This variable, if specified, configures a list of USER name patterns, separated by spaces, to prevent SSH access
   # for users whose user name matches one of the patterns. This is done
@@ -369,7 +369,7 @@ rhel8_cis_sshd:
   # connections that the server will allow before it starts rejecting new connections.
   maxstartups: 10:30:60
 
- 
+
 ## Section 5.4: Configure PAM
 rhel8_cis_pam_faillock:
   # This variable sets the amount of time a user will be unlocked after the max amount of
@@ -419,6 +419,7 @@ excluded_users:
   - shutdown
   - sync
   - nfsnobody
+  - nobody
   - oracle
   - postgres
   - pos
@@ -458,4 +459,3 @@ rhel8_cis_futurepwchgdate_autofix: true
 ## 5.5.9 - Account policies
 # The Ansible task you provided is responsible for ensuring that the default users' shell session timeout is 900 seconds or less
 rhel8_cis_shell_timeout: 900
-
