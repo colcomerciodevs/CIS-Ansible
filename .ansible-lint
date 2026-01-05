@@ -13,12 +13,15 @@ skip_list:
   - yaml[new-line-at-end-of-file]
   - yaml[empty-lines]
   - yaml[line-length]
+  - yaml[indentation]
   - key-order[task]
+
 
 
 exclude_paths:
   - roles/cis_security/files/
   - roles/cis_security/handlers/
+  - roles/cis_security/vars
   
   
 

@@ -1,0 +1,457 @@
+---
+#######  Switching on/off specific baseline sections #######
+
+# These variables govern whether the tasks of a particular section are to be executed when running the role.
+# E.g: If you want to execute the tasks of Section 1 you should set the "_section1" variable to true.
+# If you do not want the tasks from that section to get executed you simply set the variable to "false".
+rhel8cis_general: true
+rhel8cis_section1: true
+rhel8cis_section2: true
+rhel8cis_section3: true
+rhel8cis_section4: true
+rhel8cis_section5: true
+rhel8cis_section6: true
+
+##########   Switching on/off specific Task ############
+
+### Section 1 rules
+## Disable Filesystems
+rhel8_cis_rule_1_1_1: true
+rhel8_cis_rule_1_1_2: true
+rhel8_cis_rule_1_1_3: true
+rhel8_cis_rule_1_1_4: false ## el arranque UEFI depende del módulo vfat)
+
+## Partition Security Options
+rhel8_cis_rule_1_1_5: false ## no hay particion independiente
+rhel8_cis_rule_1_1_6: false ## no hay particion independiente
+rhel8_cis_rule_1_1_7: false ## no hay particion independiente
+rhel8_cis_rule_1_1_8: false ## no hay particion independiente
+rhel8_cis_rule_1_1_9: true
+rhel8_cis_rule_1_1_10: true
+rhel8_cis_rule_1_1_11: true
+rhel8_cis_rule_1_1_12: true
+rhel8_cis_rule_1_1_13: false ## no hay particion independiente
+rhel8_cis_rule_1_1_14: false ## no hay particion independiente
+rhel8_cis_rule_1_1_15: false ## no hay particion independiente
+rhel8_cis_rule_1_1_16: false ## opción noexec en /var puede afectar flujos existentes
+rhel8_cis_rule_1_1_17: true
+rhel8_cis_rule_1_1_18: true
+rhel8_cis_rule_1_1_19: true
+rhel8_cis_rule_1_1_20: true
+rhel8_cis_rule_1_1_21: true
+rhel8_cis_rule_1_1_22: true
+rhel8_cis_rule_1_1_23: true
+rhel8_cis_rule_1_1_24: true
+rhel8_cis_rule_1_1_25: true
+rhel8_cis_rule_1_1_26: true
+rhel8_cis_rule_1_1_27: true
+rhel8_cis_rule_1_1_28: true
+rhel8_cis_rule_1_1_29: true
+rhel8_cis_rule_1_1_30: true
+rhel8_cis_rule_1_1_31: true
+rhel8_cis_rule_1_1_32: true
+rhel8_cis_rule_1_1_33: true
+rhel8_cis_rule_1_1_34: true
+rhel8_cis_rule_1_1_35: true
+rhel8_cis_rule_1_1_36: true
+rhel8_cis_rule_1_1_37: true
+rhel8_cis_rule_1_1_38: true
+rhel8_cis_rule_1_1_39: true
+
+## Banner
+rhel8_cis_rule_1_7_1: true
+rhel8_cis_rule_1_7_2: true
+rhel8_cis_rule_1_7_3: true
+rhel8_cis_rule_1_7_4: true
+rhel8_cis_rule_1_7_5: true
+rhel8_cis_rule_1_7_6: true
+
+
+### Section 2 rules
+## Configure NTP
+rhel8_cis_rule_2_1_1: true
+rhel8_cis_rule_2_1_2: true
+rhel8_cis_rule_2_1_3: true
+
+## Uninstall Packages - special proposal services
+rhel8_cis_rule_2_1_4: true
+rhel8_cis_rule_2_1_5: false ## requiere para internet
+rhel8_cis_rule_2_1_6: true
+rhel8_cis_rule_2_1_7: true
+rhel8_cis_rule_2_1_8: true
+rhel8_cis_rule_2_1_9: true
+rhel8_cis_rule_2_1_10: true
+rhel8_cis_rule_2_1_11: true
+rhel8_cis_rule_2_1_12: true
+rhel8_cis_rule_2_1_13: true
+rhel8_cis_rule_2_1_14: true
+rhel8_cis_rule_2_1_15: true
+rhel8_cis_rule_2_1_16: true
+rhel8_cis_rule_2_1_17: true
+rhel8_cis_rule_2_1_18: true
+rhel8_cis_rule_2_1_19: true
+rhel8_cis_rule_2_1_20: true
+rhel8_cis_rule_2_1_21: true
+rhel8_cis_rule_2_1_22: true
+rhel8_cis_rule_2_1_23: true
+
+## Uninstall Packages - service clients
+rhel8_cis_rule_2_2_1: true
+rhel8_cis_rule_2_2_2: true
+rhel8_cis_rule_2_2_3: true
+rhel8_cis_rule_2_2_4: true
+rhel8_cis_rule_2_2_5: true
+rhel8_cis_rule_2_2_6: true
+rhel8_cis_rule_2_2_7: true
+
+
+### Section 3 rules
+# Disable unused network protocols and devices
+rhel8_cis_rule_3_1_1: true
+rhel8_cis_rule_3_1_2: true
+
+# Network Parameter configuration
+rhel8_cis_rule_3_2_1: true
+rhel8_cis_rule_3_2_2: true
+
+# Network Parameter configuration
+rhel8_cis_rule_3_3_1: true
+rhel8_cis_rule_3_3_2: true
+rhel8_cis_rule_3_3_3: true
+rhel8_cis_rule_3_3_4: true
+rhel8_cis_rule_3_3_5: true
+rhel8_cis_rule_3_3_6: true
+rhel8_cis_rule_3_3_7: true
+rhel8_cis_rule_3_3_8: true
+rhel8_cis_rule_3_3_9: true
+
+# Network Protocols configuration
+rhel8_cis_rule_3_4_1: true
+rhel8_cis_rule_3_4_2: true
+rhel8_cis_rule_3_4_3: true
+rhel8_cis_rule_3_4_4: true
+
+
+### Section 5 rules
+# Set up time-based scheduled jobs
+rhel8_cis_rule_5_1_1: true
+rhel8_cis_rule_5_1_2: true
+rhel8_cis_rule_5_1_3: true
+rhel8_cis_rule_5_1_4: true
+rhel8_cis_rule_5_1_5: true
+rhel8_cis_rule_5_1_6: true
+rhel8_cis_rule_5_1_7: true
+rhel8_cis_rule_5_1_8: true
+rhel8_cis_rule_5_1_9: true
+
+# Configure SUDO
+rhel8_cis_rule_5_2_1: true
+rhel8_cis_rule_5_2_2: true
+rhel8_cis_rule_5_2_3: true
+rhel8_cis_rule_5_2_4: true
+rhel8_cis_rule_5_2_5: true
+rhel8_cis_rule_5_2_6: true
+rhel8_cis_rule_5_2_7: true
+rhel8_cis_rule_5_2_8: true
+rhel8_cis_rule_5_2_9: true
+
+# SSH Server
+rhel8_cis_rule_5_3_1: true
+rhel8_cis_rule_5_3_2: true
+rhel8_cis_rule_5_3_3: true
+rhel8_cis_rule_5_3_4: true
+rhel8_cis_rule_5_3_5: true
+rhel8_cis_rule_5_3_6: false ### requiere salida internet
+rhel8_cis_rule_5_3_7: true
+rhel8_cis_rule_5_3_8: true
+rhel8_cis_rule_5_3_9: true
+rhel8_cis_rule_5_3_10: true
+rhel8_cis_rule_5_3_11: true
+rhel8_cis_rule_5_3_12: true
+rhel8_cis_rule_5_3_13: true
+rhel8_cis_rule_5_3_14: true
+rhel8_cis_rule_5_3_15: true
+rhel8_cis_rule_5_3_16: true
+rhel8_cis_rule_5_3_17: true
+rhel8_cis_rule_5_3_18: true
+rhel8_cis_rule_5_3_19: true
+
+
+# Configure PAM
+## AUTSELECT personalizado alto riesgo de implementar
+rhel8_cis_rule_5_4_1: true # Depende de AUTSELECT - Modulo PWQUALITY habilitado por defecto en perfil SSSD
+rhel8_cis_rule_5_4_2: true # Depende del perfil personalizado de AUTSELECT para agregar Modulo FAILLOCK
+rhel8_cis_rule_5_4_3: true # Depende del perfil personalizado de AUTSELECT para agregar Modulo PAM_PWHISTORY
+rhel8_cis_rule_5_4_4_authselect: true # Modulo pam_unix.so con SHA-512 por defecto en perfil SSSD -se debe pasar al perfil personalizado
+rhel8_cis_rule_5_4_4: true # Configuracion que no depende de AUTSELECT
+
+# Configure Account Policies
+rhel8_cis_rule_5_5_1: true
+rhel8_cis_rule_5_5_2: true
+rhel8_cis_rule_5_5_3: true
+rhel8_cis_rule_5_5_4: true
+rhel8_cis_rule_5_5_5: true
+rhel8_cis_rule_5_5_6: true
+rhel8_cis_rule_5_5_7: true
+rhel8_cis_rule_5_5_8: true
+rhel8_cis_rule_5_5_8_authselect: true ## Depende del perfil personalizado de AUTSELECT para agregar Modulo PAM_UMASK
+rhel8_cis_rule_5_5_9: true
+rhel8_cis_rule_5_5_10: true
+
+
+##########   variables required in tasks ############
+
+
+## Section 1.7: Banner
+# Messages more relevant for daily use (e.g. ads). After login.
+motd_file: "Message_Day"             # Linux: File location by default in 'files' directory
+# Informational or warning messages for access (e.g. access policies). Before you log in.
+# file for issue and issue.net
+issue_file: "login_banner"             # Linux: File location by default in 'files' directory
+
+## Section 2.1: Configure NTP
+# Time Synchronization
+rhel8_cis_time_synchronization: chrony
+# NTP Central Server Configuration
+rhel8_cis_time_synchronization_servers:
+  - 10.181.0.155
+
+## Section 2.1: Uninstall packages
+packages_to_check:
+  - xinetd
+  - xorg-x11-server-*
+  - avahi
+  - avahi-autoipd
+  - cups
+  - dhcpd
+  - openldap-servers
+  - nfs-utils
+  - nfs-kernel-server
+  - bind
+  - bind-chroot
+  - vsftpd
+  - tftp-server
+  - httpd
+  - dovecot
+  - samba
+  - squid
+  - net-snmp
+  - telnet-server
+  - rsync
+  - ypserv
+
+## Section 3.1: Disable Net Proto
+# IPv6 required
+rhel8_cis_ipv6_required: false
+
+## Section 5.1: Scheduled Jobs
+# Authorized cron users
+# IMPORTANTE UNICAMENTE LOS USUARIOS QUE ESTAN EN /etc/cron.allow TIENEN PERMISOS PARA PROGRAMAR CRON
+authorized_cron_users:
+  - root
+  - tux
+
+# IMPORTANTE UNICAMENTE LOS USUARIOS QUE ESTAN EN /etc/at.allow TIENEN PERMISOS PARA PROGRAMAR AT
+authorized_at_users:
+  - root
+  - tux
+
+
+## Control 5.2.3 - Ensure sudo log file exists
+# By default, sudo logs through syslog(3). However, to specify a custom log file, the
+# 'logfile' parameter will be used, setting it with current variable's value.
+# This variable defines the path and file name of the sudo log file.
+rhel8_cis_sudolog_location: "/var/log/sudo.log"
+
+## Control 5.2.4 - Ensure that a password must be provided for user escalation
+# ansible users excluded from removing NOPASSWD in ansible
+sudoers_exclude_nopasswd_users:
+  - tux
+  - proactiva
+  - iacolcoauto
+  - ansible_test
+
+
+## Control 5.2.6 -Ensure sudo authentication timeout is configured correctly
+# This variable sets the duration (in minutes) during which a user's authentication credentials
+# are cached after successfully authenticating using "sudo". This allows the user to execute
+# multiple commands with elevated privileges without needing to re-enter their password for each
+# command within the specified time period. CIS requires a value of at most 15 minutes.
+rhel8_cis_sudo_timestamp_timeout: 15
+
+## Control 5.2.7 - Ensure access to the 'su' command is restricted
+# This variable determines the name of the group of users that are allowed to use the su command.
+# CIS requires that such a group be CREATED(named according to site policy) and be kept EMPTY.
+rhel8_cis_sugroup: nosugroup
+
+# List of allowed users to use the 'su' command
+authorized_su_users:
+  - tux
+  - aromero
+  - csotomonte
+  - jcastano
+
+
+## Section 5.2 - Configure authselect: Custom authselect profile settings(name, profile to customize, options)
+## Controls:
+#  - 5.2.8 - Ensure custom authselect profile is used('custom_profile_name', 'default_file_to_copy' subsettings)
+#  - 5.2.9 - Ensure authselect includes with-faillock | with auth select profile('custom_profile_name')
+# Settings in place now will fail, they are placeholders from the control example. Due to the way many multiple
+# options and ways to configure this control needs to be enabled and settings adjusted to minimise risk.
+rhel8_cis_authselect:
+  # This variable configures the name of the custom profile to be created and selected.
+  custom_profile_name: custom-profile
+  # This variable configures the ID of the existing profile that should be used as a base for the new profile.
+  default_file_to_copy: "sssd --symlink-meta"
+  # Modificadores predefinidos
+  options: with-sudo with-faillock without-nullok
+
+
+## Control 5.2.8 - Ensure custom authselect profile is used
+# This variable governs if an authselect custom profile should be automatically created, by copying and
+# customizing one of the default profiles. The default profiles include: sssd, winbind, or the nis. This profile can then be
+# customized to follow site specific requirements.
+rhel8_cis_authselect_custom_profile_create: true
+
+## Control 5.2.9 - Ensure authselect includes with-faillock | Create custom profiles
+# This variable governs if the existing custom profile should be selected(Note: please keep in mind that all future updates
+# to the PAM templates and meta files in the original profile will be reflected in your custom profile, too.)
+rhel8_cis_authselect_custom_profile_select: true
+
+
+## Options Server SSH
+# Controls:
+# - 5.3.4  - Ensure SSH access is limited
+# - 5.3.13 - Ensure SSH Idle Timeout Interval is configured
+# - 5.3.14 - Ensure SSH LoginGraceTime is set to one minute or less
+rhel8_cis_sshd:
+
+ # This variable, if specified, configures a list of USER name patterns, separated by spaces, to allow SSH
+  # access for users whose user name matches one of the patterns. This is done
+  # by setting the value of `AllowUsers` option in `/etc/ssh/sshd_config` file.
+  # If an USER@HOST format will be used, the specified user will be allowed only on that particular host.
+  ### allowusers: user1 user2    # Aquí defines los usuarios específicos que pueden conectarse por SSH
+
+  # (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
+  # for users whose primary group or supplementary group list matches one of the patterns. This is done
+  # by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
+
+  # Aquí defines los grupos permitidos a conectarse por SSH
+  allowgroups: ssh_access
+
+  # This variable, if specified, configures a list of USER name patterns, separated by spaces, to prevent SSH access
+  # for users whose user name matches one of the patterns. This is done
+  # by setting the value of `DenyUsers` option in `/etc/ssh/sshd_config` file.
+  # If an USER@HOST format will be used, the specified user will be restricted only on that particular host.
+  ### denyusers: "nobody"   # Aquí defines los usuarios que tienen el acceso denegado por SSH
+
+  # This variable, if specified, configures a list of GROUP name patterns, separated by spaces,
+  # to prevent SSH access for users whose primary group or supplementary group list matches one of the patterns. This is done
+  # by setting the value of `DenyGroups` option in `/etc/ssh/sshd_config` file.
+  ### denygroups: ""      # Aquí defines los grupos que tienen el acceso denegado por SSH
+
+  # This variable sets the maximum number of unresponsive "keep-alive" messages
+  # that can be sent from the server to the client before the connection is considered
+  # inactive and thus, closed.
+  clientalivecountmax: 3
+  # This variable sets the time interval in seconds between sending "keep-alive"
+  # messages from the server to the client. These types of messages are intended to
+  # keep the connection alive and prevent it being terminated due to inactivity.
+  clientaliveinterval: 900
+  # This variable specifies the amount of seconds allowed for successful authentication to
+  # the SSH server.
+  logingracetime: 60
+  # The MaxStartups option in the SSH configuration controls the number of simultaneous unauthenticated SSH
+  # connections that the server will allow before it starts rejecting new connections.
+  maxstartups: 10:30:60
+
+
+## Section 5.4: Configure PAM
+rhel8_cis_pam_faillock:
+  # This variable sets the amount of time a user will be unlocked after the max amount of
+  #   password failures.
+  unlock_time: 900
+  # This variable sets the amount of tries a password can be entered, before a user is locked.
+  deny: 5
+  # This variable represents the number of password change cycles, after which
+  # an user can re-use a password.
+  # CIS requires a value of 5 or more.
+  remember: 12
+
+
+## Section 5.5 - Ensure system accounts are secured - prelim
+# This variable sets the minimum number from which to search for UID
+# Note that the value will be dynamically overwritten if variable `dicover_int_uid` has
+# been set to `true`.
+min_int_uid: 1000
+
+
+## Section 5.5.1-3: Shadow Password Suite Parameters
+rhel8_cis_pass:
+  ## Control 5.5.1 - Ensure password expiration is 365 days or less
+  # This variable governs after how many days a password expires.
+  # CIS requires a value of 365 or less.
+  max_days: 42
+  ## Control 5.5.2 - Ensure minimum days between password changes is 7 or more
+  # This variable specifies the minimum number of days allowed between changing
+  # passwords. CIS requires a value of at least 1.
+  min_days: 7
+  ## Control 5.5.3 - Ensure password expiration warning days is 7 or more
+  # This variable governs, how many days before a password expires, the user will be warned.
+  # CIS requires a value of at least 7.
+  warn_age: 7
+
+## Section 5.5.1 - Excluded users for correct PASS_MAX_DAYS for existing users
+# Lista que contiene los nombres de usuarios críticos que no deben ser afectados
+# por las politicas de cambio de contraseña
+excluded_users:
+  - root
+  - admin
+  - tux
+  - proactiva
+  - iacolcoauto
+  - ansible_test
+  - halt
+  - shutdown
+  - sync
+  - nfsnobody
+  - nobody
+  - oracle
+  - postgres
+  - pos
+  - alktstwms
+  - alktstems
+
+allowed_shells:
+  - "/bin/false"
+  - "/usr/sbin/nologin"
+  - "/sbin/nologin"
+  - "/dev/null"
+
+## Allow the forcing of setting user_max_days for logins.
+# This can break current connecting user access
+# Tarea Crítica: Auditoría de Configuración Sensible se omiten usuarios por debajo de UID 1000 y cuentas de usuario criticas
+rhel8_cis_force_user_maxdays: true
+
+## Allow the force setting of minimum days between changing the password
+# This can break current connecting user access
+rhel8_cis_force_user_mindays: true
+
+## Allow the forcing of of number of days before warning users of password expiry
+# This can break current connecting user access
+rhel8_cis_force_user_warnage: true
+
+## Control 5.5.4 - Ensure inactive password lock is 30 days or less
+rhel8_cis_inactivelock:
+  # This variable specifies the number of days of inactivity before an account will be locked.
+  # CIS requires a value of 30 days or less.
+  lock_days: 30
+
+## Control 5.5.5 - Ensure all users last password change date is in the past
+# Allow ansible to expire password for account with a last changed date in the future. Setting it
+# to 'false' will just display users in violation, while 'true' will expire those users passwords.
+rhel8_cis_futurepwchgdate_autofix: true
+
+## 5.5.9 - Account policies
+# The Ansible task you provided is responsible for ensuring that the default users' shell session timeout is 900 seconds or less
+rhel8_cis_shell_timeout: 900

@@ -1,6 +1,6 @@
 ---
 
-## Crear Usuarios de Infraestructura con permisos de administrador y acceso SSH 
+## Crear Usuarios de Infraestructura con permisos de administrador y acceso SSH
 - name: Crear usuarios administradores
   ansible.builtin.user:
     name: "{{ item }}"
@@ -21,4 +21,4 @@
     - aromero
     - csotomonte
     - jcastano
-  changed_when: false 
+  changed_when: false
