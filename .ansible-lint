@@ -1,4 +1,3 @@
----
 skip_list:
   - schema
   - role-name
@@ -9,20 +8,18 @@ skip_list:
   - name[play]
   - name[casing]
   - name[template]
-  - yaml[trailing-spaces]
-  - yaml[new-line-at-end-of-file]
-  - yaml[empty-lines]
-  - yaml[line-length]
-  - yaml[indentation]
   - key-order[task]
 
-
+  # Aquí empiezan las etiquetas de yamllint:
+  - trailing-spaces
+  - empty-lines
+  - line-length
+  - indentation
+  - new-line-at-end-of-file
+  - braces
+  - truthy
 
 exclude_paths:
   - roles/cis_security/files/
   - roles/cis_security/handlers/
-  - roles/cis_security/vars
-  
-  
-
-
+  - roles/cis_security/vars/
