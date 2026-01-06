@@ -95,6 +95,16 @@
     - rule_1.1.3
     - udf    
 
+
+- name: DEBUG | Condiciones efectivas para 1.1.4
+  ansible.builtin.debug:
+    msg:
+      - "type_server = {{ type_server | default('UNDEF') }}"
+      - "rhel8_cis_rule_1_1_4 = {{ rhel8_cis_rule_1_1_4 | default('UNDEF') }}"
+      - "ansible_virtualization_type = {{ ansible_virtualization_type | default('UNDEF') }}"
+      - "booted_with_efi = {{ booted_with_efi | default('UNDEF') }}"
+
+
 # Tarea 1.1.4 - Asegurar que el montaje del filesystem vFAT esté limitado
 - name: NOTSCORED | 1.1.4 | PATCH | Ensure mounting of vFAT filesystems is limited
   ansible.builtin.lineinfile:
