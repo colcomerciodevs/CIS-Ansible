@@ -14,3 +14,8 @@
     - rhel8cis_section3
     - rhel8cis_section5
 
+
+- name: Mostrar mensaje para ambiente Producción
+  ansible.builtin.debug:
+    msg: "La línea base CIS para Producción está en desarrollo. No se aplicarán hardenings."
+  when: type_server == "Servidor Onpremise - Produccion"
