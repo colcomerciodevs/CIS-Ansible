@@ -21,7 +21,6 @@
   with_items: "{{ packages_to_check }}"
   when:
     - item in ansible_facts.packages
-    - type_server in ['Servidor Onpremise - Produccion', 'Servidor OCI - People']
 
 # AUDIT | Guardar auditoría en un archivo
 - name: Guardar auditoría en un archivo
@@ -31,5 +30,4 @@
       {{ audited_packages | join('\n') }}
     dest: /var/log/auditoria_paquetes.log
     mode: "0644"
-  when:
-    - type_server in ['Servidor Onpremise - Produccion', 'Servidor OCI - People']
+

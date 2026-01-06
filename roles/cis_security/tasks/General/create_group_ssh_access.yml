@@ -22,30 +22,6 @@
     groups: ssh_access
     append: true
   when:
-    - type_server in ['Servidor Onpremise - Nuevo', 'Servidor Onpremise - Produccion']
     - tux_id.rc == 0
 
 
-# ------------------------------------------------------------
-# OCI → usuarios críticos (adminso, psoft, opc)
-# ------------------------------------------------------------
-
-- name: Verificar si existen usuarios OCI críticos
-  ansible.builtin.command: "id {{ item }}"
-  register: oci_users_id
-  failed_when: false
-  changed_when: false
-  loop:
-    - adminso
-    - psoft
-    - opc
-
-- name: Agregar usuarios OCI a ssh_access SOLO si existen
-  ansible.builtin.user:
-    name: "{{ item.item }}"
-    groups: ssh_access
-    append: true
-  loop: "{{ oci_users_id.results }}"
-  when:
-    - type_server == 'Servidor OCI - People'
-    - item.rc == 0
