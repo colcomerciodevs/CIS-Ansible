@@ -1,17 +1,4 @@
 ---
-# ==========================
-# Variables según tipo servidor
-# ==========================
-
-- name: Cargar variables para Servidor OCI - People
-  ansible.builtin.include_vars: "vars/vars_oci_people.yml"
-  when: type_server == "Servidor OCI - People"
-
-- name: Mensaje para Servidor Onpremise - Produccion
-  debug:
-    msg: "Línea base en desarrollo: no se aplica el rol cis_security en servidores 'Onpremise - Produccion'."
-  when: type_server == "Servidor Onpremise - Produccion"
-
 
 # ==========================
 # Incluir tareas CIS
