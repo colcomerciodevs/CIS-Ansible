@@ -18,8 +18,7 @@ rhel8cis_section6: true
 rhel8_cis_rule_1_1_1: true
 rhel8_cis_rule_1_1_2: true
 rhel8_cis_rule_1_1_3: true
-rhel8_cis_rule_1_1_4: false
- # Motivo: el arranque UEFI requiere el módulo vfat
+rhel8_cis_rule_1_1_4: false # Motivo: el arranque UEFI requiere el módulo vfat
 
 
 ######## 1.1 – PARTICIONES Y OPCIONES DE MONTAJE ########
