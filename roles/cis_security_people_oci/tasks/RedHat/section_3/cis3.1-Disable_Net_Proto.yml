@@ -1,0 +1,46 @@
+---
+
+# Tarea 3.1.1 - Deshabilitar IPV6
+- name: SCORED | 3.1.1 | PATCH | Disable IPv6 in sysctl
+  ansible.builtin.sysctl:
+    name: "{{ item }}"
+    value: "1"  
+    sysctl_set: true
+    state: present
+    reload: true
+  loop:
+    - net.ipv6.conf.all.disable_ipv6
+    - net.ipv6.conf.default.disable_ipv6
+  when:
+    - rhel8_cis_rule_3_1_1
+  tags:
+    - level1
+    - scored
+    - ipv6
+    - patch
+    - rule_3_1_1
+
+# Tarea 3.1.2 - Asegurar que las interfaces de wireless están deshabilitadas (Automático)
+- name: Check if wireless interfaces are enabled
+  ansible.builtin.command: nmcli radio wifi
+  register: wifi_status
+  changed_when: false
+
+- name: SCORED | 3.1.2 | PATCH | Ensure wireless interfaces are disabled
+  ansible.builtin.command: nmcli radio all off
+  when:
+    - rhel8_cis_rule_3_1_2
+    - wifi_status.stdout == 'enabled'
+  changed_when: false
+  tags:
+    - level1
+    - level2
+    - wireless
+    - patch
+    - rule_3_1_2
+  
+
+
+
+
+

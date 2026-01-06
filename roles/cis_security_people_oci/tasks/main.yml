@@ -1,0 +1,29 @@
+---
+# ==========================
+# Variables según tipo servidor
+# ==========================
+
+- name: Cargar variables para Servidor OCI - People
+  ansible.builtin.include_vars: "vars/vars_oci_people.yml"
+  when: type_server == "Servidor OCI - People"
+
+- name: Mensaje para Servidor Onpremise - Produccion
+  debug:
+    msg: "Línea base en desarrollo: no se aplica el rol cis_security en servidores 'Onpremise - Produccion'."
+  when: type_server == "Servidor Onpremise - Produccion"
+
+
+# ==========================
+# Incluir tareas CIS
+# ==========================
+
+- name: Incluir tareas específicas de CIS según la distribución
+  ansible.builtin.include_tasks: "CIS-{{ ansible_distribution }}-{{ ansible_distribution_major_version | replace('Evaluation', '') }}.yml"
+  when: type_server != "Servidor Onpremise - Produccion"
+  tags:
+    - rhel8cis_general
+    - rhel8cis_section1
+    - rhel8cis_section2
+    - rhel8cis_section3
+    - rhel8cis_section5
+

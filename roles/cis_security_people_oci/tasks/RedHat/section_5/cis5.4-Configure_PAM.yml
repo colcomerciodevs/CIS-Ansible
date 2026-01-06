@@ -1,0 +1,114 @@
+---
+# Tarea 5.4.1 - Asegurar que los requerimientos de creación de contraseñas están configurados
+- name: SCORED | 5.4.1 | PATCH | Ensure password creation requirements are configured
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/security/pwquality.conf
+    regexp: ^{{ item.key }}
+    line: '{{ item.key }} = {{ item.value }}'
+  loop:
+    - {key: minlen, value: '14'}        # Longitud mínima de 14 caracteres
+    - {key: minclass, value: '4'}      # Mínimo de 4 tipos de caracteres (dígitos, mayúsculas, minúsculas, otros)
+    - {key: dcredit, value: '-1'}      # Al menos 1 dígito
+    - {key: ucredit, value: '-1'}      # Al menos 1 letra mayúscula
+    - {key: ocredit, value: '-1'}      # Al menos 1 carácter especial
+    - {key: lcredit, value: '-1'}      # Al menos 1 letra minúscula
+  notify: authselect update
+  when:
+    - rhel8_cis_rule_5_4_1
+  tags:
+    - level1
+    - level2
+    - patch
+    - pam
+    - rule_5.4.1
+
+# Forzar ejecución de handlers aquí para asegurarnos de que PAM se reinicie antes de continuar
+- name: "5.4.1 | DEBUG | Ensure handlers are recognized"
+  ansible.builtin.meta: flush_handlers
+
+# Tarea 5.4.2 - Asegurar que el bloqueo de contraseñas está configurado para 5 intentos (Automático)
+## DEPENDE DEL MODULO FAILLOCK EN AUTHSELECT PARA SU EJECUCION
+- name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured in faillock.conf"
+  ansible.builtin.lineinfile:
+    path: /etc/security/faillock.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: '^\s*deny\s*=\s*[1-5]\b', line: 'deny = {{ rhel8_cis_pam_faillock.deny }}' }
+    - { regexp: '^\s*unlock_time\s*=\s*(0|9[0-9][0-9]|[1-9][0-9][0-9][0-9]+)\b', line: 'unlock_time = {{ rhel8_cis_pam_faillock.unlock_time }}' }
+  when:
+    - rhel8_cis_rule_5_4_2
+  tags:
+    - level1
+    - patch
+    - pam
+    - rule_5.4.2
+
+# Tarea 5.4.3 - Asegurar que el bloqueo de contraseñas está configurado para 5 intentos
+## DEPENDE DE AUTHSELECT PERSONALIZADO (PAM_PWHISTORY) PARA SU EJECUCION
+- name: "5.4.3 | PATCH | Ensure password attempts are limited to 5 (automatic)"
+  block:
+    - name: "5.4.3 | Add pam_pwhistory to custom profile"
+      ansible.builtin.lineinfile:
+        path: "/etc/authselect/custom/{{ rhel8_cis_authselect['custom_profile_name'] }}/{{ item }}"
+        line: "password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=3 remember={{ rhel8_cis_pam_faillock.remember }}"
+        insertafter: '^password\s*requisite\s*pam_pwquality.so'
+      loop:
+        - password-auth
+        - system-auth
+      notify: authselect update
+  when: rhel8_cis_rule_5_4_3
+  tags:
+    - level1
+    - pam
+    - patch
+    - rule_5.4.3
+
+# Forzar ejecución de handlers aquí para asegurarnos de que PAM se reinicie antes de continuar
+- name: "5.4.3 | DEBUG | Ensure handlers are recognized"
+  ansible.builtin.meta: flush_handlers
+
+
+# Tarea 5.4.4 - Asegurar que el algoritmo de hash de contraseñas es SHA-512
+## DEPENDE DE AUTHSELECT PERSONALIZADO PARA SU EJECUCION
+- name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512"
+  block:
+    - name: "5.4.4 | Ensure SHA-512 is configured in /etc/libuser.conf"
+      ansible.builtin.replace:
+        path: /etc/libuser.conf
+        regexp: '^crypt_style\s*=\s*.*$'
+        replace: 'crypt_style = sha512'
+      notify: Check authselect changes
+
+    - name: "5.4.4 | Ensure SHA-512 is configured in /etc/login.defs"
+      ansible.builtin.replace:
+        path: /etc/login.defs
+        regexp: '^ENCRYPT_METHOD.*'
+        replace: 'ENCRYPT_METHOD SHA512'
+      notify: Check authselect changes
+
+    - name: "5.4.4 | Ensure SHA-512 in custom profiles"
+      ansible.builtin.lineinfile:
+        path: "/etc/authselect/custom/{{ rhel8_cis_authselect['custom_profile_name'] }}/{{ item }}"
+        line: "password    sufficient    pam_unix.so sha512 shadow try_first_pass use_authtok remember={{ rhel8_cis_pam_faillock.remember }}"
+        regexp: '^password\s+sufficient\s+pam_unix.so.*$'
+        state: present
+      loop:
+        - password-auth
+        - system-auth
+      notify: authselect update
+      when: 
+        - rhel8_cis_rule_5_4_4_authselect
+  when: 
+    - rhel8_cis_rule_5_4_4
+  tags:
+    - level1
+    - patch
+    - pam
+    - rule_5.4.4
+
+# Forzar ejecución de handlers aquí para asegurarnos de que authselect se aplica antes de finalizar
+- name: "5.4.4 | DEBUG | Ensure handlers are recognized"
+  ansible.builtin.meta: flush_handlers
+

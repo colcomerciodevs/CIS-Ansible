@@ -1,0 +1,49 @@
+---
+# Obtener el sistema operativo
+- name: Obtener el sistema operativo
+  ansible.builtin.set_fact:
+    os_type: "{{ ansible_facts['distribution'] | lower }}"
+
+# Verificar si los repositorios están configurados correctamente
+- name: Verificar si los repositorios están configurados correctamente
+  ansible.builtin.yum:
+    list: enabled
+  register: repo_status
+  failed_when: repo_status.failed
+  when: os_type in ['oraclelinux', 'redhat']
+  become: yes  # Solo si es necesario
+
+# Definir la URL del repositorio según el sistema operativo
+- name: Definir la URL del repositorio según el sistema operativo
+  ansible.builtin.set_fact:
+    repo_url: >-
+      {%- if os_type == 'oraclelinux' -%}
+        https://yum.oracle.com/
+      {%- elif os_type == 'redhat' -%}
+        https://cdn.redhat.com/
+      {%- else -%}
+        unknown
+      {%- endif -%}
+
+# Validar acceso a los repositorios configurados
+- name: Validar acceso a los repositorios configurados
+  ansible.builtin.uri:
+    url: "{{ repo_url }}"
+    method: GET
+    status_code: 200
+  register: repo_check
+  when: repo_url != "unknown"
+  ignore_errors: yes
+
+# Detener ejecución si los repositorios no están disponibles
+- name: Detener ejecución si los repositorios no están disponibles
+  ansible.builtin.fail:
+    msg: "Error: No hay acceso a los repositorios de {{ os_type | upper }} o no tienen salida a internet. Deteniendo ejecución."
+  when: 
+    - os_type in ['oraclelinux', 'redhat']
+    - repo_check.failed
+
+# Mensaje de éxito si los repositorios están funcionando
+- name: Mensaje de éxito si los repositorios están funcionando
+  ansible.builtin.debug:
+    msg: "Los repositorios de {{ os_type | upper }} están activos y tienen acceso a internet. Continuando con la ejecución de los playbooks."

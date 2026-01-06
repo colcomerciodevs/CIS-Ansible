@@ -1,0 +1,74 @@
+---
+# handlers file for cis_security
+
+# Tarea  para reiniciar SSH despues de agregar configuracion de Banner
+- name: Restart sshd
+  ansible.builtin.service:
+    name: sshd
+    state: restarted
+
+# Tarea para intentar volver a montar el sistema de archivos en el punto especificado (path).
+- name: Remount tmp
+  ansible.posix.mount:  
+    path: /tmp
+    state: remounted
+  
+
+# Tarea para establecer una variable personalziada de las tareas que requieren reinicio
+- name: Change_requires_reboot
+  ansible.builtin.set_fact:
+    change_requires_reboot: true
+
+# Tarea para reinciar el servicio de Chronyd
+- name: Restart chronyd
+  ansible.builtin.service:
+    name: chronyd
+    state: restarted
+
+# Tarea para reiniciar el servicio systemd-logind, que gestiona las sesiones de usuario y el manejo de dispositivos
+- name: Reiniciar servicios PAM
+  ansible.builtin.systemd:
+    name: systemd-logind
+    state: restarted
+
+# Tarea para reiniciar el servicio sshd para aplicar cualquier cambio en su configuración
+- name: Reiniciar sshd
+  become: true
+  ansible.builtin.systemd:
+    name: sshd
+    state: restarted
+
+# Tarea para limpiar las tablas de rutas IPv4
+- name: sysctl flush ipv4 route table
+  become: true
+  ansible.builtin.sysctl:
+    name: net.ipv4.route.flush
+    value: 1
+    sysctl_set: true
+  when: ansible_virtualization_type != "docker"
+
+# Tarea para limpiar las tablas de rutas IPv6
+- name: sysctl flush ipv6 route table
+  become: true
+  ansible.builtin.sysctl:
+    name: net.ipv6.route.flush
+    value: 1
+    sysctl_set: true
+  when: ansible_virtualization_type != "docker"
+
+
+# Handler para verificar cambios y aplicar authselect solo si hubo modificaciones
+- name: "Verify if authselect apply-changes is needed"
+  listen: "authselect update"
+  ansible.builtin.command: authselect check
+  register: authselect_check
+  changed_when: "'No changes detected' not in authselect_check.stdout"
+
+- name: "Apply authselect changes"
+  listen: "authselect update"
+  ansible.builtin.command:
+    cmd: authselect apply-changes
+  when: authselect_check.changed
+  changed_when: true
+
+

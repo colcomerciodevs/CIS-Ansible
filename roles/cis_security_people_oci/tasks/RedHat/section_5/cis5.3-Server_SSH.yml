@@ -1,0 +1,417 @@
+---
+
+# Tarea 5.3.1 - Asegúrese de que los permisos en /etc/ssh/sshd_config están configurados
+- name: SCORED | 5.3.1 | PATCH | Ensure permissions on /etc/ssh/sshd_config are configured
+  ansible.builtin.file:
+    dest: /etc/ssh/sshd_config
+    state: file
+    owner: root
+    group: root
+    mode: "0600"
+  when:
+    - rhel8_cis_rule_5_3_1
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh
+    - rule_5.3.1
+
+
+
+# Tarea 5.3.2 - Asegurar que los permisos sobre SSH private host key files están configurados
+- name: SCORED | 5.3.2 | PATCH | Ensure permissions on SSH private host key files are configured - update
+  ansible.builtin.file:
+    dest: '{{ item }}'
+    owner: root
+    group: root
+    mode: "0600"
+  loop: "{{ ssh_host_keys.files | map(attribute='path') | list }}"
+  when:
+    - rhel8_cis_rule_5_3_2
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh
+    - rule_5.3.2
+
+
+# Tarea 5.3.3 - Asegurar que los permisos sobre SSH public host key files están configurados
+- name: SCORED | 5.3.3 | PATCH | Ensure permissions on SSH public host key files are configured - update
+  ansible.builtin.file:
+    dest: '{{ item }}'
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ ssh_host_keys.files | map(attribute='path') | list }}"
+  when:
+    - rhel8_cis_rule_5_3_3
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh
+    - rule_5.3.3
+
+# Tarea 5.3.4 - Asegurar que el acceso a SSH este limitado
+- name: SCORED | 5.3.4 | PATCH | Ensure SSH access is limited
+  block:
+    - name: SCORED | 5.3.4 | PATCH | Ensure SSH access is limited - allowusers
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: ^AllowUsers
+        line: AllowUsers {{ rhel8_cis_sshd['allowusers'] }}
+        validate: /usr/sbin/sshd -T -f %s
+      notify:
+        - Restart sshd
+      when:
+        - "'allowusers' in rhel8_cis_sshd"
+
+    - name: SCORED | 5.3.4 | PATCH | Ensure SSH access is limited - allowgroups
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: ^AllowGroups
+        line: AllowGroups {{ rhel8_cis_sshd['allowgroups'] }}
+        validate: /usr/sbin/sshd -T -f %s
+      notify:
+        - Restart sshd
+      when:
+        - "'allowgroups' in rhel8_cis_sshd"
+
+    - name: SCORED | 5.3.4 | PATCH | Ensure SSH access is limited - denyusers
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: ^DenyUsers
+        line: DenyUsers {{ rhel8_cis_sshd['denyusers'] }}
+        validate: /usr/sbin/sshd -T -f %s
+      notify:
+        - Restart sshd
+      when:
+        - "'denyusers' in rhel8_cis_sshd"
+
+    - name: SCORED | 5.3.4 | PATCH | Ensure SSH access is limited - denygroups
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: ^DenyGroups
+        line: DenyGroups {{ rhel8_cis_sshd['denygroups'] }}
+        validate: /usr/sbin/sshd -T -f %s
+      notify:
+        - Restart sshd
+      when:
+        - "'denygroups' in rhel8_cis_sshd"
+  when:
+    - rhel8_cis_rule_5_3_4
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh
+    - rule_5.3.4
+
+
+# Tarea 5.3.5 - Asegurar SSH LogLevel sea el apropiado (Automático)
+- name: SCORED | 5.3.5 | PATCH | Ensure SSH LogLevel is appropriate
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^LogLevel
+    line: LogLevel INFO
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_5
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh
+    - rule_5.3.5
+
+# Tarea 5.3.6 - Asegurar SSH X11 forwarding está deshabilitado (Automático)
+- name: SCORED | 5.3.6 | PATCH | Ensure SSH X11 forwarding is disabled
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^X11Forwarding
+    line: X11Forwarding no
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_6
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh
+    - rule_5.3.6
+
+# Tarea 5.3.7 - Asegurar SSH MaxAuthTries esté establecido en 4 o menos (Automático)
+- name: SCORED | 5.3.7 | PATCH | Ensure SSH MaxAuthTries is set to 4 or less
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^(#)?MaxAuthTries \d
+    line: MaxAuthTries 4
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_7
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh 
+    - rule_5.3.7
+
+# Tarea 5.3.8 - Asegurar SSH IgnoreRhosts está habilitado (Automático)
+- name: SCORED | 5.3.8 | PATCH | Ensure SSH IgnoreRhosts is enabled
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^IgnoreRhosts
+    line: IgnoreRhosts yes
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_8
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh
+    - rule_5.3.8
+
+# Tarea 5.3.9 - Asegurar SSH HostbasedAuthentication está deshabilitado (Automático)
+- name: SCORED | 5.3.9 | PATCH | Ensure SSH HostbasedAuthentication is disabled
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^HostbasedAuthentication
+    line: HostbasedAuthentication no
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_9
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh
+    - rule_5.3.9
+
+# Tarea 5.3.10 - Asegurar SSH root login está deshabilitado (Automático)
+- name: SCORED | 5.3.10 | PATCH | Ensure SSH root login is disabled
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^PermitRootLogin
+    line: PermitRootLogin no
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_10
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh
+    - rule_5.3.10
+
+# Tarea 5.3.11 - Asegurar SSH PermitEmptyPasswords está deshabilitado (Automático)
+- name: SCORED | 5.3.11 | PATCH | Ensure SSH PermitEmptyPasswords is disabled
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^PermitEmptyPasswords
+    line: PermitEmptyPasswords no
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_11
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh
+    - rule_5.3.11
+
+# Tarea 5.3.12 - Asegurar SSH PermitUserEnvironment está deshabilitado (Automático)
+- name: SCORED | 5.3.12 | PATCH | Ensure SSH PermitUserEnvironment is disabled
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^PermitUserEnvironment
+    line: PermitUserEnvironment no
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_12
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh 
+    - rule_5.3.12
+
+#  Tarea 5.3.13 - Asegurar SSH Idle Timeout Interval está configurado (Automático)
+- name: SCORED | 5.3.13 | PATCH | Ensure SSH Idle Timeout Interval is configured
+  block:
+    - name: SCORED | 5.3.13 | PATCH | Ensure SSH Idle Timeout Interval is configured
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: ^ClientAliveInterval
+        line: ClientAliveInterval {{ rhel8_cis_sshd['clientaliveinterval'] }}
+        validate: /usr/sbin/sshd -T -f %s
+      notify:
+        - Restart sshd
+
+    - name: SCORED | 5.3.13 | PATCH | Ensure SSH ClientAliveCountMax set to <= 3
+      ansible.builtin.lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        regexp: ^ClientAliveCountMax
+        line: ClientAliveCountMax {{ rhel8_cis_sshd['clientalivecountmax'] }}
+        validate: /usr/sbin/sshd -T -f %s
+      notify:
+        - Restart sshd
+  when:
+    - rhel8_cis_rule_5_3_13
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh 
+    - rule_5.3.13
+
+# Tarea 5.3.14 - Asegurar SSH LoginGraceTime esté establecido para 1 minuto o menos (Automático)
+- name: SCORED | 5.3.14 | PATCH | Ensure SSH LoginGraceTime is set to one minute or
+    less
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^LoginGraceTime
+    line: LoginGraceTime {{ rhel8_cis_sshd['logingracetime'] }}
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_14
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh
+    - rule_5.3.14
+
+# Tarea 5.3.15 - Asegurar SSH warning banner está configurado (Automático)
+- name: SCORED | 5.3.15 | PATCH | Ensure SSH warning banner is configured
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^Banner
+    line: Banner /etc/issue.net
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_15
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh
+    - rule_5.3.15
+
+# Tarea 5.3.16 - Asegurar SSH PAM está habilitado (Automático)
+- name: SCORED | 5.3.16 | PATCH | Ensure SSH PAM is enabled
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^UsePAM
+    line: UsePAM yes
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_16
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh 
+    - rule_5.3.16
+
+# Tarea 5.3.17 - Asegurar SSH AllowTcpForwarding está deshabilitado (Automático)
+- name: SCORED | 5.3.17 | PATCH | Ensure SSH AllowTcpForwarding is disabled
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^AllowTcpForwarding
+    line: AllowTcpForwarding no
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_17
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh
+    - rule_5.3.17
+
+# Tarea 5.3.18 - Asegurar SSH MaxStartups está configurado (Automático)
+- name: SCORED | 5.3.18 | PATCH | Ensure SSH MaxStartups is configured
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^MaxStartups
+    line: MaxStartups {{ rhel8_cis_sshd['maxstartups'] }}
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_18
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh 
+    - rule_5.3.18
+
+# Tarea 5.3.19 - Asegurar SSH MaxSessions esté delimitado (Automático)
+- name: SCORED | 5.3.19 | PATCH | Ensure SSH MaxSessions is set to 4 or less
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: ^MaxSessions
+    line: MaxSessions 10
+    validate: /usr/sbin/sshd -T -f %s
+  when:
+    - rhel8_cis_rule_5_3_19
+  notify:
+    - Restart sshd
+  tags:
+    - level1
+    - level2
+    - patch
+    - ssh 
+    - rule_5.3.19
+
+

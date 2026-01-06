@@ -1,0 +1,35 @@
+---
+
+# Prelim general requerido | Recolecta los hechos (facts) sobre los paquetes instalados en el sistema
+- name: PRELIM | Gather the rpm package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+# Prelim general requerido | Recolecta los hechos (facts) sobre los servicios del sistema
+- name: PRELIM | Gather the service facts
+  ansible.builtin.service_facts:
+
+# AUDIT | Inicializar lista de paquetes auditados
+- name: Inicializar lista de paquetes auditados
+  ansible.builtin.set_fact:
+    audited_packages: []
+
+# AUDIT | Registrar paquetes instalados
+- name: Registrar paquetes instalados (Auditoría)
+  ansible.builtin.set_fact:
+    audited_packages: "{{ audited_packages + [item] }}"
+  with_items: "{{ packages_to_check }}"
+  when:
+    - item in ansible_facts.packages
+    - type_server in ['Servidor Onpremise - Produccion', 'Servidor OCI - People']
+
+# AUDIT | Guardar auditoría en un archivo
+- name: Guardar auditoría en un archivo
+  ansible.builtin.copy:
+    content: |
+      Los siguientes paquetes están instalados en el sistema y requieren gestión manual:
+      {{ audited_packages | join('\n') }}
+    dest: /var/log/auditoria_paquetes.log
+    mode: "0644"
+  when:
+    - type_server in ['Servidor Onpremise - Produccion', 'Servidor OCI - People']

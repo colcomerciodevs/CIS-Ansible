@@ -1,0 +1,110 @@
+---
+
+# Tarea 2.2.1 - Asegurar que el paquete NIS Client no está instalado
+- name: SCORED | 2.2.1 | PATCH | Ensure NIS Client package is not installed
+  ansible.builtin.package:
+    name: ypbind
+    state: absent
+  when:
+    - "'ypbind' in ansible_facts.packages"
+    - rhel8_cis_rule_2_2_1
+  tags:
+    - level1
+    - scored
+    - nis
+    - patch
+    - rule_2_2_1
+
+
+# Tarea 2.2.2 - Asegurar que el paquete RSH Client no está instalado
+- name: SCORED | 2.2.2 | PATCH | Ensure RSH Client package is not installed
+  ansible.builtin.package:
+    name: rsh
+    state: absent
+  when:
+    - "'rsh' in ansible_facts.packages"
+    - rhel8_cis_rule_2_2_2
+  tags:
+    - level1
+    - scored
+    - rsh
+    - patch
+    - rule_2_2_2
+
+
+# Tarea 2.2.3 - Asegurar que el paquete Talk Client no está instalado
+- name: SCORED | 2.2_3 | PATCH | Ensure Talk Client package is not installed
+  ansible.builtin.package:
+    name: talk
+    state: absent
+  when:
+    - "'talk' in ansible_facts.packages"
+    - rhel8_cis_rule_2_2_3
+  tags:
+    - level1
+    - scored
+    - talk
+    - patch
+    - rule_2_2_3
+
+
+# Tarea 2.2.4 - Asegurar que el paquete Telnet Client no está instalado
+- name: SCORED | 2.2.4 | PATCH | Ensure Telnet Client package is not installed
+  ansible.builtin.package:
+    name: telnet
+    state: absent
+  when:
+    - "'telnet' in ansible_facts.packages"
+    - rhel8_cis_rule_2_2_4
+  tags:
+    - level1
+    - scored
+    - telnet
+    - patch
+    - rule_2_2_4
+
+
+# Tarea 2.2.5 - Asegurar que el paquete LDAP Client no está instalado
+- name: SCORED | 2.2.5 | PATCH | Ensure LDAP client is not installed
+  ansible.builtin.package:
+    name: openldap-clients
+    state: absent
+  when:
+    - "'openldap-clients' in ansible_facts.packages"
+    - rhel8_cis_rule_2_2_5
+  tags:
+    - level1
+    - scored
+    - ldap
+    - patch
+    - rule_2.2.5
+
+# Tarea 2.2.6 - Asegurar que el paquete TFTP Client no está instalado
+- name: SCORED | 2.2.6 | PATCH | Ensure TFTP client is not installed
+  ansible.builtin.package:
+    name: tftp
+    state: absent
+  when:
+    - "'tftp' in ansible_facts.packages"
+    - rhel8_cis_rule_2_2_6
+  tags:
+    - level1
+    - scored
+    - tftp
+    - patch
+    - rule_2_2.6
+
+# Tarea 2.2.7 - Asegurar RPC bind no esté instalado (Automático)
+- name: SCORED | 2.2.7 | PATCH | Ensure rpcbind is not installed
+  ansible.builtin.package:
+    name: rpcbind
+    state: absent
+  when:
+    - "'rpcbind' in ansible_facts.packages"
+    - rhel8_cis_rule_2_2_7
+  tags:
+    - level1
+    - scored
+    - rpcbind
+    - patch
+    - rule_2_2.7

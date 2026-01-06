@@ -4,19 +4,9 @@
   become: true
   gather_facts: true
 
-  pre_tasks:
-    - name: Mostrar tipo de servidor seleccionado en la encuesta
-      debug:
-        msg: "Tipo de servidor seleccionado: {{ type_server | default('NO DEFINIDO') }}"
-
-    - name: Validar que type_server está definido
-      fail:
-        msg: "Debes definir la variable 'type_server' (Onpremise - Nuevo / Onpremise - Produccion / OCI - People)."
-      when: type_server is not defined
-
   # =========================================================
   #  Ejecución del rol CIS
-  #  (la lógica de tipo de servidor ahora está DENTRO del rol)
+  #  (Para Servidores Onpremises - Nuevos)
   # =========================================================
   roles:
     - role: cis_security

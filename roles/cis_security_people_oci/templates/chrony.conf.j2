@@ -1,0 +1,44 @@
+# This is the default chrony.conf file adjusted for RHEL 8/9 and its derivatives.
+# Adjustments have been made to align with system requirements and modern Chrony directives.
+
+# Define NTP servers. Replace with appropriate servers for your environment.
+{% for server in rhel8_cis_time_synchronization_servers -%}
+server {{ server }} iburst minpoll 8
+{% endfor %}
+
+# Path to the keyfile (if required). Ensure the file exists if authentication is used.
+# Commented out if not using key-based authentication.
+# keyfile /etc/chrony/chrony.keys
+
+# Drift file location.
+driftfile /var/lib/chrony/drift
+
+# Log configuration. Enable necessary logs for monitoring and debugging.
+log tracking measurements statistics
+logdir /var/log/chrony
+
+# Allow the system to function as an NTP server with a high stratum when unsynchronized.
+local stratum 10
+
+# Set the maximum acceptable skew for updates to avoid large adjustments.
+maxupdateskew 100.0
+
+# Dump measurements when daemon exits and specify the directory for dumping measurements.
+dumponexit
+dumpdir /var/lib/chrony
+
+# Adjust system clock if changes exceed the specified threshold (in seconds).
+logchange 0.5
+
+# Uncomment and adjust to allow specific networks to query the NTP server.
+#allow 192.168.0.0/24
+
+# Configure hardware clock synchronization with UTC time.
+# Uncomment if needed, but ensure hardware compatibility.
+# rtcfile /var/lib/chrony/rtc
+rtconutc
+
+# Use enhanced real-time kernel support, if available.
+# Uncomment only if the system supports HPET-based real-time clock adjustments.
+# hpetfile /var/lib/chrony/hpet
+

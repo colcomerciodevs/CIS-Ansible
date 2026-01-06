@@ -1,0 +1,12 @@
+---
+- name: Aplicar línea base de seguridad CIS
+  hosts: "{{ target_ip | default('localhost') }}"
+  become: true
+  gather_facts: true
+
+  # =========================================================
+  #  Ejecución del rol CIS
+  #  (Para Servidores Onpremises - Nuevos)
+  # =========================================================
+  roles:
+    - role: cis_security_people_oci

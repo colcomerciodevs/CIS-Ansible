@@ -1,0 +1,58 @@
+---
+# TAREA PRELIMINAR: Ejecuta las tareas preliminares necesarias
+- name: "PRELIM | Run preliminary tasks"
+  ansible.builtin.import_tasks:
+    file: prelim.yml
+  become: true
+  tags:
+    - prelim_tasks
+    - always
+    - rhel8cis_section5
+
+# SECCIÓN 5.1.1-9: Configuración de trabajos programados basados en tiempo
+- name: "SECTION | 5.1.1-9 | Set up time-based scheduled jobs"
+  ansible.builtin.import_tasks:
+    file: cis5.1-Scheduled_Jobs.yml   
+  tags:
+    - rhel8cis_section5
+    - Scheduled_Jobs
+
+# SECCIÓN 5.2.1-9: Configuracion de escalamiento de privilegios 
+- name: "SECTION | 5.2.1-9 | Configure privilege escalation"
+  ansible.builtin.import_tasks:
+    file: cis5.2-Configure_authselect.yml   
+  tags:
+    - rhel8cis_section5
+    - Configure_authselect
+
+# SECCIÓN 5.2.1-9: Configuracion de escalamiento de privilegios 
+- name: "SECTION | 5.2.1-9 | Configure privilege escalation"
+  ansible.builtin.import_tasks:
+    file: cis5.2-Privilege_escalation.yml   
+  tags:
+    - rhel8cis_section5
+    - Privilege_escalation
+
+# SECCIÓN 5.3.1-19: Configuracion server SSH
+- name: "SECTION | 5.3.1-19 | Server_SSH"
+  ansible.builtin.import_tasks:
+    file: cis5.3-Server_SSH.yml   
+  tags:
+    - rhel8cis_section5
+    - Server_SSH
+
+# SECCIÓN 5.4.1-4: Configuración de PAM (Pluggable Authentication Modules)
+- name: "SECTION | 5.4.1-4 | Configure PAM"
+  ansible.builtin.import_tasks:
+    file: cis5.4-Configure_PAM.yml   
+  tags:
+    - rhel8cis_section5
+    - Configure_PAM
+
+# SECCIÓN 5.5.1-10: Configuración del entorno y cuentas de usuario
+- name: "SECTION | 5.5.1-10 | Environment and User Accounts"
+  ansible.builtin.import_tasks:
+    file: cis5.5-Account_Policies.yml   
+  tags:
+    - rhel8cis_section5
+    - Account_Policies

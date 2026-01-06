@@ -1,0 +1,24 @@
+---
+
+## Crear Usuarios de Infraestructura con permisos de administrador y acceso SSH
+- name: Crear usuarios administradores
+  ansible.builtin.user:
+    name: "{{ item }}"
+    password: "{{ 'Colombia2025*' | password_hash('sha512') }}"
+    groups: wheel,ssh_access
+    shell: /bin/bash
+    create_home: true
+  loop:
+    - aromero
+    - csotomonte
+    - jcastano
+
+
+## Forzar que los usuarios administradores globales de Infraestructura cambien contraseña en la siguiente session
+- name: Forzar cambio de contraseña en el próximo inicio de sesión
+  ansible.builtin.command: chage -d 0 "{{ item }}"
+  loop:
+    - aromero
+    - csotomonte
+    - jcastano
+  changed_when: false

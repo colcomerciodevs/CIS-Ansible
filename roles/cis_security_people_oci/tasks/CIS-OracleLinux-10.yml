@@ -1,0 +1,43 @@
+---
+
+## EL CIS de Oracle Linux 8 es Aplicable para el Oracle Linux 10
+
+# Tarea para ejecutar la Sección General requerida para las  políticas de seguridad CIS en Oracle Linux 8
+- name: Ejecutar tareas de General (RedHat/Oracle Linux 10)
+  ansible.builtin.include_tasks:
+    file: General/main.yml
+  when: rhel8cis_general
+  tags:
+    - rhel8cis_general
+
+# Tarea para ejecutar la Sección 1 de las políticas de seguridad CIS en Oracle Linux 8
+- name: Ejecutar tareas de la Sección 1 (RedHat/Oracle Linux 10)
+  ansible.builtin.include_tasks:
+    file: RedHat/section_1/main.yml
+  when: rhel8cis_section1
+  tags:
+    - rhel8cis_section1
+
+# Tarea para ejecutar la Sección 2 de las políticas de seguridad CIS en Oracle Linux 8
+- name: Ejecutar tareas de la Sección 2 (RedHat/Oracle Linux 10)
+  ansible.builtin.include_tasks:
+    file: RedHat/section_2/main.yml
+  when: rhel8cis_section2
+  tags:
+    - rhel8cis_section2
+
+# Tarea para ejecutar la Sección 3 de las políticas de seguridad CIS en Oracle Linux 8
+- name: Ejecutar tareas de la Sección 3 (RedHat/Oracle Linux 10)
+  ansible.builtin.include_tasks:
+    file: RedHat/section_3/main.yml
+  when: rhel8cis_section3
+  tags:
+    - rhel8cis_section3
+
+# Tarea para ejecutar la Sección 5 de las políticas de seguridad CIS en Oracle Linux 8
+- name: Ejecutar tareas de la Sección 5 (RedHat/Oracle Linux 10)
+  ansible.builtin.include_tasks:
+    file: RedHat/section_5/main.yml
+  when: rhel8cis_section5
+  tags:
+    - rhel8cis_section5

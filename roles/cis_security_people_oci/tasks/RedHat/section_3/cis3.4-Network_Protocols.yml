@@ -1,0 +1,57 @@
+---
+# 3.4.1 Asegurar DCCP está deshabilitado (Automático)
+- name: SCORED | 3.4.1 | PATCH | Ensure DCCP is disabled
+  ansible.builtin.lineinfile:
+    dest: /etc/modprobe.d/cis.conf
+    regexp: ^(#)?install dccp(\s|$)
+    line: install dccp /bin/true
+    mode: "0644"
+    create: true
+  when:
+    - rhel8_cis_rule_3_4_1
+  tags:
+    - level1
+    - patch
+    - rule_3.4.1
+
+# Tarea 3.4.2 - Asegurar SCTP está deshabilitado (Automático)
+- name: SCORED | 3.4.2 | PATCH | Ensure SCTP is disabled
+  ansible.builtin.lineinfile:
+    dest: /etc/modprobe.d/cis.conf
+    regexp: ^(#)?install sctp(\s|$)
+    line: install sctp /bin/true
+    mode: "0644"
+    create: true
+  when:
+    - rhel8_cis_rule_3_4_2
+  tags:
+    - level1
+    - patch
+    - rule_3.4.2
+
+## DELETE RHEL - Ensure RDS is disabled - Recommendation Dropped
+# Tarea 3.4.3 - Asegurar RDS está deshabilitado (Automático)
+- name: SCORED | 3.4.3 | PATCH | Ensure RDS is disabled
+  ansible.builtin.debug:
+    msg: --> CONTROL CIS DELETE - Not relevant
+  when:
+    - rhel8_cis_rule_3_4_3
+  tags:
+    - level1
+    - patch
+    - rule_3.4.3
+
+
+## OMITIDA RHEL - No esta presente en el CIS
+# Tarea 3.4.4 - Asegurar TIPC está deshabilitado (Automático)
+- name: SCORED | 3.4.4 | PATCH | Ensure TIPC is disabled
+  ansible.builtin.debug:
+    msg: --> Not relevant - No Presente en el CIS 
+  when:
+    - rhel8_cis_rule_3_4_4
+  tags:
+    - level1
+    - patch
+    - rule_3.4.4
+
+    

@@ -30,7 +30,7 @@ rhel8_cis_rule_1_1_7: false
 rhel8_cis_rule_1_1_8: false
 
 # /dev/shm existe como partición independiente
-rhel8_cis_rule_1_1_9:  true
+rhel8_cis_rule_1_1_9: true
 rhel8_cis_rule_1_1_10: true
 rhel8_cis_rule_1_1_11: true
 rhel8_cis_rule_1_1_12: true

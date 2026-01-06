@@ -1,0 +1,35 @@
+---
+
+# TAREA PRELIMINAR: Ejecuta las tareas preliminares necesarias
+- name: "PRELIM | Run preliminary tasks"
+  ansible.builtin.import_tasks:
+    file: prelim.yml
+  become: true
+  tags:
+    - prelim_tasks
+    - always
+    - rhel8cis_section2
+
+# SECCIÓN 2.1.7-2.1.23: Desinstalación de paquetes - servicios especiales propuestos
+- name: "SECTION | 2.1.1-2.1.3 | Configure NTP"
+  ansible.builtin.import_tasks:
+    file: cis2.1-Configure_NTP.yml  
+  tags:
+    - rhel8cis_section2
+    - Configure_NTP
+
+# SECCIÓN 2.1.7-2.1.23: Desinstalación de paquetes - servicios especiales propuestos
+- name: "SECTION | 2.1.7-2.1.23 | Uninstall Packages - special proposal services"
+  ansible.builtin.import_tasks:
+    file: cis2.1-Uninstall_Packages.yml   
+  tags:
+    - rhel8cis_section2
+    - Uninstall_Packages
+
+# SECCIÓN 2.2.1-2.2.7: Desinstalación de paquetes - clientes de servicio
+- name: "SECTION | 2.2.1-2.2.7 | Uninstall Packages - service clients"
+  ansible.builtin.import_tasks:
+    file: cis2.2-Uninstall_Packages.yml   
+  tags:
+    - rhel8cis_section2
+    - Uninstall_Packages

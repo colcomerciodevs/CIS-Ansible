@@ -1,0 +1,73 @@
+---
+
+# Tarea 5.2.8 - Asegurar que es usado el perfil personalizado de authselect (Manual)
+- name: "5.2.8 | PATCH | Ensure custom authselect profile is used"
+  block:
+    - name: "5.2.8 | AUDIT | Ensure custom authselect profile is used | Gather profiles"
+      ansible.builtin.command: authselect list
+      register: rhel8_cis_5_2_8_current_profile
+      failed_when: false
+      changed_when: false
+      check_mode: false
+
+    - name: "5.2.8 | PATCH | Ensure custom authselect profile is used | Create custom profiles"
+      ansible.builtin.command:
+        cmd: >
+          authselect create-profile {{ rhel8_cis_authselect['custom_profile_name'] }}
+          -b {{ rhel8_cis_authselect['default_file_to_copy'] }}
+      changed_when: false
+      when:
+        - rhel8_cis_authselect_custom_profile_create
+        - "rhel8_cis_authselect.custom_profile_name not in rhel8_cis_5_2_8_current_profile.stdout"
+
+    - name: "5.2.8 | PATCH | Ensure custom authselect profile is used | Force custom profile creates backup"
+      ansible.builtin.command:
+        cmd: >
+          authselect select custom/{{ rhel8_cis_authselect['custom_profile_name'] }}
+          --force --backup=rhel8cis_5_2_8_{{ ansible_date_time.epoch }}
+      register: authselect_5_4_1_select
+      changed_when: false
+      when:
+        - rhel8_cis_authselect_custom_profile_create
+        - "rhel8_cis_authselect.custom_profile_name not in rhel8_cis_5_2_8_current_profile.stdout"
+  when:
+    - rhel8_cis_rule_5_2_8
+  tags:
+    - level1
+    - manual
+    - patch
+    - authselect
+    - rule_5.2.8
+
+
+# Tarea 5.2.9 - Asegurar que el authselect incluye with-faillock (Automático)
+- name: "5.2.9 | PATCH | Ensure authselect includes with-faillock"
+  block:
+    - name: "5.2.9 | AUDIT | Ensure authselect includes with-faillock | Gather profiles and enabled features"
+      ansible.builtin.command: authselect current
+      register: rhel8_cis_5_2_9_profiles_faillock
+      failed_when: false
+      changed_when: false
+      check_mode: false
+
+    - name: "5.2.9 | AUDIT | Ensure authselect includes with-faillock | Show profiles"
+      ansible.builtin.debug:
+        msg:
+          - "Below are the current custom profiles"
+          - "{{ rhel8_cis_5_2_9_profiles_faillock.stdout_lines }}"
+
+    - name: "5.2.9 | PATCH | Ensure authselect includes with-faillock | Authselect add options"
+      ansible.builtin.command:
+        cmd: >
+          authselect select custom/{{ rhel8_cis_authselect['custom_profile_name'] }}
+          {{ rhel8_cis_authselect['options'] }} --force
+      changed_when: false
+      when: rhel8_cis_authselect_custom_profile_select
+      
+  when:
+    - rhel8_cis_rule_5_2_9
+  tags:
+    - level1
+    - patch
+    - authselect
+    - rule_5.2.9
