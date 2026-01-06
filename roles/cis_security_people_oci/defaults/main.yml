@@ -298,6 +298,7 @@ rhel8_cis_sudolog_location: "/var/log/sudo.log"
 # Usuarios excluidos de la eliminación de NOPASSWD en reglas de sudo gestionadas por Ansible.
 sudoers_exclude_nopasswd_users:
   - adminso
+  - tux
   - proactiva
   - iacolcoauto
   - ansible_test
@@ -321,6 +322,7 @@ rhel8_cis_sugroup: nosugroup
 authorized_su_users:
   - root
   - adminso
+  - tux
   - opc
   - psoft
   - aromero
@@ -487,6 +489,7 @@ rhel8_cis_pass:
 excluded_users:
   - root
   - adminso
+  - tux
   - opc
   - psoft
   - psadm1
