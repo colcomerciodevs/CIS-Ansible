@@ -118,7 +118,7 @@
     name: vfat
     state: absent
   when:
-    - rhel8_cis_rule_1_1_4
+    - rhel8_cis_rule_1_1_4 | bool
     - ansible_virtualization_type != "docker"
     - not booted_with_efi
   tags:
