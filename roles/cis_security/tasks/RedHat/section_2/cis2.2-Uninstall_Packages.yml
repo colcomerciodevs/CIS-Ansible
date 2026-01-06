@@ -7,7 +7,6 @@
     state: absent
   when:
     - "'ypbind' in ansible_facts.packages"
-    - is_new_installation == "yes"
     - rhel8_cis_rule_2_2_1
   tags:
     - level1
@@ -24,7 +23,6 @@
     state: absent
   when:
     - "'rsh' in ansible_facts.packages"
-    - is_new_installation == "yes"
     - rhel8_cis_rule_2_2_2
   tags:
     - level1
@@ -41,7 +39,6 @@
     state: absent
   when:
     - "'talk' in ansible_facts.packages"
-    - is_new_installation == "yes"
     - rhel8_cis_rule_2_2_3
   tags:
     - level1
@@ -58,7 +55,6 @@
     state: absent
   when:
     - "'telnet' in ansible_facts.packages"
-    - is_new_installation == "yes"
     - rhel8_cis_rule_2_2_4
   tags:
     - level1
@@ -75,7 +71,6 @@
     state: absent
   when:
     - "'openldap-clients' in ansible_facts.packages"
-    - is_new_installation == "yes"
     - rhel8_cis_rule_2_2_5
   tags:
     - level1
@@ -91,7 +86,6 @@
     state: absent
   when:
     - "'tftp' in ansible_facts.packages"
-    - is_new_installation == "yes"
     - rhel8_cis_rule_2_2_6
   tags:
     - level1
@@ -107,7 +101,6 @@
     state: absent
   when:
     - "'rpcbind' in ansible_facts.packages"
-    - is_new_installation == "yes"
     - rhel8_cis_rule_2_2_7
   tags:
     - level1
