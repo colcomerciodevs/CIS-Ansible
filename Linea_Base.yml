@@ -9,28 +9,14 @@
       debug:
         msg: "Tipo de servidor seleccionado: {{ type_server | default('NO DEFINIDO') }}"
 
-
-    # =========================================================
-    #  Variables según el tipo de servidor
-    # =========================================================
-
-    - name: Cargar variables para Servidor Onpremise - Nuevo
-      include_vars: "roles/cis_security/vars/main.yml"
-      when: type_server == "Servidor Onpremise - Nuevo"
-
-    - name: Cargar variables para Servidor OCI - People
-      include_vars: "roles/cis_security/vars/vars_oci_people.yml"
-      when: type_server == "Servidor OCI - People"
-
-    - name: Mensaje para Servidor Onpremise - Produccion
-      debug:
-        msg: "Línea base en desarrollo: no se aplica el rol cis_security en servidores 'Onpremise - Produccion'."
-      when: type_server == "Servidor Onpremise - Produccion"
+    - name: Validar que type_server está definido
+      fail:
+        msg: "Debes definir la variable 'type_server' (Onpremise - Nuevo / Onpremise - Produccion / OCI - People)."
+      when: type_server is not defined
 
   # =========================================================
-  #  Ejecución del rol CIS según el tipo de servidor
+  #  Ejecución del rol CIS
+  #  (la lógica de tipo de servidor ahora está DENTRO del rol)
   # =========================================================
   roles:
-    # Se ejecuta solo si NO es un servidor Onpremise - Produccion
     - role: cis_security
-      when: type_server != "Servidor Onpremise - Produccion"
