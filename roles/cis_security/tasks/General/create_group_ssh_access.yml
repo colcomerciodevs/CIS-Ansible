@@ -7,12 +7,30 @@
     state: present
 
 
-## Crear Usuarios de ansible
-- name: Crear tux
+# ONPREMISE → usuario tux
+- name: Agregar tux a ssh_access SOLO si existe
+  ansible.builtin.user:
+    name: tux
+    groups: ssh_access
+    append: true
+  when:
+    - "'Servidor Onpremise - Nuevo' in type_server or
+       'Servidor Onpremise - Produccion' in type_server"
+    - lookup('ansible.builtin.passwd', 'tux', errors='ignore') is not none
+
+
+## usuarios criticos de OCI - PEOPLESOFT
+- name: Agregar usuarios OCI a ssh_access SOLO si existen
   ansible.builtin.user:
     name: "{{ item }}"
-    shell: /bin/bash
-    create_home: true
     groups: ssh_access
+    append: true
   loop:
-    - tux
+    - adminso
+    - psoft
+    - opc
+  when:
+    - "'Servidor OCI - People' in type_server"
+    - lookup('ansible.builtin.passwd', item, errors='ignore') is not none
+
+

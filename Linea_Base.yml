@@ -1,8 +1,35 @@
 ---
-- name: Aplicar el rol CIS Security
-  hosts: "{{ target_ip | default('localhost') }}"  # Proporciona 'localhost' como valor por defecto
+- name: Aplicar línea base de seguridad CIS
+  hosts: "{{ target_ip | default('localhost') }}"
   become: true
   gather_facts: true
 
+  pre_tasks:
+    - name: Mostrar tipo de servidor seleccionado en la encuesta
+      debug:
+        msg: "Tipo de servidor seleccionado: {{ type_server | default('NO DEFINIDO') }}"
+
+    # =========================================================
+    #  Variables según el tipo de servidor
+    # =========================================================
+
+    - name: Cargar variables para Servidor Onpremise - Nuevo
+      include_vars: "roles/cis_security/vars/main.yml"
+      when: type_server == "Servidor Onpremise - Nuevo"
+
+    - name: Cargar variables para Servidor OCI - People
+      include_vars: "roles/cis_security/vars/vars_oci_people.yml"
+      when: type_server == "Servidor OCI - People"
+
+    - name: Mensaje para Servidor Onpremise - Produccion
+      debug:
+        msg: "Línea base en desarrollo: no se aplica el rol cis_security en servidores 'Onpremise - Produccion'."
+      when: type_server == "Servidor Onpremise - Produccion"
+
+  # =========================================================
+  #  Ejecución del rol CIS según el tipo de servidor
+  # =========================================================
   roles:
+    # Se ejecuta solo si NO es un servidor Onpremise - Produccion
     - role: cis_security
+      when: type_server != "Servidor Onpremise - Produccion"
