@@ -1,36 +1,51 @@
 ---
-
 ## Crear Grupo para restringir el acceso SSH
-- name: Crear un grupo en el sistema
+- name: Crear grupo ssh_access
   ansible.builtin.group:
     name: ssh_access
     state: present
 
 
+# ------------------------------------------------------------
 # ONPREMISE → usuario tux
+# ------------------------------------------------------------
+
+- name: Verificar si existe el usuario tux
+  ansible.builtin.command: id tux
+  register: tux_id
+  failed_when: false      # no revienta si el usuario no existe
+  changed_when: false
+
 - name: Agregar tux a ssh_access SOLO si existe
   ansible.builtin.user:
     name: tux
     groups: ssh_access
     append: true
   when:
-    - "'Servidor Onpremise - Nuevo' in type_server or
-       'Servidor Onpremise - Produccion' in type_server"
-    - lookup('ansible.builtin.passwd', 'tux', errors='ignore') is not none
+    - type_server in ['Servidor Onpremise - Nuevo', 'Servidor Onpremise - Produccion']
+    - tux_id.rc == 0
 
 
-## usuarios criticos de OCI - PEOPLESOFT
-- name: Agregar usuarios OCI a ssh_access SOLO si existen
-  ansible.builtin.user:
-    name: "{{ item }}"
-    groups: ssh_access
-    append: true
+# ------------------------------------------------------------
+# OCI → usuarios críticos (adminso, psoft, opc)
+# ------------------------------------------------------------
+
+- name: Verificar si existen usuarios OCI críticos
+  ansible.builtin.command: "id {{ item }}"
+  register: oci_users_id
+  failed_when: false
+  changed_when: false
   loop:
     - adminso
     - psoft
     - opc
+
+- name: Agregar usuarios OCI a ssh_access SOLO si existen
+  ansible.builtin.user:
+    name: "{{ item.item }}"
+    groups: ssh_access
+    append: true
+  loop: "{{ oci_users_id.results }}"
   when:
-    - "'Servidor OCI - People' in type_server"
-    - lookup('ansible.builtin.passwd', item, errors='ignore') is not none
-
-
+    - type_server == 'Servidor OCI - People'
+    - item.rc == 0
