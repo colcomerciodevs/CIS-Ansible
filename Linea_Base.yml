@@ -9,6 +9,19 @@
       debug:
         msg: "Tipo de servidor seleccionado: {{ type_server | default('NO DEFINIDO') }}"
 
+    - name: DEBUG | tipo de servidor
+      debug:
+        msg: "Tipo de servidor seleccionado: {{ type_server | default('NO DEFINIDO') }}"
+
+    - name: Cargar variables para Servidor OCI - People
+      include_vars: "roles/cis_security/vars/vars_oci_people.yml"
+      when: type_server == "Servidor OCI - People"
+
+    - name: DEBUG | valor efectivo de rhel8_cis_rule_1_1_4 antes del rol
+      debug:
+        msg: "rhel8_cis_rule_1_1_4 = {{ rhel8_cis_rule_1_1_4 | default('UNDEF') }}"
+
+
     # =========================================================
     #  Variables según el tipo de servidor
     # =========================================================
