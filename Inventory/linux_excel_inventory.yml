@@ -1,0 +1,37 @@
+---
+# Usa el plugin excel_inventory.py que está en inventory/inventory_plugins/
+plugin: excel_inventory
+
+# El Excel viene desde SharePoint
+source_type: sharepoint
+
+# Si tu hoja se llama distinto, cámbialo exacto como sale en Excel
+# Si no estás seguro, puedes dejarlo vacío "" y usará la primera hoja
+sheet_name: "Servidores Linux"
+
+sharepoint_config:
+  site_url: "https://colcomerciocom.sharepoint.com/sites/AreaInfraestructura"
+  folder_path: "/sites/AreaInfraestructura/Documentos compartidos/General/Inventario Infraestructura"
+  filename: "Sincronizacion_Parcheado_SO.xlsx"
+
+  # Credenciales por variables de entorno (recomendado)
+  tenant_id: "{{ lookup('env', 'TENANT_ID') }}"
+  client_id: "{{ lookup('env', 'CLIENT_ID') }}"
+  client_secret: "{{ lookup('env', 'CLIENT_SECRET') }}"
+
+# Columna que Ansible usará como "inventory_hostname"
+# En tu Excel está como "Host"
+hostname_column: "Host"
+
+# Mapeo de variables Ansible -> columnas Excel (tal cual el encabezado)
+compose:
+  ansible_host: "IP"
+  ansible_user: "Usuario"
+  description: "Descripción"
+  ansible_python_interpreter: "Python Interpreter"
+
+# Grupos: se crean a partir de la columna "Grupo" (que tú llenas manual)
+keyed_groups:
+  - key: "Grupo"
+    prefix: ""       # opcional (si lo dejas vacío, grupo=BIA queda "bia")
+    separator: "_"   # opcional
