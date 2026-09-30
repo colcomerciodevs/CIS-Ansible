@@ -1,0 +1,1586 @@
+
+PLAY [Aplicar línea base de seguridad CIS] **************************************************************************
+
+TASK [Gathering Facts] **********************************************************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : Incluir tareas específicas de CIS según la distribución] ***************************************
+included: /ansible/CIS-Ansible/roles/cis_security/tasks/CIS-OracleLinux-9.yml for 10.181.40.12
+
+TASK [cis_security : Ejecutar tareas de General (RedHat/Oracle Linux 9)] ********************************************
+included: /ansible/CIS-Ansible/roles/cis_security/tasks/General/main.yml for 10.181.40.12
+
+TASK [cis_security : Obtener el sistema operativo] ******************************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : Verificar si los repositorios están configurados correctamente] ********************************
+ok: [10.181.40.12]
+
+TASK [cis_security : Definir la URL del repositorio según el sistema operativo] *************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : Validar acceso a los repositorios configurados] ************************************************
+fatal: [10.181.40.12]: FAILED! => {"changed": false, "content": "", "elapsed": 0, "msg": "Status code was -1 and not [200]: Request failed: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1147)>", "redirected": false, "status": -1, "url": "https://cdn.redhat.com/"}
+...ignoring
+
+TASK [cis_security : Detener ejecución si los repositorios no están disponibles] ************************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : Mensaje de éxito si los repositorios están funcionando] ****************************************
+ok: [10.181.40.12] => {
+    "msg": "Los repositorios de REDHAT están activos y tienen acceso a internet. Continuando con la ejecución de los playbooks."
+}
+
+TASK [cis_security : Crear grupo ssh_access] ************************************************************************
+changed: [10.181.40.12]
+
+TASK [cis_security : Verificar si existe el usuario tux] ************************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : Agregar tux a ssh_access SOLO si existe] *******************************************************
+changed: [10.181.40.12]
+
+TASK [cis_security : Crear usuarios administradores] ****************************************************************
+changed: [10.181.40.12] => (item=aromero)
+changed: [10.181.40.12] => (item=csotomonte)
+changed: [10.181.40.12] => (item=jcastano)
+
+TASK [cis_security : Forzar cambio de contraseña en el próximo inicio de sesión] ************************************
+ok: [10.181.40.12] => (item=aromero)
+ok: [10.181.40.12] => (item=csotomonte)
+ok: [10.181.40.12] => (item=jcastano)
+
+TASK [cis_security : Crear usuarios Ansible (iacolcoauto y ansible_test)] *******************************************
+changed: [10.181.40.12] => (item=iacolcoauto)
+changed: [10.181.40.12] => (item=ansible_test)
+
+TASK [cis_security : Permitir sudo sin contraseña a usuarios Ansible] ***********************************************
+--- before: /etc/sudoers.d/iacolcoauto (content)
++++ after: /etc/sudoers.d/iacolcoauto (content)
+@@ -0,0 +1 @@
++iacolcoauto ALL=(ALL) NOPASSWD: ALL
+
+--- before: /etc/sudoers.d/iacolcoauto (file attributes)
++++ after: /etc/sudoers.d/iacolcoauto (file attributes)
+@@ -1,3 +1,3 @@
+ {
+-    "mode": "0644"
++    "mode": "0440"
+ }
+
+changed: [10.181.40.12] => (item=iacolcoauto)
+--- before: /etc/sudoers.d/ansible_test (content)
++++ after: /etc/sudoers.d/ansible_test (content)
+@@ -0,0 +1 @@
++ansible_test ALL=(ALL) NOPASSWD: ALL
+
+--- before: /etc/sudoers.d/ansible_test (file attributes)
++++ after: /etc/sudoers.d/ansible_test (file attributes)
+@@ -1,3 +1,3 @@
+ {
+-    "mode": "0644"
++    "mode": "0440"
+ }
+
+changed: [10.181.40.12] => (item=ansible_test)
+
+TASK [cis_security : Crear directorio .ssh para usuarios Ansible] ***************************************************
+--- before
++++ after
+@@ -1,6 +1,6 @@
+ {
+-    "mode": "0755",
+-    "owner": 0,
++    "mode": "0700",
++    "owner": 1005,
+     "path": "/home/iacolcoauto/.ssh",
+-    "state": "absent"
++    "state": "directory"
+ }
+
+changed: [10.181.40.12] => (item=iacolcoauto)
+--- before
++++ after
+@@ -1,6 +1,6 @@
+ {
+-    "mode": "0755",
+-    "owner": 0,
++    "mode": "0700",
++    "owner": 1006,
+     "path": "/home/ansible_test/.ssh",
+-    "state": "absent"
++    "state": "directory"
+ }
+
+changed: [10.181.40.12] => (item=ansible_test)
+
+TASK [cis_security : Agregar claves públicas SSH a usuarios Ansible] ************************************************
+--- before
++++ after: /root/.ansible/tmp/ansible-local-1922501uup6xs3h/tmprxuhb9yo
+@@ -0,0 +1 @@
++ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC3NzBHvokb0EmAMlqgXVgUMYBlsVVjM6e28dzqhW7ykRfjrjEx4jV+0H3I/yvPqIga/iBUmg3CKBnL9rm1+9vW7f5B2JiCH0tPAJAfLDZ7As7KHuL3TeV5VTGursQ7HgU2fWVfoqP/yzGsrCxdQizTlDd9QpB8skqjXIf9nIV+CZJqEHxy0/EHXdm/KuBZbBd+7u/3ZxVMU7zTfJMC48ZV0Et8eu5pzn3mCJjETpfULrnBIoPoJ8otcX19xfygEcuF8Iv6eqnjoRoIEcDhQZi/ayTKiTz7Ezjf1idpBois+iwGlSkLCQ4j6Y2cRYyI/b+fVPnUq+89i2si4/J2J6yt10I3heO6iWvNFi0hgloyMegZiQtnWUyLfay1s7FYtmw6HV4cvJX215j66ETURpSIeg1vFqqf6BO2DxHampjjVfBrGyKuuWXqMiKiLMrM7CVzkOoX3PevPL+rdOU85M/lhNFAY/ioblqjea1kjVYxn/7iLGvWcjbp60MMVGVAEGkn2WubLbAh2xZYS0RFG1lrpBTtb1Alu6CN4kx2zfFhLbIEAM/2WKOWSZMo7CH0ynUbzlNKkuImDuAdxIZaluHPjQ0YCYs5I4rOKFm1ixes16zk25vQnZQ2kfEI4WhAnI1D1M7GmmHbkRAFlxpReDG9JwykHuQSPzld5pqGJoQH1Q== iacolcoauto@ansibleawx
+\ No newline at end of file
+
+changed: [10.181.40.12] => (item={'user': 'iacolcoauto', 'key': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC3NzBHvokb0EmAMlqgXVgUMYBlsVVjM6e28dzqhW7ykRfjrjEx4jV+0H3I/yvPqIga/iBUmg3CKBnL9rm1+9vW7f5B2JiCH0tPAJAfLDZ7As7KHuL3TeV5VTGursQ7HgU2fWVfoqP/yzGsrCxdQizTlDd9QpB8skqjXIf9nIV+CZJqEHxy0/EHXdm/KuBZbBd+7u/3ZxVMU7zTfJMC48ZV0Et8eu5pzn3mCJjETpfULrnBIoPoJ8otcX19xfygEcuF8Iv6eqnjoRoIEcDhQZi/ayTKiTz7Ezjf1idpBois+iwGlSkLCQ4j6Y2cRYyI/b+fVPnUq+89i2si4/J2J6yt10I3heO6iWvNFi0hgloyMegZiQtnWUyLfay1s7FYtmw6HV4cvJX215j66ETURpSIeg1vFqqf6BO2DxHampjjVfBrGyKuuWXqMiKiLMrM7CVzkOoX3PevPL+rdOU85M/lhNFAY/ioblqjea1kjVYxn/7iLGvWcjbp60MMVGVAEGkn2WubLbAh2xZYS0RFG1lrpBTtb1Alu6CN4kx2zfFhLbIEAM/2WKOWSZMo7CH0ynUbzlNKkuImDuAdxIZaluHPjQ0YCYs5I4rOKFm1ixes16zk25vQnZQ2kfEI4WhAnI1D1M7GmmHbkRAFlxpReDG9JwykHuQSPzld5pqGJoQH1Q== iacolcoauto@ansibleawx'})
+--- before
++++ after: /root/.ansible/tmp/ansible-local-1922501uup6xs3h/tmpf6940gjb
+@@ -0,0 +1 @@
++ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPW8I6d7AAAkfrObeWMBdayjEHP9pzCfR5/KGVNkq4nBCK2Sb7dohPLsateMZfaQD0DCBI7YJDrKUw4P9ZOCXbM= root@Ansible
+\ No newline at end of file
+
+changed: [10.181.40.12] => (item={'user': 'ansible_test', 'key': 'ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPW8I6d7AAAkfrObeWMBdayjEHP9pzCfR5/KGVNkq4nBCK2Sb7dohPLsateMZfaQD0DCBI7YJDrKUw4P9ZOCXbM= root@Ansible'})
+
+TASK [cis_security : Crear grupo soporte] ***************************************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : Crear usuario proactiva] ***********************************************************************
+changed: [10.181.40.12]
+
+TASK [cis_security : Agregar proactiva a sudoers] *******************************************************************
+--- before: /etc/sudoers (content)
++++ after: /etc/sudoers (content)
+@@ -121,3 +121,4 @@
+ 
+ ## Read drop-in files from /etc/sudoers.d (the # here does not mean a comment)
+ #includedir /etc/sudoers.d
++proactiva ALL=(ALL) NOPASSWD: ALL
+
+changed: [10.181.40.12]
+
+TASK [cis_security : Ejecutar tareas de la Sección 1 (RedHat/Oracle Linux 9)] ***************************************
+included: /ansible/CIS-Ansible/roles/cis_security/tasks/RedHat/section_1/main.yml for 10.181.40.12
+
+TASK [cis_security : PRELIM | Gather the rpm package facts] *********************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : PRELIM | Check to see if we are booting with EFI or UEFI] **************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : Check if autofs config file exists] ************************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : Check for NFS mounts managed by autofs if config file exists] **********************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled] ********************
+--- before: /etc/modprobe.d/cis.conf (content)
++++ after: /etc/modprobe.d/cis.conf (content)
+@@ -0,0 +1 @@
++install cramfs /bin/true
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 1.1.1 | PATCH | Remove cramfs module] *************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : SCORED | 1.1.2 | PATCH | Ensure mounting of squashfs filesystems is disabled] ******************
+--- before: /etc/modprobe.d/cis.conf (content)
++++ after: /etc/modprobe.d/cis.conf (content)
+@@ -1 +1,2 @@
+ install cramfs /bin/true
++install squashfs /bin/true
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 1.1.2 | PATCH | Remove squashfs module] ***********************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : SCORED | 1.1.3 | PATCH | Ensure mounting of udf filesystems is disabled] ***********************
+--- before: /etc/modprobe.d/cis.conf (content)
++++ after: /etc/modprobe.d/cis.conf (content)
+@@ -1,2 +1,3 @@
+ install cramfs /bin/true
+ install squashfs /bin/true
++install udf /bin/true
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 1.1.3 | PATCH | Remove udf module] ****************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : NOTSCORED | 1.1.4 | PATCH | Ensure mounting of vFAT filesystems is limited] ********************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 1.1.4 | PATCH | Remove vFAT module] ***************************************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 1.1.5 | PATCH | Ensure separate partition exists for /tmp] ****************************
+ok: [10.181.40.12] => (item={'mount': '/tmp', 'device': '/dev/mapper/rootVG-tmp', 'fstype': 'xfs', 'options': 'rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota', 'size_total': 4936695808, 'size_available': 4768739328, 'block_size': 4096, 'block_total': 1205248, 'block_available': 1164243, 'block_used': 41005, 'inode_total': 2443264, 'inode_available': 2443203, 'inode_used': 61, 'uuid': '140d7770-3497-4947-b01c-c6fd44caaded'}) => {
+    "msg": "/tmp"
+}
+
+TASK [cis_security : SCORED | 1.1.6  | PATCH | Ensure nodev option set on /tmp partition
+ SCORED | 1.1.7  | PATCH | Ensure nosuid option set on /tmp partition
+ SCORED | 1.1.8 | PATCH | Ensure noexec option set on /tmp partition] ***
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-root) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-usr) 
+skipping: [10.181.40.12] => (item=/dev/sda2) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-srv) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-home) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-opt) 
+changed: [10.181.40.12] => (item=/dev/mapper/rootVG-tmp)
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_log) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_tmp) 
+skipping: [10.181.40.12] => (item=/dev/sda1) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_log_audit) 
+
+TASK [cis_security : NOTSCORED | 1.1.9 | PATCH | Ensure that /dev/shm is in a separate partition (Automatic)] *******
+ok: [10.181.40.12] => {
+    "msg": "--> Not relevant - No Presente en el CIS"
+}
+
+TASK [cis_security : SCORED | 1.1.10  | PATCH | Ensure nodev option set on /dev/shm partition
+ SCORED | 1.1.11  | PATCH | Ensure nosuid option set on /dev/shm partition
+ SCORED | 1.1.12 | PATCH | Ensure noexec option set on /dev/shm partition] ***
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 1.1.13 | PATCH | Ensure separate partition exists for /var] ***************************
+ok: [10.181.40.12] => (item={'mount': '/var', 'device': '/dev/mapper/rootVG-var', 'fstype': 'xfs', 'options': 'rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota', 'size_total': 9936306176, 'size_available': 8321974272, 'block_size': 4096, 'block_total': 2425856, 'block_available': 2031732, 'block_used': 394124, 'inode_total': 4884480, 'inode_available': 4874777, 'inode_used': 9703, 'uuid': 'ba856852-5006-4f4c-911a-94734357b32f'}) => {
+    "msg": "/var"
+}
+
+TASK [cis_security : SCORED | 1.1.14  | PATCH | Ensure nodev option set on /var partition
+ SCORED | 1.1.15  | PATCH | Ensure nosuid option set on /var partition
+ SCORED | 1.1.16 | PATCH | Ensure noexec option set on /var partition] ***
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-root) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-usr) 
+skipping: [10.181.40.12] => (item=/dev/sda2) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-srv) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-home) 
+changed: [10.181.40.12] => (item=/dev/mapper/rootVG-var)
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-opt) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-tmp) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_log) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_tmp) 
+skipping: [10.181.40.12] => (item=/dev/sda1) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_log_audit) 
+
+TASK [cis_security : SCORED | 1.1.17 | PATCH | Ensure separate partition exists for /var/tmp] ***********************
+ok: [10.181.40.12] => (item={'mount': '/var/tmp', 'device': '/dev/mapper/rootVG-var_tmp', 'fstype': 'xfs', 'options': 'rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota', 'size_total': 1933574144, 'size_available': 1886162944, 'block_size': 4096, 'block_total': 472064, 'block_available': 460489, 'block_used': 11575, 'inode_total': 976896, 'inode_available': 976869, 'inode_used': 27, 'uuid': '8dad4236-ec75-4c7f-933d-53d7f269d3ad'}) => {
+    "msg": "/var/tmp"
+}
+
+TASK [cis_security : SCORED | 1.1.18  | PATCH | Ensure nodev option set on /var/tmp partition
+ SCORED | 1.1.19  | PATCH | Ensure nosuid option set on /var/tmp partition
+ SCORED | 1.1.20 | PATCH | Ensure noexec option set on /var/tmp partition] ***
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-root) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-usr) 
+skipping: [10.181.40.12] => (item=/dev/sda2) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-srv) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-home) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-opt) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-tmp) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_log) 
+changed: [10.181.40.12] => (item=/dev/mapper/rootVG-var_tmp)
+skipping: [10.181.40.12] => (item=/dev/sda1) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_log_audit) 
+
+TASK [cis_security : SCORED | 1.1.21 | PATCH | Ensure separate partition exists for /var/log] ***********************
+ok: [10.181.40.12] => (item={'mount': '/var/log', 'device': '/dev/mapper/rootVG-var_log', 'fstype': 'xfs', 'options': 'rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota', 'size_total': 4936695808, 'size_available': 4506791936, 'block_size': 4096, 'block_total': 1205248, 'block_available': 1100291, 'block_used': 104957, 'inode_total': 2443264, 'inode_available': 2443131, 'inode_used': 133, 'uuid': 'f33b7916-4441-4c5f-9cc4-3c449a3de91b'}) => {
+    "msg": "/var/log"
+}
+
+TASK [cis_security : SCORED | 1.1.22  | PATCH | Ensure nodev option set on /var/log partition
+ SCORED | 1.1.23  | PATCH | Ensure nosuid option set on /var/log partition
+ SCORED | 1.1.24 | PATCH | Ensure noexec option set on /var/log partition] ***
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-root) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-usr) 
+skipping: [10.181.40.12] => (item=/dev/sda2) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-srv) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-home) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-opt) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-tmp) 
+changed: [10.181.40.12] => (item=/dev/mapper/rootVG-var_log)
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_tmp) 
+skipping: [10.181.40.12] => (item=/dev/sda1) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_log_audit) 
+
+TASK [cis_security : SCORED | 1.1.25 | PATCH | Ensure separate partition exists for /var/log/audit] *****************
+ok: [10.181.40.12] => (item={'mount': '/var/log/audit', 'device': '/dev/mapper/rootVG-var_log_audit', 'fstype': 'xfs', 'options': 'rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota', 'size_total': 1933574144, 'size_available': 1884233728, 'block_size': 4096, 'block_total': 472064, 'block_available': 460018, 'block_used': 12046, 'inode_total': 976896, 'inode_available': 976892, 'inode_used': 4, 'uuid': '35401344-cb54-40bb-93b2-fdee04fa4d42'}) => {
+    "msg": "/var/log/audit"
+}
+
+TASK [cis_security : SCORED | 1.1.26  | PATCH | Ensure nodev option set on /var/log/audit partition
+ SCORED | 1.1.27  | PATCH | Ensure nosuid option set on /var/log/audit partition
+ SCORED | 1.1.28 | PATCH | Ensure noexec option set on /var/log/audit partition] ***
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-root) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-usr) 
+skipping: [10.181.40.12] => (item=/dev/sda2) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-srv) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-home) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-opt) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-tmp) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_log) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_tmp) 
+skipping: [10.181.40.12] => (item=/dev/sda1) 
+changed: [10.181.40.12] => (item=/dev/mapper/rootVG-var_log_audit)
+
+TASK [cis_security : SCORED | 1.1.29 | PATCH | Ensure separate partition exists for /home] **************************
+ok: [10.181.40.12] => (item={'mount': '/home', 'device': '/dev/mapper/rootVG-home', 'fstype': 'xfs', 'options': 'rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota', 'size_total': 4936695808, 'size_available': 4859527168, 'block_size': 4096, 'block_total': 1205248, 'block_available': 1186408, 'block_used': 18840, 'inode_total': 2443264, 'inode_available': 2442907, 'inode_used': 357, 'uuid': '727b7cb6-494d-4ff8-b967-91f80999a6fb'}) => {
+    "msg": "/home"
+}
+
+TASK [cis_security : NOTSCORED | 1.1.32 | 1.1.33 | 1.1.34 | PATCH | Ensure noexec, nodev, nosuid options set on removable media partitions] ***
+ok: [10.181.40.12] => {
+    "msg": "--> Not relevant - No Presente en el CIS RHEL"
+}
+
+TASK [cis_security : SCORED | 1.1.30  | PATCH | Ensure nodev option set on /home partition
+ SCORED | 1.1.31  | PATCH | Ensure nosuid option set on /home partition
+ SCORED | 1.1.35 | PATCH | Ensure usrquota options set on /home partition
+ SCORED | 1.1.36 | PATCH | Ensure grpquota options set on /home partition] ***
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-root) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-usr) 
+skipping: [10.181.40.12] => (item=/dev/sda2) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-srv) 
+changed: [10.181.40.12] => (item=/dev/mapper/rootVG-home)
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-opt) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-tmp) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_log) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_tmp) 
+skipping: [10.181.40.12] => (item=/dev/sda1) 
+skipping: [10.181.40.12] => (item=/dev/mapper/rootVG-var_log_audit) 
+
+TASK [cis_security : SCORED | 1.1.37 | PATCH | Ensure sticky bit is set on all world-writable directories] **********
+ok: [10.181.40.12]
+
+TASK [cis_security : Deshabilitar autofs si no hay NFS usándolo y las reglas de CIS lo permiten] ********************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 1.1.39 | PATCH | Disable USB Storage] *************************************************
+--- before: /etc/modprobe.d/cis.conf (content)
++++ after: /etc/modprobe.d/cis.conf (content)
+@@ -1,3 +1,4 @@
+ install cramfs /bin/true
+ install squashfs /bin/true
+ install udf /bin/true
++install usb-storage /bin/true
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 1.1.39 | PATCH | Remove USB Storage module] *******************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : SCORED | 1.7.1 | PATCH | Ensure message of the day is configured properly] *********************
+--- before: /etc/motd
++++ after: /ansible/CIS-Ansible/roles/cis_security/files/Message_Day
+@@ -0,0 +1,8 @@
++***************************************************************
++*                                                             *
++*                      ACCESO CONCEDIDO                       *
++*                                                             *
++*  Recuerda seguir las politicas de uso y mantener la         *
++*               seguridad de la informacion.                  *
++*                                                             *
++***************************************************************
+
+changed: [10.181.40.12]
+
+TASK [cis_security : NOTSCORED | 1.7.2 | PATCH | Ensure local login warning banner is configured properly] **********
+--- before: /etc/issue
++++ after: /ansible/CIS-Ansible/roles/cis_security/files/login_banner
+@@ -1,3 +1,20 @@
+-\S
+-Kernel \r on an \m
+-
++* * * * * * * * * * * * * * * * * * * * * * * * ADVERTENCIA  * * * * * * * * * * * * * * * * * * * * * * * * * * *
++*                                                                                                                *
++*  Este es un sistema informatico de COLOMBIANA DE COMERCIO S.A., CORBETA S.A. Y/O ALKOSTO S.A.,                 *
++*  que en adelante se denominara LA COMPANIA. Este sistema informatico incluye todo lo relacionado con equipos   *   
++*  redes y dispositivos de red (incluyendo el acceso especificamente desde internet), se provee solamente a      *
++*  usuarios autorizados por LA COMPANIA, la cual puede monitorear los sistemas informaticos para todos los       * 
++*  propositos legales, incluso si es autorizado por el administrador del sistema, para facilitar la proteccion   *
++*  de accesos no autorizados y para verificar procedimientos de la seguridad, supervivencia y seguridad          * 
++*  operacional. Los monitoreos incluyen ataques activos autorizados por LA COMPANIA, realizados por entidades    *
++*  para probar o para verificar la seguridad de este sistema. Durante la supervision, la informacion se puede    * 
++*  examinar, registrar, copiar y utilizar para los propositos autorizados. Toda la informacion, incluida         *
++*  informacion personal, que sea creada o enviada desde este sistema sera monitoreada.                           *
++*                                                                                                                * 
++*  El uso de este sistema informatico de LA COMPANIA, autorizado o no autorizado constituye                      *
++*  consentimiento a la supervision de este sistema. El uso no autorizado puede sujetarse al procesamiento        * 
++*  criminal. La evidencia del uso no autorizado recogido durante la supervision se puede utilizar para la accion *   
++*  administrativa, criminal o adversa. El uso de este sistema constituye consentimiento a la supervision para    *
++*  estos propositos.                                                                                             *   
++*                                                                                                                *
++* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **
+
+changed: [10.181.40.12]
+
+TASK [cis_security : NOTSCORED | 1.7.3 | PATCH | Ensure remote login warning banner is configured properly] *********
+--- before: /etc/issue.net
++++ after: /ansible/CIS-Ansible/roles/cis_security/files/login_banner
+@@ -1,2 +1,20 @@
+-\S
+-Kernel \r on an \m
++* * * * * * * * * * * * * * * * * * * * * * * * ADVERTENCIA  * * * * * * * * * * * * * * * * * * * * * * * * * * *
++*                                                                                                                *
++*  Este es un sistema informatico de COLOMBIANA DE COMERCIO S.A., CORBETA S.A. Y/O ALKOSTO S.A.,                 *
++*  que en adelante se denominara LA COMPANIA. Este sistema informatico incluye todo lo relacionado con equipos   *   
++*  redes y dispositivos de red (incluyendo el acceso especificamente desde internet), se provee solamente a      *
++*  usuarios autorizados por LA COMPANIA, la cual puede monitorear los sistemas informaticos para todos los       * 
++*  propositos legales, incluso si es autorizado por el administrador del sistema, para facilitar la proteccion   *
++*  de accesos no autorizados y para verificar procedimientos de la seguridad, supervivencia y seguridad          * 
++*  operacional. Los monitoreos incluyen ataques activos autorizados por LA COMPANIA, realizados por entidades    *
++*  para probar o para verificar la seguridad de este sistema. Durante la supervision, la informacion se puede    * 
++*  examinar, registrar, copiar y utilizar para los propositos autorizados. Toda la informacion, incluida         *
++*  informacion personal, que sea creada o enviada desde este sistema sera monitoreada.                           *
++*                                                                                                                * 
++*  El uso de este sistema informatico de LA COMPANIA, autorizado o no autorizado constituye                      *
++*  consentimiento a la supervision de este sistema. El uso no autorizado puede sujetarse al procesamiento        * 
++*  criminal. La evidencia del uso no autorizado recogido durante la supervision se puede utilizar para la accion *   
++*  administrativa, criminal o adversa. El uso de este sistema constituye consentimiento a la supervision para    *
++*  estos propositos.                                                                                             *   
++*                                                                                                                *
++* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **
+
+changed: [10.181.40.12]
+
+TASK [cis_security : NOTSCORED | 1.7.4 | PATCH | Ensure permissions on /etc/motd are configured] ********************
+ok: [10.181.40.12]
+
+TASK [cis_security : SCORED | 1.7.5 | PATCH | Ensure permissions on /etc/issue are configured] **********************
+ok: [10.181.40.12]
+
+TASK [cis_security : NOTSCORED | 1.8.1.6 | PATCH | Ensure permissions on /etc/issue.net are configured] *************
+ok: [10.181.40.12]
+
+TASK [cis_security : Ejecutar tareas de la Sección 2 (RedHat/Oracle Linux 9)] ***************************************
+included: /ansible/CIS-Ansible/roles/cis_security/tasks/RedHat/section_2/main.yml for 10.181.40.12
+
+TASK [cis_security : PRELIM | Gather the rpm package facts] *********************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : PRELIM | Gather the service facts] *************************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : Inicializar lista de paquetes auditados] *******************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : Registrar paquetes instalados (Auditoría)] *****************************************************
+skipping: [10.181.40.12] => (item=xinetd) 
+skipping: [10.181.40.12] => (item=xorg-x11-server-*) 
+ok: [10.181.40.12] => (item=avahi)
+skipping: [10.181.40.12] => (item=avahi-autoipd) 
+ok: [10.181.40.12] => (item=cups)
+skipping: [10.181.40.12] => (item=dhcpd) 
+skipping: [10.181.40.12] => (item=openldap-servers) 
+skipping: [10.181.40.12] => (item=nfs-utils) 
+skipping: [10.181.40.12] => (item=nfs-kernel-server) 
+skipping: [10.181.40.12] => (item=bind) 
+skipping: [10.181.40.12] => (item=bind-chroot) 
+skipping: [10.181.40.12] => (item=vsftpd) 
+skipping: [10.181.40.12] => (item=tftp-server) 
+skipping: [10.181.40.12] => (item=httpd) 
+skipping: [10.181.40.12] => (item=dovecot) 
+skipping: [10.181.40.12] => (item=samba) 
+skipping: [10.181.40.12] => (item=squid) 
+skipping: [10.181.40.12] => (item=net-snmp) 
+skipping: [10.181.40.12] => (item=telnet-server) 
+ok: [10.181.40.12] => (item=rsync)
+skipping: [10.181.40.12] => (item=ypserv) 
+
+TASK [cis_security : Guardar auditoría en un archivo] ***************************************************************
+--- before
++++ after: /root/.ansible/tmp/ansible-local-1922501uup6xs3h/tmpb61hblvl
+@@ -0,0 +1,2 @@
++Los siguientes paquetes están instalados en el sistema y requieren gestión manual:
++avahi\ncups\nrsync
+
+changed: [10.181.40.12]
+
+TASK [cis_security : NOTSCORED | 2.1.1 | PATCH | Ensure time synchronization is in use - service install chrony] ****
+ok: [10.181.40.12]
+
+TASK [cis_security : NOTSCORED | 2.1.1 | PATCH | Ensure time synchronization is in use - service start] *************
+ok: [10.181.40.12]
+
+TASK [cis_security : NOTSCORED | 2.1.2 | PATCH | Ensure systemd-timesyncd is configured (Automatic)] ****************
+ok: [10.181.40.12] => {
+    "msg": "--> Not relevant - No Presente en el CIS RHEL"
+}
+
+TASK [cis_security : SCORED | 2.1.3 | PATCH | Ensure chrony is configured] ******************************************
+--- before: /etc/chrony.conf
++++ after: /root/.ansible/tmp/ansible-local-1922501uup6xs3h/tmpebnsjdj6/chrony.conf.j2
+@@ -1,50 +1,42 @@
+-# Use public servers from the pool.ntp.org project.
+-# Please consider joining the pool (https://www.pool.ntp.org/join.html).
+-pool 2.rhel.pool.ntp.org iburst
++# This is the default chrony.conf file adjusted for RHEL 8/9 and its derivatives.
++# Adjustments have been made to align with system requirements and modern Chrony directives.
+ 
+-# Use NTP servers from DHCP.
+-sourcedir /run/chrony-dhcp
++# Define NTP servers. Replace with appropriate servers for your environment.
++server 10.181.0.155 iburst minpoll 8
+ 
+-# Record the rate at which the system clock gains/losses time.
++# Path to the keyfile (if required). Ensure the file exists if authentication is used.
++# Commented out if not using key-based authentication.
++# keyfile /etc/chrony/chrony.keys
++
++# Drift file location.
+ driftfile /var/lib/chrony/drift
+ 
+-# Allow the system clock to be stepped in the first three updates
+-# if its offset is larger than 1 second.
+-makestep 1.0 3
+-
+-# Enable kernel synchronization of the real-time clock (RTC).
+-rtcsync
+-
+-# Enable hardware timestamping on all interfaces that support it.
+-#hwtimestamp *
+-
+-# Increase the minimum number of selectable sources required to adjust
+-# the system clock.
+-#minsources 2
+-
+-# Allow NTP client access from local network.
+-#allow 192.168.0.0/16
+-
+-# Serve time even if not synchronized to a time source.
+-#local stratum 10
+-
+-# Require authentication (nts or key option) for all NTP sources.
+-#authselectmode require
+-
+-# Specify file containing keys for NTP authentication.
+-keyfile /etc/chrony.keys
+-
+-# Save NTS keys and cookies.
+-ntsdumpdir /var/lib/chrony
+-
+-# Insert/delete leap seconds by slewing instead of stepping.
+-#leapsecmode slew
+-
+-# Get TAI-UTC offset and leap seconds from the system tz database.
+-leapsectz right/UTC
+-
+-# Specify directory for log files.
++# Log configuration. Enable necessary logs for monitoring and debugging.
++log tracking measurements statistics
+ logdir /var/log/chrony
+ 
+-# Select which information is logged.
+-#log measurements statistics tracking
++# Allow the system to function as an NTP server with a high stratum when unsynchronized.
++local stratum 10
++
++# Set the maximum acceptable skew for updates to avoid large adjustments.
++maxupdateskew 100.0
++
++# Dump measurements when daemon exits and specify the directory for dumping measurements.
++dumponexit
++dumpdir /var/lib/chrony
++
++# Adjust system clock if changes exceed the specified threshold (in seconds).
++logchange 0.5
++
++# Uncomment and adjust to allow specific networks to query the NTP server.
++#allow 192.168.0.0/24
++
++# Configure hardware clock synchronization with UTC time.
++# Uncomment if needed, but ensure hardware compatibility.
++# rtcfile /var/lib/chrony/rtc
++rtconutc
++
++# Use enhanced real-time kernel support, if available.
++# Uncomment only if the system supports HPET-based real-time clock adjustments.
++# hpetfile /var/lib/chrony/hpet
++
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.4 | PATCH | Ensure xinetd is not installed] ***************************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.5 | PATCH | Ensure X Window System is not installed] ******************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.6 | PATCH | Ensure Avahi Server is not enabled] ***********************************
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.7 | PATCH | Ensure CUPS is not installed] *****************************************
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.8 | PATCH | Ensure DHCP Server is not installed] **********************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.9 | PATCH | Ensure LDAP Server is not installed] **********************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : Ensure NFS utilities are not installed] ********************************************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : Check if the NFS Server service exists] ********************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : Stop and mask the NFS Server service] **********************************************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.11 | PATCH | Ensure DNS Server packages are not installed] ************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.12 | PATCH | Ensure FTP packages are not installed] *******************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.13 | PATCH | Ensure VSFTPD packages are not installed] ****************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.14 | PATCH | Ensure TFTP packages are not installed] ******************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.15 | PATCH | Ensure HTTP Server packages are not installed] ***********************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.16 | PATCH | Ensure IMAP and POP3 Server packages are not installed] **************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.17 | PATCH | Ensure Samba package is not installed] *******************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.18 | PATCH | Ensure HTTP Proxy Server package is not installed] *******************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.19 | PATCH | Ensure net-snmp service is disabled] *********************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.20 | PATCH | Ensure mail transfer agent is configured for local-only mode] ********
+--- before: /etc/postfix/main.cf (content)
++++ after: /etc/postfix/main.cf (content)
+@@ -132,7 +132,7 @@
+ #inet_interfaces = all
+ #inet_interfaces = $myhostname
+ #inet_interfaces = $myhostname, localhost
+-inet_interfaces = localhost
++inet_interfaces = loopback-only
+ 
+ # Enable IPv4, and IPv6 if supported
+ inet_protocols = all
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.21 | PATCH | Ensure Telnet Server package is not installed] ***********************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.22 | PATCH | Ensure Rsync package is not installed] *******************************
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.1.23 | PATCH | Ensure NIS Server package is not installed] **************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.2.1 | PATCH | Ensure NIS Client package is not installed] ***************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.2.2 | PATCH | Ensure RSH Client package is not installed] ***************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.2_3 | PATCH | Ensure Talk Client package is not installed] **************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.2.4 | PATCH | Ensure Telnet Client package is not installed] ************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.2.5 | PATCH | Ensure LDAP client is not installed] **********************************
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.2.6 | PATCH | Ensure TFTP client is not installed] **********************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 2.2.7 | PATCH | Ensure rpcbind is not installed] **************************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : Ejecutar tareas de la Sección 3 (RedHat/Oracle Linux 9)] ***************************************
+included: /ansible/CIS-Ansible/roles/cis_security/tasks/RedHat/section_3/main.yml for 10.181.40.12
+
+TASK [cis_security : SCORED | 3.1.1 | PATCH | Disable IPv6 in sysctl] ***********************************************
+changed: [10.181.40.12] => (item=net.ipv6.conf.all.disable_ipv6)
+changed: [10.181.40.12] => (item=net.ipv6.conf.default.disable_ipv6)
+
+TASK [cis_security : Check if wireless interfaces are enabled] ******************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : SCORED | 3.1.2 | PATCH | Ensure wireless interfaces are disabled] ******************************
+ok: [10.181.40.12]
+
+TASK [cis_security : SCORED | 3.2.1 | PATCH | Ensure packet redirect sending is disabled] ***************************
+changed: [10.181.40.12] => (item=net.ipv4.conf.all.send_redirects)
+changed: [10.181.40.12] => (item=net.ipv4.conf.default.send_redirects)
+
+TASK [cis_security : SCORED | 3.2.2 | PATCH | Ensure IPv4 forwarding is disabled] ***********************************
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 3.2.2 | PATCH | Ensure IPv6 forwarding is disabled] ***********************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 3.3.1 | PATCH | Ensure source routed IPv4 packets are not accepted] *******************
+changed: [10.181.40.12] => (item=net.ipv4.conf.all.accept_source_route)
+changed: [10.181.40.12] => (item=net.ipv4.conf.default.accept_source_route)
+
+TASK [cis_security : SCORED | 3.3.1 | PATCH | Ensure source routed IPv6 packets are not accepted] *******************
+skipping: [10.181.40.12] => (item=net.ipv6.conf.all.accept_source_route) 
+skipping: [10.181.40.12] => (item=net.ipv6.conf.default.accept_source_route) 
+
+TASK [cis_security : SCORED | 3.3.2 | PATCH | Ensure ICMP redirects are not accepted] *******************************
+changed: [10.181.40.12] => (item=net.ipv4.conf.all.accept_redirects)
+changed: [10.181.40.12] => (item=net.ipv4.conf.default.accept_redirects)
+
+TASK [cis_security : SCORED | 3.3.2 | PATCH | Ensure ICMPv6 redirects are not accepted] *****************************
+skipping: [10.181.40.12] => (item=net.ipv6.conf.all.accept_redirects) 
+skipping: [10.181.40.12] => (item=net.ipv6.conf.default.accept_redirects) 
+
+TASK [cis_security : SCORED | 3.3.3 | PATCH | Ensure secure ICMP redirects are not accepted] ************************
+changed: [10.181.40.12] => (item={'name': 'net.ipv4.conf.all.secure_redirects', 'value': 0})
+changed: [10.181.40.12] => (item={'name': 'net.ipv4.conf.default.secure_redirects', 'value': 0})
+
+TASK [cis_security : SCORED | 3.3.4 | PATCH | Ensure suspicious packets are logged] *********************************
+changed: [10.181.40.12] => (item=net.ipv4.conf.all.log_martians)
+changed: [10.181.40.12] => (item=net.ipv4.conf.default.log_martians)
+
+TASK [cis_security : SCORED | 3.3.5 | PATCH | Ensure broadcast ICMP requests are ignored] ***************************
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 3.3.6 | PATCH | Ensure bogus ICMP responses are ignored] ******************************
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 3.3.7 | PATCH | Ensure Reverse Path Filtering is enabled] *****************************
+changed: [10.181.40.12] => (item=net.ipv4.conf.all.rp_filter)
+changed: [10.181.40.12] => (item=net.ipv4.conf.default.rp_filter)
+
+TASK [cis_security : SCORED | 3.3.8 | PATCH | Ensure TCP SYN Cookies is enabled] ************************************
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 3.3.9 | PATCH | Ensure IPv6 router advertisements are not accepted] *******************
+skipping: [10.181.40.12] => (item=net.ipv6.conf.all.accept_ra) 
+skipping: [10.181.40.12] => (item=net.ipv6.conf.default.accept_ra) 
+
+TASK [cis_security : SCORED | 3.4.1 | PATCH | Ensure DCCP is disabled] **********************************************
+--- before: /etc/modprobe.d/cis.conf (content)
++++ after: /etc/modprobe.d/cis.conf (content)
+@@ -2,3 +2,4 @@
+ install squashfs /bin/true
+ install udf /bin/true
+ install usb-storage /bin/true
++install dccp /bin/true
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 3.4.2 | PATCH | Ensure SCTP is disabled] **********************************************
+--- before: /etc/modprobe.d/cis.conf (content)
++++ after: /etc/modprobe.d/cis.conf (content)
+@@ -3,3 +3,4 @@
+ install udf /bin/true
+ install usb-storage /bin/true
+ install dccp /bin/true
++install sctp /bin/true
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 3.4.3 | PATCH | Ensure RDS is disabled] ***********************************************
+ok: [10.181.40.12] => {
+    "msg": "--> CONTROL CIS DELETE - Not relevant"
+}
+
+TASK [cis_security : SCORED | 3.4.4 | PATCH | Ensure TIPC is disabled] **********************************************
+ok: [10.181.40.12] => {
+    "msg": "--> Not relevant - No Presente en el CIS"
+}
+
+TASK [cis_security : Ejecutar tareas de la Sección 5 (RedHat/Oracle Linux 9)] ***************************************
+included: /ansible/CIS-Ansible/roles/cis_security/tasks/RedHat/section_5/main.yml for 10.181.40.12
+
+TASK [cis_security : PRELIM | Find all sudoers files.] **************************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : PRELIM | Ensure permissions on SSH private host key files are configured - find] ***************
+ok: [10.181.40.12]
+
+TASK [cis_security : PRELIM | Ensure permissions on SSH public host key files are configured - find] ****************
+ok: [10.181.40.12]
+
+TASK [cis_security : PRELIM | AUDIT | Identify interactive users] ***************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : Generate rhel8_cis_passwd list] ****************************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : Set rhel8_cis_passwd variable] *****************************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : PRELIM | Verify GID of root user] **************************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.1.1 | PATCH | Ensure cron daemon is enabled] ****************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.1.2 | PATCH | Ensure permissions on /etc/crontab are configured] ********************
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+-    "mode": "0644",
++    "mode": "0600",
+     "path": "/etc/crontab"
+ }
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.1.3 | PATCH | Ensure permissions on /etc/cron.hourly are configured] ****************
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+-    "mode": "0755",
++    "mode": "0700",
+     "path": "/etc/cron.hourly"
+ }
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.1.4 | PATCH | Ensure permissions on /etc/cron.daily are configured] *****************
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+-    "mode": "0755",
++    "mode": "0700",
+     "path": "/etc/cron.daily"
+ }
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.1.5 | PATCH | Ensure permissions on /etc/cron.weekly are configured] ****************
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+-    "mode": "0755",
++    "mode": "0700",
+     "path": "/etc/cron.weekly"
+ }
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.1.6 | PATCH | Ensure permissions on /etc/cron.monthly are configured] ***************
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+-    "mode": "0755",
++    "mode": "0700",
+     "path": "/etc/cron.monthly"
+ }
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.1.7 | PATCH | Ensure permissions on /etc/cron.d are configured] *********************
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+-    "mode": "0755",
++    "mode": "0700",
+     "path": "/etc/cron.d"
+ }
+
+changed: [10.181.40.12]
+
+TASK [cis_security : 5.1.8 | PATCH | Remove cron.deny] **************************************************************
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+     "path": "/etc/cron.deny",
+-    "state": "file"
++    "state": "absent"
+ }
+
+changed: [10.181.40.12]
+
+TASK [cis_security : 5.1.8 | PATCH | Check if cron.allow exists] ****************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.1.8 | PATCH | Ensure cron.allow exists] ******************************************************
+--- before
++++ after
+@@ -1,7 +1,7 @@
+ {
+-    "atime": 1790804951.1572993,
+-    "mode": "0644",
+-    "mtime": 1790804951.1572993,
++    "atime": 1790804951.1653569,
++    "mode": "0600",
++    "mtime": 1790804951.1653569,
+     "path": "/etc/cron.allow",
+-    "state": "absent"
++    "state": "touch"
+ }
+
+changed: [10.181.40.12]
+
+TASK [cis_security : 5.1.8 | PATCH | Ensure cron.allow is restricted to authorized users] ***************************
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.1.8 | PATCH | Add authorized users to cron.allow] ********************************************
+--- before: /etc/cron.allow (content)
++++ after: /etc/cron.allow (content)
+@@ -0,0 +1 @@
++root
+
+changed: [10.181.40.12] => (item=root)
+--- before: /etc/cron.allow (content)
++++ after: /etc/cron.allow (content)
+@@ -1 +1,2 @@
+ root
++tux
+
+changed: [10.181.40.12] => (item=tux)
+
+TASK [cis_security : 5.1.9 | PATCH | Ensure at is restricted to authorized users | Remove at.deny] ******************
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+     "path": "/etc/at.deny",
+-    "state": "file"
++    "state": "absent"
+ }
+
+changed: [10.181.40.12]
+
+TASK [cis_security : 5.1.9 | PATCH | Ensure at is restricted to authorized users | Check if at.allow exists] ********
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.1.9 | PATCH | Ensure at is restricted to authorized users | Ensure at.allow is restricted to authorized users] ***
+--- before
++++ after
+@@ -1,7 +1,7 @@
+ {
+-    "atime": 1790804958.908612,
+-    "mode": "0644",
+-    "mtime": 1790804958.908612,
++    "atime": 1790804958.9187727,
++    "mode": "0600",
++    "mtime": 1790804958.9187727,
+     "path": "/etc/at.allow",
+-    "state": "absent"
++    "state": "touch"
+ }
+
+changed: [10.181.40.12]
+
+TASK [cis_security : 5.1.9 | PATCH | Ensure at is restricted to authorized users | Add authorized users to at.allow] ***
+--- before: /etc/at.allow (content)
++++ after: /etc/at.allow (content)
+@@ -0,0 +1 @@
++root
+
+changed: [10.181.40.12] => (item=root)
+--- before: /etc/at.allow (content)
++++ after: /etc/at.allow (content)
+@@ -1 +1,2 @@
+ root
++tux
+
+changed: [10.181.40.12] => (item=tux)
+
+TASK [cis_security : 5.2.8 | AUDIT | Ensure custom authselect profile is used | Gather profiles] ********************
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.2.8 | PATCH | Ensure custom authselect profile is used | Create custom profiles] *************
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.2.8 | PATCH | Ensure custom authselect profile is used | Force custom profile creates backup] ***
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.2.9 | AUDIT | Ensure authselect includes with-faillock | Gather profiles and enabled features] ***
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.2.9 | AUDIT | Ensure authselect includes with-faillock | Show profiles] **********************
+ok: [10.181.40.12] => {
+    "msg": [
+        "Below are the current custom profiles",
+        [
+            "Profile ID: custom/custom-profile",
+            "Enabled features: None"
+        ]
+    ]
+}
+
+TASK [cis_security : 5.2.9 | PATCH | Ensure authselect includes with-faillock | Authselect add options] *************
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.2.1 | Check if sudo is installed] ************************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.2.1 | PATCH | Ensure sudo is installed] ******************************************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : 5.2.2 | PATCH | Ensure sudo commands use pty] **************************************************
+--- before: /etc/sudoers (content)
++++ after: /etc/sudoers (content)
+@@ -122,3 +122,4 @@
+ ## Read drop-in files from /etc/sudoers.d (the # here does not mean a comment)
+ #includedir /etc/sudoers.d
+ proactiva ALL=(ALL) NOPASSWD: ALL
++Defaults    use_pty
+
+changed: [10.181.40.12]
+
+TASK [cis_security : 5.2.3 | PATCH | Ensure sudo log file exists] ***************************************************
+--- before: /etc/sudoers (content)
++++ after: /etc/sudoers (content)
+@@ -123,3 +123,4 @@
+ #includedir /etc/sudoers.d
+ proactiva ALL=(ALL) NOPASSWD: ALL
+ Defaults    use_pty
++Defaults    logfile="/var/log/sudo.log"
+
+changed: [10.181.40.12]
+
+TASK [cis_security : 5.2.4 | PATCH | Ensure users must provide password for escalation] *****************************
+--- before: /etc/sudoers
++++ after: /etc/sudoers
+@@ -100,7 +100,7 @@
+ root	ALL=(ALL) 	ALL
+ %wheel  ALL=(ALL)       ALL
+ tux     ALL=(ALL)       NOPASSWD: ALL
+-redhat     ALL=(ALL)       NOPASSWD: ALL
++redhat     ALL=(ALL)       PASSWD
+ 
+ ## Allows members of the 'sys' group to run networking, software, 
+ ## service management apps and more.
+@@ -121,6 +121,6 @@
+ 
+ ## Read drop-in files from /etc/sudoers.d (the # here does not mean a comment)
+ #includedir /etc/sudoers.d
+-proactiva ALL=(ALL) NOPASSWD: ALL
++proactiva ALL=(ALL) PASSWD
+ Defaults    use_pty
+ Defaults    logfile="/var/log/sudo.log"
+
+changed: [10.181.40.12] => (item=/etc/sudoers)
+--- before: /etc/sudoers.d/iacolcoauto
++++ after: /etc/sudoers.d/iacolcoauto
+@@ -1 +1 @@
+-iacolcoauto ALL=(ALL) NOPASSWD: ALL
++iacolcoauto ALL=(ALL) PASSWD
+
+changed: [10.181.40.12] => (item=/etc/sudoers.d/iacolcoauto)
+ok: [10.181.40.12] => (item=/etc/sudoers.d/ansible_test)
+
+TASK [cis_security : 5.2.5 | PATCH | Ensure re-authentication for privilege escalation is not disabled globally] ****
+ok: [10.181.40.12] => (item=/etc/sudoers)
+ok: [10.181.40.12] => (item=/etc/sudoers.d/iacolcoauto)
+ok: [10.181.40.12] => (item=/etc/sudoers.d/ansible_test)
+
+TASK [cis_security : 5.2.6 | AUDIT | Ensure sudo authentication timeout is configured correctly | Get files with timeout set] ***
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.2.6 | PATCH | Ensure sudo authentication timeout is configured correctly | Set value if no results] ***
+--- before: /etc/sudoers (content)
++++ after: /etc/sudoers (content)
+@@ -124,3 +124,4 @@
+ proactiva ALL=(ALL) PASSWD
+ Defaults    use_pty
+ Defaults    logfile="/var/log/sudo.log"
++Defaults timestamp_timeout=15
+
+changed: [10.181.40.12]
+
+TASK [cis_security : 5.2.6 | PATCH | Ensure sudo authentication timeout is configured correctly | Set value if has results] ***
+
+TASK [cis_security : 5.2.7 | PATCH | Ensure access to the su command is restricted | Ensure nosugroup exists] *******
+changed: [10.181.40.12]
+
+TASK [cis_security : 5.2.7 | PATCH | Ensure access to the su command is restricted | Clean nosugroup membership] ****
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.2.7 | PATCH | Ensure access to the su command is restricted | Add INFRA_TI users to nosugroup] ***
+changed: [10.181.40.12] => (item=tux)
+changed: [10.181.40.12] => (item=aromero)
+changed: [10.181.40.12] => (item=csotomonte)
+changed: [10.181.40.12] => (item=jcastano)
+
+TASK [cis_security : 5.2.7 | PATCH | Ensure access to the su command is restricted | Configure pam_wheel for nosugroup] ***
+--- before: /etc/pam.d/su (content)
++++ after: /etc/pam.d/su (content)
+@@ -4,7 +4,7 @@
+ # Uncomment the following line to implicitly trust users in the "wheel" group.
+ #auth		sufficient	pam_wheel.so trust use_uid
+ # Uncomment the following line to require a user to be in the "wheel" group.
+-#auth		required	pam_wheel.so use_uid
++auth           required        pam_wheel.so use_uid group=nosugroup
+ auth		substack	system-auth
+ auth		include		postlogin
+ account		sufficient	pam_succeed_if.so uid = 0 use_uid quiet
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.1 | PATCH | Ensure permissions on /etc/ssh/sshd_config are configured] ************
+ok: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.2 | PATCH | Ensure permissions on SSH private host key files are configured - update] ***
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+-    "mode": "0644",
++    "mode": "0600",
+     "path": "/etc/ssh/ssh_host_ecdsa_key.pub"
+ }
+
+changed: [10.181.40.12] => (item=/etc/ssh/ssh_host_ecdsa_key.pub)
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+-    "mode": "0644",
++    "mode": "0600",
+     "path": "/etc/ssh/ssh_host_ed25519_key.pub"
+ }
+
+changed: [10.181.40.12] => (item=/etc/ssh/ssh_host_ed25519_key.pub)
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+-    "mode": "0644",
++    "mode": "0600",
+     "path": "/etc/ssh/ssh_host_rsa_key.pub"
+ }
+
+changed: [10.181.40.12] => (item=/etc/ssh/ssh_host_rsa_key.pub)
+
+TASK [cis_security : SCORED | 5.3.3 | PATCH | Ensure permissions on SSH public host key files are configured - update] ***
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+-    "mode": "0600",
++    "mode": "0644",
+     "path": "/etc/ssh/ssh_host_ecdsa_key.pub"
+ }
+
+changed: [10.181.40.12] => (item=/etc/ssh/ssh_host_ecdsa_key.pub)
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+-    "mode": "0600",
++    "mode": "0644",
+     "path": "/etc/ssh/ssh_host_ed25519_key.pub"
+ }
+
+changed: [10.181.40.12] => (item=/etc/ssh/ssh_host_ed25519_key.pub)
+--- before
++++ after
+@@ -1,4 +1,4 @@
+ {
+-    "mode": "0600",
++    "mode": "0644",
+     "path": "/etc/ssh/ssh_host_rsa_key.pub"
+ }
+
+changed: [10.181.40.12] => (item=/etc/ssh/ssh_host_rsa_key.pub)
+
+TASK [cis_security : SCORED | 5.3.4 | PATCH | Ensure SSH access is limited - allowusers] ****************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.4 | PATCH | Ensure SSH access is limited - allowgroups] ***************************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -128,3 +128,4 @@
+ #	AllowTcpForwarding no
+ #	PermitTTY no
+ #	ForceCommand cvs server
++AllowGroups ssh_access
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.4 | PATCH | Ensure SSH access is limited - denyusers] *****************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.4 | PATCH | Ensure SSH access is limited - denygroups] ****************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.5 | PATCH | Ensure SSH LogLevel is appropriate] ***********************************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -129,3 +129,4 @@
+ #	PermitTTY no
+ #	ForceCommand cvs server
+ AllowGroups ssh_access
++LogLevel INFO
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.6 | PATCH | Ensure SSH X11 forwarding is disabled] ********************************
+skipping: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.7 | PATCH | Ensure SSH MaxAuthTries is set to 4 or less] **************************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -39,7 +39,7 @@
+ #LoginGraceTime 2m
+ #PermitRootLogin prohibit-password
+ #StrictModes yes
+-#MaxAuthTries 6
++MaxAuthTries 4
+ #MaxSessions 10
+ 
+ #PubkeyAuthentication yes
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.8 | PATCH | Ensure SSH IgnoreRhosts is enabled] ***********************************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -130,3 +130,4 @@
+ #	ForceCommand cvs server
+ AllowGroups ssh_access
+ LogLevel INFO
++IgnoreRhosts yes
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.9 | PATCH | Ensure SSH HostbasedAuthentication is disabled] ***********************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -131,3 +131,4 @@
+ AllowGroups ssh_access
+ LogLevel INFO
+ IgnoreRhosts yes
++HostbasedAuthentication no
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.10 | PATCH | Ensure SSH root login is disabled] ***********************************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -132,3 +132,4 @@
+ LogLevel INFO
+ IgnoreRhosts yes
+ HostbasedAuthentication no
++PermitRootLogin no
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.11 | PATCH | Ensure SSH PermitEmptyPasswords is disabled] *************************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -133,3 +133,4 @@
+ IgnoreRhosts yes
+ HostbasedAuthentication no
+ PermitRootLogin no
++PermitEmptyPasswords no
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.12 | PATCH | Ensure SSH PermitUserEnvironment is disabled] ************************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -134,3 +134,4 @@
+ HostbasedAuthentication no
+ PermitRootLogin no
+ PermitEmptyPasswords no
++PermitUserEnvironment no
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.13 | PATCH | Ensure SSH Idle Timeout Interval is configured] **********************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -135,3 +135,4 @@
+ PermitRootLogin no
+ PermitEmptyPasswords no
+ PermitUserEnvironment no
++ClientAliveInterval 900
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.13 | PATCH | Ensure SSH ClientAliveCountMax set to <= 3] **************************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -136,3 +136,4 @@
+ PermitEmptyPasswords no
+ PermitUserEnvironment no
+ ClientAliveInterval 900
++ClientAliveCountMax 3
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.14 | PATCH | Ensure SSH LoginGraceTime is set to one minute or less] **************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -137,3 +137,4 @@
+ PermitUserEnvironment no
+ ClientAliveInterval 900
+ ClientAliveCountMax 3
++LoginGraceTime 60
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.15 | PATCH | Ensure SSH warning banner is configured] *****************************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -138,3 +138,4 @@
+ ClientAliveInterval 900
+ ClientAliveCountMax 3
+ LoginGraceTime 60
++Banner /etc/issue.net
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.16 | PATCH | Ensure SSH PAM is enabled] *******************************************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -139,3 +139,4 @@
+ ClientAliveCountMax 3
+ LoginGraceTime 60
+ Banner /etc/issue.net
++UsePAM yes
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.17 | PATCH | Ensure SSH AllowTcpForwarding is disabled] ***************************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -140,3 +140,4 @@
+ LoginGraceTime 60
+ Banner /etc/issue.net
+ UsePAM yes
++AllowTcpForwarding no
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.18 | PATCH | Ensure SSH MaxStartups is configured] ********************************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -141,3 +141,4 @@
+ Banner /etc/issue.net
+ UsePAM yes
+ AllowTcpForwarding no
++MaxStartups 10:30:60
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.3.19 | PATCH | Ensure SSH MaxSessions is set to 4 or less] **************************
+--- before: /etc/ssh/sshd_config (content)
++++ after: /etc/ssh/sshd_config (content)
+@@ -142,3 +142,4 @@
+ UsePAM yes
+ AllowTcpForwarding no
+ MaxStartups 10:30:60
++MaxSessions 10
+
+changed: [10.181.40.12]
+
+TASK [cis_security : SCORED | 5.4.1 | PATCH | Ensure password creation requirements are configured] *****************
+--- before: /etc/security/pwquality.conf (content)
++++ after: /etc/security/pwquality.conf (content)
+@@ -77,3 +77,4 @@
+ # /etc/passwd file.
+ # Enabled if the option is present.
+ # local_users_only
++minlen = 14
+
+changed: [10.181.40.12] => (item={'key': 'minlen', 'value': '14'})
+--- before: /etc/security/pwquality.conf (content)
++++ after: /etc/security/pwquality.conf (content)
+@@ -78,3 +78,4 @@
+ # Enabled if the option is present.
+ # local_users_only
+ minlen = 14
++minclass = 4
+
+changed: [10.181.40.12] => (item={'key': 'minclass', 'value': '4'})
+--- before: /etc/security/pwquality.conf (content)
++++ after: /etc/security/pwquality.conf (content)
+@@ -79,3 +79,4 @@
+ # local_users_only
+ minlen = 14
+ minclass = 4
++dcredit = -1
+
+changed: [10.181.40.12] => (item={'key': 'dcredit', 'value': '-1'})
+--- before: /etc/security/pwquality.conf (content)
++++ after: /etc/security/pwquality.conf (content)
+@@ -80,3 +80,4 @@
+ minlen = 14
+ minclass = 4
+ dcredit = -1
++ucredit = -1
+
+changed: [10.181.40.12] => (item={'key': 'ucredit', 'value': '-1'})
+--- before: /etc/security/pwquality.conf (content)
++++ after: /etc/security/pwquality.conf (content)
+@@ -81,3 +81,4 @@
+ minclass = 4
+ dcredit = -1
+ ucredit = -1
++ocredit = -1
+
+changed: [10.181.40.12] => (item={'key': 'ocredit', 'value': '-1'})
+--- before: /etc/security/pwquality.conf (content)
++++ after: /etc/security/pwquality.conf (content)
+@@ -82,3 +82,4 @@
+ dcredit = -1
+ ucredit = -1
+ ocredit = -1
++lcredit = -1
+
+changed: [10.181.40.12] => (item={'key': 'lcredit', 'value': '-1'})
+
+RUNNING HANDLER [cis_security : Restart sshd] ***********************************************************************
+changed: [10.181.40.12]
+
+RUNNING HANDLER [cis_security : Remount tmp] ************************************************************************
+changed: [10.181.40.12]
+
+RUNNING HANDLER [cis_security : Change_requires_reboot] *************************************************************
+ok: [10.181.40.12]
+
+RUNNING HANDLER [cis_security : Restart chronyd] ********************************************************************
+changed: [10.181.40.12]
+
+RUNNING HANDLER [cis_security : sysctl flush ipv4 route table] ******************************************************
+changed: [10.181.40.12]
+
+RUNNING HANDLER [cis_security : Verify if authselect apply-changes is needed] ***************************************
+changed: [10.181.40.12]
+
+RUNNING HANDLER [cis_security : Apply authselect changes] ***********************************************************
+changed: [10.181.40.12]
+
+TASK [cis_security : 5.4.2 | PATCH | Ensure lockout for failed password attempts is configured in faillock.conf] ****
+--- before: /etc/security/faillock.conf (content)
++++ after: /etc/security/faillock.conf (content)
+@@ -60,3 +60,4 @@
+ # `root_unlock_time` will apply to them.
+ # By default, the option is not set.
+ # admin_group = <admin_group_name>
++deny = 5
+
+changed: [10.181.40.12] => (item={'regexp': '^\\s*deny\\s*=\\s*[1-5]\\b', 'line': 'deny = 5'})
+--- before: /etc/security/faillock.conf (content)
++++ after: /etc/security/faillock.conf (content)
+@@ -61,3 +61,4 @@
+ # By default, the option is not set.
+ # admin_group = <admin_group_name>
+ deny = 5
++unlock_time = 900
+
+changed: [10.181.40.12] => (item={'regexp': '^\\s*unlock_time\\s*=\\s*(0|9[0-9][0-9]|[1-9][0-9][0-9][0-9]+)\\b', 'line': 'unlock_time = 900'})
+
+TASK [cis_security : 5.4.3 | Add pam_pwhistory to custom profile] ***************************************************
+--- before: /etc/authselect/custom/custom-profile/password-auth (content)
++++ after: /etc/authselect/custom/custom-profile/password-auth (content)
+@@ -22,6 +22,7 @@
+ account     required                                     pam_permit.so
+ 
+ password    requisite                                    pam_pwquality.so local_users_only
++password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=3 remember=12
+ password    [default=1 ignore=ignore success=ok]         pam_localuser.so                                       {include if "with-pwhistory"}
+ password    requisite                                    pam_pwhistory.so use_authtok                           {include if "with-pwhistory"}
+ password    sufficient                                   pam_unix.so sha512 shadow {if not "without-nullok":nullok} use_authtok
+
+changed: [10.181.40.12] => (item=password-auth)
+--- before: /etc/authselect/custom/custom-profile/system-auth (content)
++++ after: /etc/authselect/custom/custom-profile/system-auth (content)
+@@ -29,6 +29,7 @@
+ account     required                                     pam_permit.so
+ 
+ password    requisite                                    pam_pwquality.so local_users_only
++password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=3 remember=12
+ password    [default=1 ignore=ignore success=ok]         pam_localuser.so                                       {include if "with-pwhistory"}
+ password    requisite                                    pam_pwhistory.so use_authtok                           {include if "with-pwhistory"}
+ password    sufficient                                   pam_unix.so sha512 shadow {if not "without-nullok":nullok} use_authtok
+
+changed: [10.181.40.12] => (item=system-auth)
+
+RUNNING HANDLER [cis_security : Verify if authselect apply-changes is needed] ***************************************
+changed: [10.181.40.12]
+
+RUNNING HANDLER [cis_security : Apply authselect changes] ***********************************************************
+changed: [10.181.40.12]
+
+TASK [cis_security : 5.4.4 | Ensure SHA-512 is configured in /etc/libuser.conf] *************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.4.4 | Ensure SHA-512 is configured in /etc/login.defs] ***************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.4.4 | Ensure SHA-512 in custom profiles] *****************************************************
+--- before: /etc/authselect/custom/custom-profile/password-auth (content)
++++ after: /etc/authselect/custom/custom-profile/password-auth (content)
+@@ -25,7 +25,7 @@
+ password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=3 remember=12
+ password    [default=1 ignore=ignore success=ok]         pam_localuser.so                                       {include if "with-pwhistory"}
+ password    requisite                                    pam_pwhistory.so use_authtok                           {include if "with-pwhistory"}
+-password    sufficient                                   pam_unix.so sha512 shadow {if not "without-nullok":nullok} use_authtok
++password    sufficient    pam_unix.so sha512 shadow try_first_pass use_authtok remember=12
+ password    [success=1 default=ignore]                   pam_localuser.so
+ password    sufficient                                   pam_sss.so use_authtok
+ password    required                                     pam_deny.so
+
+changed: [10.181.40.12] => (item=password-auth)
+--- before: /etc/authselect/custom/custom-profile/system-auth (content)
++++ after: /etc/authselect/custom/custom-profile/system-auth (content)
+@@ -32,7 +32,7 @@
+ password    requisite     pam_pwhistory.so try_first_pass enforce_for_root retry=3 remember=12
+ password    [default=1 ignore=ignore success=ok]         pam_localuser.so                                       {include if "with-pwhistory"}
+ password    requisite                                    pam_pwhistory.so use_authtok                           {include if "with-pwhistory"}
+-password    sufficient                                   pam_unix.so sha512 shadow {if not "without-nullok":nullok} use_authtok
++password    sufficient    pam_unix.so sha512 shadow try_first_pass use_authtok remember=12
+ password    [success=1 default=ignore]                   pam_localuser.so
+ password    sufficient                                   pam_sss.so use_authtok
+ password    required                                     pam_deny.so
+
+changed: [10.181.40.12] => (item=system-auth)
+
+RUNNING HANDLER [cis_security : Verify if authselect apply-changes is needed] ***************************************
+changed: [10.181.40.12]
+
+RUNNING HANDLER [cis_security : Apply authselect changes] ***********************************************************
+changed: [10.181.40.12]
+
+TASK [cis_security : Set secure permissions for /etc/login.defs] ****************************************************
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.5.1 | PATCH | Ensure default PASS_MAX_DAYS for new users] ************************************
+--- before: /etc/login.defs (content)
++++ after: /etc/login.defs (content)
+@@ -128,7 +128,7 @@
+ #	PASS_MIN_LEN	Minimum acceptable password length.
+ #	PASS_WARN_AGE	Number of days warning given before a password expires.
+ #
+-PASS_MAX_DAYS	99999
++PASS_MAX_DAYS 42
+ PASS_MIN_DAYS	0
+ PASS_WARN_AGE	7
+ 
+
+changed: [10.181.40.12]
+
+TASK [cis_security : 5.5.1 | AUDIT | Check users with invalid PASS_MAX_DAYS in /etc/shadow] *************************
+ok: [10.181.40.12]
+
+TASK [cis_security : 5.5.1 | PATCH | Correct PASS_MAX_DAYS for existing users] **************************************
+skipping: [10.181.40.12] => (item=root) 
+skipping: [10.181.40.12] => (item=tux) 
+failed: [10.181.40.12] (item=redhat) => {"ansible_loop_var": "item", "changed": false, "item": "redhat", "msg": "Unsupported parameters for (ansible.builtin.user) module: password_expire_max Supported parameters include: append, authorization, comment, create_home, expires, force, generate_ssh_key, group, groups, hidden, home, local, login_class, move_home, name, non_unique, password, password_lock, profile, remove, role, seuser, shell, skeleton, ssh_key_bits, ssh_key_comment, ssh_key_file, ssh_key_passphrase, ssh_key_type, state, system, uid, update_password"}
+failed: [10.181.40.12] (item=aromero) => {"ansible_loop_var": "item", "changed": false, "item": "aromero", "msg": "Unsupported parameters for (ansible.builtin.user) module: password_expire_max Supported parameters include: append, authorization, comment, create_home, expires, force, generate_ssh_key, group, groups, hidden, home, local, login_class, move_home, name, non_unique, password, password_lock, profile, remove, role, seuser, shell, skeleton, ssh_key_bits, ssh_key_comment, ssh_key_file, ssh_key_passphrase, ssh_key_type, state, system, uid, update_password"}
+failed: [10.181.40.12] (item=csotomonte) => {"ansible_loop_var": "item", "changed": false, "item": "csotomonte", "msg": "Unsupported parameters for (ansible.builtin.user) module: password_expire_max Supported parameters include: append, authorization, comment, create_home, expires, force, generate_ssh_key, group, groups, hidden, home, local, login_class, move_home, name, non_unique, password, password_lock, profile, remove, role, seuser, shell, skeleton, ssh_key_bits, ssh_key_comment, ssh_key_file, ssh_key_passphrase, ssh_key_type, state, system, uid, update_password"}
+failed: [10.181.40.12] (item=jcastano) => {"ansible_loop_var": "item", "changed": false, "item": "jcastano", "msg": "Unsupported parameters for (ansible.builtin.user) module: password_expire_max Supported parameters include: append, authorization, comment, create_home, expires, force, generate_ssh_key, group, groups, hidden, home, local, login_class, move_home, name, non_unique, password, password_lock, profile, remove, role, seuser, shell, skeleton, ssh_key_bits, ssh_key_comment, ssh_key_file, ssh_key_passphrase, ssh_key_type, state, system, uid, update_password"}
+skipping: [10.181.40.12] => (item=proactiva) 
+
+PLAY RECAP **********************************************************************************************************
+10.181.40.12               : ok=168  changed=95   unreachable=0    failed=1    skipped=38   rescued=0    ignored=1   
+

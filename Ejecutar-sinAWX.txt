@@ -1,0 +1,1 @@
+ansible-playbook -i "10.181.40.12," Linea_Base.yml -e "target_ip=10.181.40.12" -e "type_server='Servidor Onpremise - Nuevo'" -e "ansible_distribution=OracleLinux" -e '{"repo_check": {"failed": false}}' -u tux --diff | tee cis_10.181.40.12.log
