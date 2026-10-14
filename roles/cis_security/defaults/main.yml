@@ -274,6 +274,7 @@ sudoers_exclude_nopasswd_users:
   - proactiva
   - iacolcoauto
   - ansible_test
+  - azureuser
 
 
 ## Control 5.2.6 -Ensure sudo authentication timeout is configured correctly
@@ -294,6 +295,7 @@ authorized_su_users:
   - aromero
   - csotomonte
   - jcastano
+  - azureuser
 
 
 ## Section 5.2 - Configure authselect: Custom authselect profile settings(name, profile to customize, options)
@@ -425,6 +427,7 @@ excluded_users:
   - pos
   - alktstwms
   - alktstems
+  - azureuser
 
 allowed_shells:
   - "/bin/false"
