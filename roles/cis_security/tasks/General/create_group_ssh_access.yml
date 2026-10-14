@@ -7,21 +7,25 @@
 
 
 # ------------------------------------------------------------
-# ONPREMISE → usuario tux
+# ONPREMISE/CLOUD → usuario tux, azureuser, adminso
 # ------------------------------------------------------------
 
-- name: Verificar si existe el usuario tux
-  ansible.builtin.command: id tux
-  register: tux_id
-  failed_when: false      # no revienta si el usuario no existe
+- name: Verificar si existen los usuarios
+  ansible.builtin.command: "id {{ item }}"
+  loop:
+    - tux
+    - azureuser
+    - adminso
+  register: usuarios_id
+  failed_when: false
   changed_when: false
 
-- name: Agregar tux a ssh_access SOLO si existe
+- name: Agregar usuarios existentes a ssh_access
   ansible.builtin.user:
-    name: tux
+    name: "{{ item.item }}"
     groups: ssh_access
     append: true
-  when:
-    - tux_id.rc == 0
+  loop: "{{ usuarios_id.results }}"
+  when: item.rc == 0
 
 
